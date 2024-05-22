@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 const Button = ({name, className, onClick }) => {
   return (

@@ -67,7 +67,10 @@ const Home = () => {
       <div className="h-[310px] max-w-[1140px] mx-auto bg-blue-800">
         <h1>content new</h1>
         <div className="w-[208px] h-[278px]">
-        <img className="" src={Dummy} alt="" />
+        <img className="w-[208px] h-[136px]" src={Dummy} alt="" />
+        <p>Men's formal suit - Black & White</p>
+        <p>$ 40.0</p>
+        <p>Zalora Cloth</p>
         </div>
         <h1>content popular</h1>
         

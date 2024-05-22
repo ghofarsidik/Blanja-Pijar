@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 const Button2 = ({ variant = '', text = 'Button', className, ...props }) => {
     if (variant === 'primary-red') {

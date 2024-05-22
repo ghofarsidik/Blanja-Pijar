@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Textfield from '../base/textfield/textField';
 import Button from '../base/button/button';
 import { useDispatch } from 'react-redux';
