@@ -1,7 +1,7 @@
-import Logo from "../images/logo/blanja.png";
-import Search from "../images/logo/search.png";
-import Sort from "../images/logo/filter.png";
-import Cart from "../images/logo/cart.png";
+import Logo from "../../assets/images/logo/blanja.png";
+import Search from "../../assets/images/logo/search.png";
+import Sort from "../../assets/images/logo/filter.png";
+import Cart from "../../assets/images/logo/cart.png";
 
 const Navbar = () => {
   return (

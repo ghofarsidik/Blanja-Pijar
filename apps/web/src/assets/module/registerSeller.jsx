@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
 import Input from '../base/input'
 import Button2 from '../base/button/button2'
-import api from '../../configs/api'
+import api from '../../../configs/api'
 import { useNavigate } from 'react-router-dom'
-import { Radio } from "@material-tailwind/react";
-const RegisterCustomer = () => {
+
+const RegisterSeller = () => {
 
   const navigate = useNavigate()
   const [form, setForm] = useState({
+    name: '',
     email: '',
     phone: '',
+    store_name: '',
     password: '',
-    gender: '',
-    name: '',
   })
 
   const handleRegister = (e) => {
     e.preventDefault()
-    api.post('/register/customers', {
-      email: form.email,
-      password: form.password,
-      phone: form.phone,
-      gender: form.gender,
+    api.post('/register/stores', {
       name: form.name,
+      email: form.email,
+      phone: form.phone,
+      store_name: form.store_name,
+      password: form.password,
     })
       .then((res) => {
         console.log(res.response);
@@ -43,19 +43,9 @@ const RegisterCustomer = () => {
     })
   }
 
-  const [toggle, setToggle] = useState(1)
-  const handleToggle = (id) => {
-    setToggle(id)
-  }
-  const handleToggle2 = (id) => {
-    setToggle(id)
-  }
-
-
   return (
     <div className='w-full flex flex-col gap-10'>
       <div className='w-full flex flex-col gap-4'>
-
         <Input
           type='text'
           value={form.name}
@@ -66,7 +56,6 @@ const RegisterCustomer = () => {
         />
         <Input
           type='email'
-          required
           value={form.email}
           onChange={handleChange}
           name="email"
@@ -82,6 +71,14 @@ const RegisterCustomer = () => {
           placeholder="Masukkan telepon"
         />
         <Input
+          type='text'
+          value={form.store_name}
+          onChange={handleChange}
+          name="store_name"
+          label=""
+          placeholder="Masukkan nama toko"
+        />
+        <Input
           type='password'
           value={form.password}
           onChange={handleChange}
@@ -89,26 +86,10 @@ const RegisterCustomer = () => {
           label=""
           placeholder="Masukkan password"
         />
-        <div className="flex gap-20">
-          <Radio name="type" value={form.gender} color="red"  label="Male" />
-          <Radio name="type" value={form.gender} color='red'  label="Female"  defaultChecked />
-        </div>
-
-        {/* <div className='flex flex-col gap-10 w-full items-center'>
-                        <ul className='flex rounded-md border border-[#9b9b9b] overflow-hidden w-fit items-center'>
-                            <li className='flex flex-col gap-[11px] cursor-pointer' onClick={() => handleToggle2(1)}>
-                                <div className={toggle === 1 ? 'p-[10px] bg-[#DB3022] font-bold text-base text-center leading-5 leading text-[#FFFFFF] w-32' : 'p-[10px] bg-white font-bold text-base text-center leading-5 text-[#9b9b9b] w-32'}>Male</div>
-                            </li>
-                            <li className='flex flex-col gap-[11px] cursor-pointer' onClick={() => handleToggle2(2)}>
-                                <div className={toggle === 2 ? 'p-[10px] bg-[#DB3022] font-bold text-base text-center leading-5 text-[#FFFFFF] w-32' : 'p-[10px] bg-white font-bold text-base text-center leading-5 text-[#9b9b9b] w-32'}>Female</div>
-                            </li>
-                        </ul>
-                </div>
-     */}
       </div>
       <Button2 className='w-full' onClick={handleRegister} text='Daftar' />
     </div>
   )
 }
 
-export default RegisterCustomer
+export default RegisterSeller

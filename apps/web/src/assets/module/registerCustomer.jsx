@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Input from '../base/input'
-import Button2 from '../base/button/button2'
+import Input from '../../components/module/base/input'
+import Button2 from '../../components/module/base/button/button2'
 import api from '../../configs/api'
 import { useNavigate } from 'react-router-dom'
 import { Radio } from "@material-tailwind/react";
