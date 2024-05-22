@@ -1,4 +1,3 @@
-import React from 'react'
 import MainRouter from './configs/router';
 
 
@@ -8,4 +7,4 @@ const App = () => {
   );
 }
 
-export default App
+export default App;
