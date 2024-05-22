@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import Input from '../base/input'
-import Button2 from '../base/button/button2'
+
+import Button from '../base/button/button'
+
 import api from '../../configs/api'
 import { useNavigate } from 'react-router-dom'
 
@@ -87,7 +89,7 @@ const RegisterSeller = () => {
           placeholder="Masukkan password"
         />
       </div>
-      <Button2 className='w-full' onClick={handleRegister} text='Daftar' />
+      <Button name="Daftar" className='flex justify-center w-full' onClick={handleRegister} text='Daftar' />
     </div>
   )
 }

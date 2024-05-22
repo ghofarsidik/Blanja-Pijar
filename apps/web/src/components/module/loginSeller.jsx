@@ -71,7 +71,7 @@ const loginSeller = () => {
           />
         </div>
         <div className='flex justify-center'>
-        <p>Don&#39;t have a Tokopedia account?{' '} 
+        <p>Don&#39;t have account?{' '} 
         <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
             Register
         </span>

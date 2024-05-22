@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Input from '../base/input'
-import Button2 from '../base/button/button2'
+import Button from '../base/button/button'
 import api from '../../configs/api'
 import { useNavigate } from 'react-router-dom'
 import { Radio } from "@material-tailwind/react";
-const RegisterCustomer = () => {
 
+const RegisterCustomer = () => {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     email: '',
@@ -41,14 +41,7 @@ const RegisterCustomer = () => {
       ...form,
       [e.target.name]: e.target.value
     })
-  }
-
-  const [toggle, setToggle] = useState(1)
-  const handleToggle = (id) => {
-    setToggle(id)
-  }
-  const handleToggle2 = (id) => {
-    setToggle(id)
+    console.log(setForm)
   }
 
 
@@ -74,7 +67,7 @@ const RegisterCustomer = () => {
           placeholder="Masukkan email"
         />
         <Input
-          type='tel'
+          type='text'
           value={form.phone}
           onChange={handleChange}
           name="phone"
@@ -89,24 +82,21 @@ const RegisterCustomer = () => {
           label=""
           placeholder="Masukkan password"
         />
-        <div className="flex gap-20">
-          <Radio name="type" value={form.gender} color="red"  label="Male" />
-          <Radio name="type" value={form.gender} color='red'  label="Female"  defaultChecked />
-        </div>
+        <Input
+          type='text'
+          value={form.gender}
+          onChange={handleChange}
+          name="gender"
+          label=""
+          placeholder="Masukan Gender kalian Male/Female"
+        />
 
-        {/* <div className='flex flex-col gap-10 w-full items-center'>
-                        <ul className='flex rounded-md border border-[#9b9b9b] overflow-hidden w-fit items-center'>
-                            <li className='flex flex-col gap-[11px] cursor-pointer' onClick={() => handleToggle2(1)}>
-                                <div className={toggle === 1 ? 'p-[10px] bg-[#DB3022] font-bold text-base text-center leading-5 leading text-[#FFFFFF] w-32' : 'p-[10px] bg-white font-bold text-base text-center leading-5 text-[#9b9b9b] w-32'}>Male</div>
-                            </li>
-                            <li className='flex flex-col gap-[11px] cursor-pointer' onClick={() => handleToggle2(2)}>
-                                <div className={toggle === 2 ? 'p-[10px] bg-[#DB3022] font-bold text-base text-center leading-5 text-[#FFFFFF] w-32' : 'p-[10px] bg-white font-bold text-base text-center leading-5 text-[#9b9b9b] w-32'}>Female</div>
-                            </li>
-                        </ul>
-                </div>
-     */}
+        {/* <div className="flex gap-20">
+          <Radio name="type" value={form.gender} onChange={handleChange} color="red" label="Male" />
+          <Radio name="type" value={form.gender} onChange={handleChange} color='red' label="Female"  defaultChecked />
+        </div> */}
       </div>
-      <Button2 className='w-full' onClick={handleRegister} text='Daftar' />
+      <Button name="Daftar" className='flex justify-center w-full' onClick={handleRegister} text='Daftar' />
     </div>
   )
 }
