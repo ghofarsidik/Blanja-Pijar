@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
-import RegisterCustomer from '../../component/module/registerCustomer'
-import RegisterSeller from '../../component/module/registerSeller'
+import RegisterCustomer from '../../components/module/registerCustomer'
+import RegisterSeller from '../../components/module/registerSeller'
 
 const Register = () => {
     
