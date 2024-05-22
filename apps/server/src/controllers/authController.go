@@ -15,7 +15,8 @@ func RegisterUser(c *fiber.Ctx) error {
 	var input map[string]interface{}
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Failed to parse request body",
+			"message":    "Failed to parse request body",
+			"statusCode": fiber.StatusBadRequest,
 		})
 	}
 	input = helpers.XssMiddleware(input)
@@ -29,24 +30,28 @@ func RegisterUser(c *fiber.Ctx) error {
 	user, _ := models.GetUserByEmail(newUser.Email)
 	if user.Email != "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": fmt.Sprintf("User with email %v already exist", newUser.Email),
+			"message":    fmt.Sprintf("User with email %v already exist", newUser.Email),
+			"statusCode": fiber.StatusNotAcceptable,
 		})
 	}
 	err := helpers.ValidatePassword(newUser.Password)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
-			"message": err.Error(),
+			"message":    err.Error(),
+			"statusCode": fiber.StatusNotAcceptable,
 		})
 	}
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	newUser.Password = string(hashPassword)
 	if err := models.PostUser(&newUser); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": fmt.Sprintf("Failed to create new user, %v", err.Error()),
+			"message":    fmt.Sprintf("Failed to create new user, %v", err.Error()),
+			"statusCode": fiber.StatusInternalServerError,
 		})
 	}
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "Register successfully",
+		"message":    "Register successfully",
+		"statusCode": fiber.StatusCreated,
 	})
 }
 
@@ -64,7 +69,6 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"statusCode": fiber.StatusNotFound,
 			"message":    "Email unregistered",
-			"err":        err,
 		})
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
@@ -88,7 +92,8 @@ func LoginUser(c *fiber.Ctx) error {
 	refreshToken, err := helpers.GenerateRefreshToken(jwtKey, payload)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Could not generate refresh token",
+			"error":      "Could not generate refresh token",
+			"statusCode": fiber.StatusInternalServerError,
 		})
 	}
 	item := map[string]interface{}{
@@ -109,7 +114,8 @@ func RefreshToken(c *fiber.Ctx) error {
 	}
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Failed to parse request body",
+			"error":      "Failed to parse request body",
+			"statusCode": fiber.StatusBadRequest,
 		})
 	}
 
@@ -117,14 +123,16 @@ func RefreshToken(c *fiber.Ctx) error {
 	token, err := helpers.GenerateToken(jwtKey, map[string]interface{}{"refreshToken": input.RefreshToken})
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Could not generate access token",
+			"error":      "Could not generate access token",
+			"statusCode": fiber.StatusInternalServerError,
 		})
 	}
 
 	refreshToken, err := helpers.GenerateRefreshToken(jwtKey, map[string]interface{}{"refreshToken": input.RefreshToken})
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Could not generate refresh token",
+			"error":      "Could not generate refresh token",
+			"statusCode": fiber.StatusInternalServerError,
 		})
 	}
 	item := map[string]string{
@@ -133,7 +141,8 @@ func RefreshToken(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "Refresh successfully",
-		"data":    item,
+		"statusCode": fiber.StatusCreated,
+		"message":    "Refresh successfully",
+		"data":       item,
 	})
 }
