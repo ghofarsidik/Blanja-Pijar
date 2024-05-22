@@ -3,42 +3,15 @@ import Input from '../base/input'
 import Button2 from '../base/button/button2'
 import api from '../../configs/api'
 import { useNavigate } from 'react-router-dom'
-
+import { Radio } from "@material-tailwind/react";
 const RegisterCustomer = () => {
-
-  const DisplayingErrorMessagesSchema = Yup.object().shape({
-    username: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
-  });
-
-  function validateEmail(value) {
-    let error;
-    if (!value) {
-      error = 'Required';
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-      error = 'Invalid email address';
-    }
-    return error;
-  }
-  
-  function validateUsername(value) {
-    let error;
-    if (value === 'admin') {
-      error = 'Nice try!';
-    }
-    return error;
-  }
- 
 
   const navigate = useNavigate()
   const [form, setForm] = useState({
     email: '',
     phone: '',
     password: '',
-    gender:'',
+    gender: '',
     name: '',
   })
 
@@ -48,7 +21,7 @@ const RegisterCustomer = () => {
       email: form.email,
       password: form.password,
       phone: form.phone,
-      gender:form.gender,
+      gender: form.gender,
       name: form.name,
     })
       .then((res) => {
@@ -72,11 +45,11 @@ const RegisterCustomer = () => {
 
   const [toggle, setToggle] = useState(1)
   const handleToggle = (id) => {
-      setToggle(id)
+    setToggle(id)
   }
   const handleToggle2 = (id) => {
     setToggle(id)
-}
+  }
 
 
   return (
@@ -90,7 +63,6 @@ const RegisterCustomer = () => {
           name="name"
           label=""
           placeholder="Masukkan nama"
-          validate={validateEmail}
         />
         <Input
           type='email'
@@ -117,7 +89,12 @@ const RegisterCustomer = () => {
           label=""
           placeholder="Masukkan password"
         />
-              <div className='flex flex-col gap-10 w-full items-center'>
+        <div className="flex gap-20">
+          <Radio name="type" value={form.gender} color="red"  label="Male" />
+          <Radio name="type" value={form.gender} color='red'  label="Female"  defaultChecked />
+        </div>
+
+        {/* <div className='flex flex-col gap-10 w-full items-center'>
                         <ul className='flex rounded-md border border-[#9b9b9b] overflow-hidden w-fit items-center'>
                             <li className='flex flex-col gap-[11px] cursor-pointer' onClick={() => handleToggle2(1)}>
                                 <div className={toggle === 1 ? 'p-[10px] bg-[#DB3022] font-bold text-base text-center leading-5 leading text-[#FFFFFF] w-32' : 'p-[10px] bg-white font-bold text-base text-center leading-5 text-[#9b9b9b] w-32'}>Male</div>
@@ -127,15 +104,7 @@ const RegisterCustomer = () => {
                             </li>
                         </ul>
                 </div>
-        {/* <Input
-          type='text'
-          value={form.gender}
-          onChange={handleChange}
-          name="gender"
-          label=""
-          placeholder="Masukkan gender"
-        /> */}
-
+     */}
       </div>
       <Button2 className='w-full' onClick={handleRegister} text='Daftar' />
     </div>
