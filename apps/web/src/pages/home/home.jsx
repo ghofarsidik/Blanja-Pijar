@@ -5,8 +5,27 @@ import Pants from "../../assets/images/categories/pants.png";
 import Jacket from "../../assets/images/categories/jacket.png";
 import Dummy from "../../assets/images/dummy/dummy.png";
 import Cart from "../../components/base/card/card";
+import { Recommendation } from "../../components/module/recommendation";
 
 const Home = () => {
+  const items = [
+    {title: "new", desc:"You've never seen it before!", children: (
+      <Cart
+            image={Dummy}
+            product_name="Men's formal suit - Black & White"
+            price="$ 40.0"
+            store="Zalora Cloth"
+          />
+    ) }, 
+    {title: "Popular", desc:"Find clothes that are trending recently", children: (
+      <Cart
+            image={Dummy}
+            product_name="Men's formal suit - Black & White"
+            price="$ 40.0"
+            store="Zalora Cloth"
+          />
+    ) }
+  ]
   return (
     <div className="container mx-auto">
       <Navbar />
@@ -71,37 +90,15 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="h-[310px] max-w-[1140px] mx-auto mt-[50px]">
-        <p className="text-[34px] font-bold font-blanja_metropolis h-[40px]">New</p>
-        <p className="text-xs font-blanja_metropolis mt-[4px]">You've never seen it before!</p>
-        <div className="grid grid-cols-5 place-items-center gap-y-[25px] mt-[25px]">
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
+      {items.map((items, idx) => (
+        <div key={idx}>
+        <Recommendation title={items.title} desc={items.desc} >
+          {Array.from(new Array(10)).map((_ , idx) => (
+            items.children
+          ))}
+        </Recommendation>
         </div>
-        <p className="text-[34px] font-bold font-blanja_metropolis h-[40px] mt-[50px]">Popular</p>
-        <p className="text-xs font-blanja_metropolis mt-[4px]">Find clothes that are trending recently</p>
-        <div className="grid grid-cols-5 place-items-center gap-y-[25px] mt-[25px]">
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        <Cart image={Dummy} product_name= "Men's formal suit - Black & White" price="$ 40.0" store="Zalora Cloth" />
-        </div>
-        <h1>content popular</h1>
-      </div>
+      ))}
     </div>
   );
 };
