@@ -3,7 +3,7 @@ import Input from '../base/input'
 import Button from '../base/button/button'
 import api from '../../configs/api'
 import { useNavigate } from 'react-router-dom'
-import { Radio } from "@material-tailwind/react";
+
 
 const RegisterCustomer = () => {
   const navigate = useNavigate()

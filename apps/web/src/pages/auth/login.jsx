@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoBlanja from '../../assets/logo/Group 1158.png'
 import RadioRole from '../../components/base/radio/radioRole';
 import LoginCustomer from '../../components/module/loginCustomer';
-import LoginSeller from '../../components/module/loginCustomer';
+import LoginSeller from '../../components/module/loginSeller';
 
 const Login = () => {
     const [toggle, setToggle] = useState(1);

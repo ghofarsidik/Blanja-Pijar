@@ -17,7 +17,7 @@ const Categories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/v1/categories')
+    axios.get('https://fakestoreapi.com/cat')
       .then(response => {
         setCategories(response.data);
       })

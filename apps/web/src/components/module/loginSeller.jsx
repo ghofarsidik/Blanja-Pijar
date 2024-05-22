@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Textfield from '../base/textfield/textField';
 import Button from '../base/button/button';
 import { useDispatch } from 'react-redux';
@@ -56,6 +57,18 @@ const loginSeller = () => {
               placeholder="Password"
               className='w-96 h-12'
               value={form.password}
+              onChange={handleChange}
+          />
+        </div>
+        <div className='flex justify-center pb-2'>
+          <Textfield 
+              type="text"
+              id="role"
+              spellCheck={false}
+              required
+              placeholder="Customer / Seller"
+              className='w-96 h-12'
+              value={form.role}
               onChange={handleChange}
           />
         </div>
