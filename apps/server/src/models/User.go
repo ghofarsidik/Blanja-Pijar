@@ -19,7 +19,7 @@ type User struct {
 	Role         string       `json:"role" validate:"required"`
 	Address      []APIAddress `json:"address"`
 	Store        []APIStore   `json:"store"`
-	Cart         []APICart    `json:"cart"`
+	Cart         []Cart       `json:"cart"`
 }
 
 type APIAddress struct {
@@ -36,9 +36,9 @@ type APIAddress struct {
 
 type APIStore struct {
 	gorm.Model
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Address     string `json:"address"`
+	Name        string `json:"name" validate:"required,min=3"`
+	Description string `json:"description" validate:"required,min=3"`
+	Address     string `json:"address" validate:"required,min=3"`
 	UserID      uint   `json:"user_id"`
 }
 
@@ -65,11 +65,11 @@ func GetAllUser() []*User {
 	configs.DB.Preload("Address", func(db *gorm.DB) *gorm.DB {
 		var items []*APIAddress
 		return db.Model(&Address{}).Find(&items)
-	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
-		var items []*APICart
-		return db.Model(&Cart{}).Find(&items)
 	}).Preload("Store", func(db *gorm.DB) *gorm.DB {
 		var items []*APIStore
+		return db.Model(&Store{}).Find(&items)
+	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
+		var items []*APICart
 		return db.Model(&Cart{}).Find(&items)
 	}).Find(&results)
 	return results
@@ -80,6 +80,12 @@ func GetDetailUser(id interface{}) *User {
 	configs.DB.Preload("Address", func(db *gorm.DB) *gorm.DB {
 		var items []*APIAddress
 		return db.Model(&Address{}).Find(&items)
+	}).Preload("Store", func(db *gorm.DB) *gorm.DB {
+		var items []*APIStore
+		return db.Model(&Store{}).Find(&items)
+	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
+		var items []*APICart
+		return db.Model(&Cart{}).Find(&items)
 	}).First(&user, "id = ?", id)
 	return &user
 }
@@ -93,11 +99,11 @@ func GetUserByEmail(email string) (*User, error) {
 	return &user, results.Error
 }
 
-func PostUser(newUser *User) error {
+func CreateUser(newUser *User) error {
 	results := configs.DB.Create(&newUser)
 	return results.Error
 }
-func UpdateUser(id int, user *User) error {
+func UpdateUser(id uint, user *User) error {
 	results := configs.DB.Model(&User{}).Where("id = ?", id).Updates(user)
 	return results.Error
 }
