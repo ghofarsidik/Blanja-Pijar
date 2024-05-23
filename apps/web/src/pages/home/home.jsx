@@ -3,6 +3,7 @@ import Dummy from "../../assets/images/dummy/dummy.png";
 import Cart from "../../components/base/card/card"
 import Jumbotron from "../../components/module/Jumbotron";
 import Categories from "../../components/module/Categories";
+import { Recommendation } from "../../components/module/recommendation";
 
 
 const Home = () => {

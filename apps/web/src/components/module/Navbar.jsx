@@ -2,11 +2,14 @@ import Logo from "../../assets/images/logo/blanja.png";
 import Search from "../../assets/images/logo/search.png";
 import Sort from "../../assets/images/logo/filter.png";
 import Cart from "../../assets/images/logo/cart.png";
+import Mail from "../../assets/images/logo/mail.png";
+import Bell from "../../assets/images/logo/bell.png";
+import Profile from "../../assets/images/dummy/dummyProfile.png";
 import { useNavigate } from 'react-router-dom';
 
 
 const Navbar = () => {
-const navigate =useNavigate()
+const navigate = useNavigate()
 
   const HandleRegister = () => {
     navigate('/register')
@@ -14,9 +17,12 @@ const navigate =useNavigate()
   const HandleLogin = () => {
     navigate('/login')
   }
+
+  const token = "dummy";
+  
   return (
     <nav className="w-full h-[100px] mx-auto flex items-center bg-white shadow-md">
-      <img className="ml-[50px] container:ml-[150px]" src={Logo} alt="" />
+      <img className="ml-[50px] dekstop:ml-[150px]" src={Logo} alt="" />
 
       <div className="flex items-center flex-grow mx-5">
         <div className="flex-grow flex rounded-full bg-white border border-abu overflow-hidden">
@@ -29,21 +35,38 @@ const navigate =useNavigate()
             <img src={Search} alt="Search" />
           </button>
         </div>
-        <div className="bg-white h-[40px] w-[40px] border border-abu flex items-center rounded-lg ml-2">
+        <button className="bg-white h-[40px] w-[40px] border border-abu flex items-center rounded-lg ml-2">
           <img src={Sort} alt="Sort" className="mx-auto" />
-        </div>
+        </button>
       </div>
 
-      <div className="flex h-[40px] items-center space-x-[20px] mr-[50px] container:mr-[150px]">
-        <div className="flex items-center h-9 w-[44px]">
+      <div className="flex h-[40px] items-center space-x-[20px] mr-[50px] dekstop:mr-[150px]">
+        <button className="flex items-center h-9 w-[44px]">
           <img className="mx-auto" src={Cart} alt="Cart" />
-        </div>
-        <button onClick={HandleLogin} className="h-9 w-[100px] border border-abu text-sm text-abu rounded-full hover:bg-red-700 hover:text-white hover:border-0">
+        </button>
+        {token ? (
+          <>
+        <button className="flex items-center h-9 w-[44px]">
+          <img className="mx-auto" src={Bell} alt="Cart" />
+        </button>
+        <button className="flex items-center h-9 w-[44px]">
+          <img className="mx-auto" src={Mail} alt="Cart" />
+        </button>
+        <button className="flex items-center h-9 w-[44px]">
+          <img className="mx-auto" src={Profile} alt="Cart" />
+        </button>
+        </>
+      ) : (
+      <>
+      <button onClick={HandleLogin} className="h-9 w-[100px] border border-abu text-sm text-abu rounded-full hover:bg-red-700 hover:text-white hover:border-0">
           Masuk
         </button>
         <button onClick={HandleRegister} className="h-9 w-[100px] border border-abu text-sm text-abu rounded-full hover:bg-red-700 hover:text-white hover:border-0">
           Daftar
         </button>
+        </>
+        )
+        }
       </div>
     </nav>
   );
