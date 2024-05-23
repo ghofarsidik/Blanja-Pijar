@@ -59,6 +59,18 @@ const loginSeller = () => {
               onChange={handleChange}
           />
         </div>
+        <div className='flex justify-center pb-2'>
+          <Textfield 
+              type="text"
+              id="role"
+              spellCheck={false}
+              required
+              placeholder="Customer / Seller"
+              className='w-96 h-12'
+              value={form.role}
+              onChange={handleChange}
+          />
+        </div>
         <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
         Forgot password?
         </div>
@@ -70,7 +82,7 @@ const loginSeller = () => {
           />
         </div>
         <div className='flex justify-center'>
-        <p>Don&#39;t have a Tokopedia account?{' '} 
+        <p>Don&#39;t have account?{' '} 
         <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
             Register
         </span>
