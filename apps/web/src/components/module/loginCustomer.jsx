@@ -1,124 +1,112 @@
 import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Textfield from '../base/textfield/textField';
 import Button from '../base/button/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../../configs/redux/action/auth.action';
 import { useNavigate } from 'react-router-dom';
+import loginRegist from '../../utils/login';
 
-const loginCustomer = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-   
-    const [form, setForm] = useState({
-        email: '',
-        password: '',
-        role: ''
-    });
-    
-    const initialValues = {
+const LoginCustomer = ({ role }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const formik = useFormik({
+    initialValues: {
       email: '',
       password: '',
-      role: ''
-  };
+      role: role || 'seller'
+    },
+    validationSchema: loginRegist,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await api.post(`/login/${values.role}s`, values);
+        const { token, user } = response.data;
 
-  const validationSchema = Yup.object().shape({
-      email: Yup.string().email('Invalid email').required('Email is required'),
-      password: Yup.string().required('Password is required'),
-      role: Yup.string().required('Role is required')
+        // Dispatch login action
+        dispatch(loginAction(user, token));
+
+        alert('Login successful');
+        navigate('/');
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Failed to login. Please check your email and password.');
+      } finally {
+        setSubmitting(false);
+      }
+    },
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-      dispatch(loginAction(values.email, values.password, values.role, navigate));
-      navigate('/');
-      setSubmitting(false);
-  };
 
-
-    const handleChange = (e) => {
-       const { id, value } = e.target;
-       setForm((prevForm) => ({
-        ...prevForm,
-        [id]: value
-       }));
-       console.log({ [id]: value });
-    };
-
-    const HandleRegister = () => {
-      navigate('/register')
-    }
-
-    const handleLoginCustomer = () => {
-      dispatch(loginAction(form.email, form.password, form.role, navigate));
-      navigate('/')
-    };
-
-    return (
-      <div>
-          <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-          >
-              {({ isSubmitting }) => (
-                  <Form>
-                      <div className='flex justify-center'>
-                          <Textfield
-                              type="email"
-                              name="email"
-                              autoComplete="email"
-                              spellCheck={false}
-                              required
-                              placeholder="Email"
-                              className='w-96 h-12'
-                          />
-                          <ErrorMessage name="email" component="div" className="text-red-500" />
-                      </div>
-                      <div className='flex justify-center pb-5'>
-                          <Textfield
-                              type="password"
-                              name="password"
-                              spellCheck={false}
-                              required
-                              placeholder="Password"
-                              className='w-96 h-12'
-                              autoComplete="new-password"
-                          />
-                          <ErrorMessage name="password" component="div" className="text-red-500" />
-                      </div>
-                      <div className='flex justify-center pb-2'>
-                          <Textfield
-                              type="text"
-                              name="role"
-                              autoComplete="off"
-                              spellCheck={false}
-                              required
-                              placeholder="Customer / Seller"
-                              className='w-96 h-12'
-                          />
-                          <ErrorMessage name="role" component="div" className="text-red-500" />
-                      </div>
-                      <div className='flex justify-center py-5'>
-                          <Button
-                              name="Primary"
-                              type="submit"
-                              disabled={isSubmitting}
-                              className="flex justify-center "
-                          />
-                      </div>
-                  </Form>
-              )}
-          </Formik>
-          <div className='flex justify-center'>
-              <p>Don't have an account?{' '}
-                  <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
-                      Register
-                  </span>
-              </p>
+  return (
+    <div>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="w-full flex flex-col gap-4">
+        <div className="flex flex-col">
+            <input
+              className="border border-gray-500 rounded py-2 px-2"
+              type="email"
+              name="email"
+              placeholder="Masukkan email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.email && formik.errors.email && (
+              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+            )}
           </div>
+          <div className="flex flex-col">
+            <div className="relative">
+              <input
+                className="border border-gray-500 rounded py-2 px-2 w-full"
+                type={formik.values.showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Masukkan password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-2 text-sm"
+                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+              >
+                {formik.values.showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {formik.touched.password && formik.errors.password && (
+              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+            )}
+          </div>
+
+          <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
+            Forgot password?
+          </div>
+
+          <div className='flex justify-center py-5'>
+            <Button
+              name="Primary"
+              type="submit"
+              disabled={formik.isSubmitting}
+              className="flex justify-center"
+              text="Login"
+            />
+          </div>
+        </div>
+      </form>
+
+      <div className='flex justify-center'>
+        <p>Don't have an account?{' '}
+          <span onClick={() => navigate('/register')} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+            Register
+          </span>
+        </p>
       </div>
-  )
+    </div>
+  );
 }
 
-export default loginCustomer
+export default LoginCustomer;
+
