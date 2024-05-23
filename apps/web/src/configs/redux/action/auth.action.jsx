@@ -22,7 +22,7 @@ export const loginAction = (email, password, role) => {
   return async (dispatch) => {
     dispatch(loginRequest());
     try {
-      const response = await axios.post(`${import.meta.env.VITE_URL_BLANJA}/auth/login`, {
+      const response = await axios.post(`${import.meta.env.VITE_URL_BLANJA}/login`, {
         email,
         password,
         role,

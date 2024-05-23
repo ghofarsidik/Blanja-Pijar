@@ -1,23 +1,22 @@
-import React, {useState } from 'react'
+import React, { useState } from 'react';
 import Textfield from '../base/textfield/textField';
 import Button from '../base/button/button';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginAction } from '../../configs/redux/action/auth.action';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { loginAction } from '../../configs/redux/action/auth.action';
 import Button2 from '../base/button/button2';
 
-const loginCustomer = () => {
+const loginSeller = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { user } = useSelector((state) => state.auth)
     const [form, setForm] = useState({
         email: '',
         password: '',
         role: ''
-    });
-    
+    })
+
     const handleChange = (e) => {
-       const { id, value } = e.target;
+        const { id, value } = e.target;
        setForm((prevForm) => ({
         ...prevForm,
         [id]: value
@@ -29,10 +28,11 @@ const loginCustomer = () => {
       navigate('/register')
     }
 
-    const handleLoginCustomer = () => {
-      dispatch(loginAction(form.email, form.password, form.role, navigate));
+    const handleLoginSeller = () => {
+      dispatch(loginAction(form.email, form.password, form.role));
       navigate('/')
-    };
+        
+    }
 
   return (
     <div>
@@ -40,7 +40,6 @@ const loginCustomer = () => {
           <Textfield 
               type="email"
               id="email"
-              autocomplete="email"
               spellCheck={false}
               required
               placeholder="Email"
@@ -61,25 +60,37 @@ const loginCustomer = () => {
               onChange={handleChange}
           />
         </div>
-        <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+        <div className='flex justify-center pb-2'>
+          <Textfield 
+              type="text"
+              id="role"
+              spellCheck={false}
+              required
+              placeholder="Customer / Seller"
+              className='w-96 h-12'
+              value={form.role}
+              onChange={handleChange}
+          />
+        </div>
+        <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
         Forgot password?
         </div>
         <div className='flex justify-center py-5'>
           <Button
             name="Primary"
-            onClick={handleLoginCustomer}
-            className="flex justify-center "
+            onClick={handleLoginSeller}
+            className="flex justify-center"
           />
         </div>
         <div className='flex justify-center'>
-        <p>Don&#39;t have a Tokopedia account?{' '}
-        <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+        <p>Don&#39;t have account?{' '} 
+        <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
             Register
         </span>
         </p>
         </div>
     </div>
-    )
+  )
 }
 
-export default loginCustomer
+export default loginSeller

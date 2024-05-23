@@ -11,6 +11,7 @@ const Button2 = ({ variant = '', text = 'Button', className, ...props }) => {
         )
     } else if (variant === 'secondary-gray') {
         return (
+            // <button {...props} className={`p-[15px] bg-[#FBB017] rounded-full font-bold text-base leading-5 text-[#FFFFFF] ${className}`}>{text}</button>
             <button {...props} className={`p-[15px] bg-white border border-[#9b9b9b] rounded-full font-bold text-base leading-5 text-[#9b9b9b] ${className}`}>{text}</button>
         )
     } else {
