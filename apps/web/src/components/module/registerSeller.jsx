@@ -2,40 +2,49 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Input from '../base/input';
-import Button from '../base/button/button';
-import api from '../../configs/api';
+import {Button} from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import registSeller from '../../utils/registSeller.js'
+
 const RegisterSeller = () => {
   const navigate = useNavigate();
   const validationSchema = registSeller;
 
+  
   const formik = useFormik({
     initialValues: {
-      name: '',
       email: '',
-      phone: '',
-      store_name: '',
+      phone_number: '',
       password: '',
       showPassword: false,
+      name: '',
+      store_name: '',
+      role:'seller',
     },
-    validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting }) => {
+    validationSchema: registSeller,
+    onSubmit: async (values) => {
+      console.log('Submitting form with values:', values);
       try {
-        //data dummy
-        const response = await api.post('/register/stores', values);
-
-        alert(`Register berhasil dengan email ${values.email} dan password ${values.password}. Silakan Login`);
-
-        navigate('/login');
+        const response = await fetch('http://localhost:3000/v1/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Something went wrong');
+        }
+  
+        const data = await response.json();
+        console.log('Success:', data);
       } catch (error) {
-        console.error('Register error:', error);
-        alert('Gagal melakukan registrasi');
-      } finally {
-        setSubmitting(false);
+        console.error('Error:', error);
       }
     },
   });
+
   return (
     <div className="w-full flex flex-col gap-10">
       <form onSubmit={formik.handleSubmit}>

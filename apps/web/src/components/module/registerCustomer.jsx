@@ -2,9 +2,10 @@ import React from 'react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import Button from '../base/button/button';
-import api from '../../configs/api';
+import {Button} from '@material-tailwind/react'
 import registCustomer from '../../utils/registCustomer.js';
+
+
 
 const RegisterCustomer = () => {
   const navigate = useNavigate();
@@ -12,23 +13,33 @@ const RegisterCustomer = () => {
   const formik = useFormik({
     initialValues: {
       email: '',
-      phone: '',
+      phone_number: '',
       password: '',
       showPassword: false,
       name: '',
       gender: '',
+      role:'customer',
     },
     validationSchema: registCustomer,
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: async (values) => {
+      console.log('Submitting form with values:', values);
       try {
-        await api.post('/register/customers', values);
-        alert(`Register berhasil dengan email ${values.email} dan password ${values.password}. Silakan Login`);
-        navigate('/login');
-      } catch (err) {
-        const error = err.response?.data;
-        alert(`Anda gagal register - ${error?.message}`);
-      } finally {
-        setSubmitting(false);
+        const response = await fetch('http://localhost:3000/v1/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Something went wrong');
+        }
+  
+        const data = await response.json();
+        console.log('Success:', data);
+      } catch (error) {
+        console.error('Error:', error);
       }
     },
   });
@@ -69,9 +80,9 @@ const RegisterCustomer = () => {
             <input
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
-              name="phone"
+              name="phone_number"
               placeholder="Masukkan telepon"
-              value={formik.values.phone}
+              value={formik.values.phone_number}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
@@ -123,11 +134,10 @@ const RegisterCustomer = () => {
             <div className="text-red-500 text-[12px] font-poppins">{formik.errors.gender}</div>
           )}
         </div>
-        <Button name="Daftar" type="submit" className="flex justify-center w-full" disabled={formik.isSubmitting} text="Daftar" />
-      </form>
+          <Button type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}>Daftar</Button>
+       </form>
     </div>
   );
 };
-
 export default RegisterCustomer;
 

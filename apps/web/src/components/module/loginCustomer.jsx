@@ -1,49 +1,84 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Textfield from '../base/textfield/textField';
-import Button from '../base/button/button';
+import { Button } from '@material-tailwind/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../../configs/redux/action/auth.action';
 import { useNavigate } from 'react-router-dom';
 import loginRegist from '../../utils/login';
+import api from '../../utils/api';
 
 const LoginCustomer = ({ role }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const formik = useFormik({
+const formik = useFormik({
+    
     initialValues: {
       email: '',
       password: '',
-      role: role || 'seller'
+      showPassword: false,
     },
     validationSchema: loginRegist,
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: async (values,{setSubmitting}) => {
+      console.log("Handling form submission")
+      console.log('Submitting form with values:', values);
       try {
-        const response = await api.post(`/login/${values.role}s`, values);
-        const { token, user } = response.data;
+        const response = await fetch('http://localhost:3000/v1/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
 
-        // Dispatch login action
-        dispatch(loginAction(user, token));
+        if (!response.ok) {
+          throw new Error('Ada kesalahan silahkan cari tahu');
+        }
 
-        alert('Login successful');
+        const data = await response.json();
+        console.log('Success:', data);
+        dispatch(loginAction(data.user, data.token));
         navigate('/');
       } catch (error) {
-        console.error('Login error:', error);
-        alert('Failed to login. Please check your email and password.');
-      } finally {
-        setSubmitting(false);
+        console.error('Error:', error);
       }
+      setSubmitting(false)
     },
   });
 
+
+  // const formik = useFormik({
+  //   initialValues: {
+  //     email: '',
+  //     password: '',
+  //     showPassword: false,
+  //   },
+  //   validationSchema: loginRegist,
+  //   onSubmit: async (values, { setSubmitting }) => {
+  //     console.log('Submitting form with values:', values);
+  //     try {
+  //       const response = await api.post('/auth/login', values); 
+  //       const { token, user } = response.data;
+
+  //       // Dispatch login action
+  //       dispatch(loginAction(user, token));
+
+  //       alert('Login successful');
+  //       navigate('/');
+  //     } catch (error) {
+  //       console.error('Login error:', error);
+  //       alert('Failed to login. Please check your email and password.');
+  //     } finally {
+  //       setSubmitting(false);
+  //     }
+  //   },
+  // });
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
         <div className="w-full flex flex-col gap-4">
-        <div className="flex flex-col">
+          <div className="flex flex-col">
             <input
               className="border border-gray-500 rounded py-2 px-2"
               type="email"
@@ -86,13 +121,9 @@ const LoginCustomer = ({ role }) => {
           </div>
 
           <div className='flex justify-center py-5'>
-            <Button
-              name="Primary"
-              type="submit"
-              disabled={formik.isSubmitting}
-              className="flex justify-center"
-              text="Login"
-            />
+            <Button type="submit" className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} >
+              Login Customer
+            </Button>
           </div>
         </div>
       </form>
@@ -109,4 +140,3 @@ const LoginCustomer = ({ role }) => {
 }
 
 export default LoginCustomer;
-
