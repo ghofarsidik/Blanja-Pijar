@@ -43,7 +43,7 @@ func RegisterUser(c *fiber.Ctx) error {
 	}
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	newUser.Password = string(hashPassword)
-	if err := models.PostUser(&newUser); err != nil {
+	if err := models.CreateUser(&newUser); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message":    fmt.Sprintf("Failed to create new user, %v", err.Error()),
 			"statusCode": fiber.StatusInternalServerError,
