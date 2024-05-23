@@ -1,41 +1,20 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import Textfield from '../base/textfield/textField';
 import Button from '../base/button/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../../configs/redux/action/auth.action';
 import { useNavigate } from 'react-router-dom';
+import Button2 from '../base/button/button2';
 
 const loginCustomer = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-   
+    const { user } = useSelector((state) => state.auth)
     const [form, setForm] = useState({
         email: '',
         password: '',
         role: ''
     });
     
-    const initialValues = {
-      email: '',
-      password: '',
-      role: ''
-  };
-
-  const validationSchema = Yup.object().shape({
-      email: Yup.string().email('Invalid email').required('Email is required'),
-      password: Yup.string().required('Password is required'),
-      role: Yup.string().required('Role is required')
-  });
-
-  const handleSubmit = (values, { setSubmitting }) => {
-      dispatch(loginAction(values.email, values.password, values.role, navigate));
-      navigate('/');
-      setSubmitting(false);
-  };
-
-
     const handleChange = (e) => {
        const { id, value } = e.target;
        setForm((prevForm) => ({
@@ -54,71 +33,52 @@ const loginCustomer = () => {
       navigate('/')
     };
 
-    return (
-      <div>
-          <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-          >
-              {({ isSubmitting }) => (
-                  <Form>
-                      <div className='flex justify-center'>
-                          <Textfield
-                              type="email"
-                              name="email"
-                              autoComplete="email"
-                              spellCheck={false}
-                              required
-                              placeholder="Email"
-                              className='w-96 h-12'
-                          />
-                          <ErrorMessage name="email" component="div" className="text-red-500" />
-                      </div>
-                      <div className='flex justify-center pb-5'>
-                          <Textfield
-                              type="password"
-                              name="password"
-                              spellCheck={false}
-                              required
-                              placeholder="Password"
-                              className='w-96 h-12'
-                              autoComplete="new-password"
-                          />
-                          <ErrorMessage name="password" component="div" className="text-red-500" />
-                      </div>
-                      <div className='flex justify-center pb-2'>
-                          <Textfield
-                              type="text"
-                              name="role"
-                              autoComplete="off"
-                              spellCheck={false}
-                              required
-                              placeholder="Customer / Seller"
-                              className='w-96 h-12'
-                          />
-                          <ErrorMessage name="role" component="div" className="text-red-500" />
-                      </div>
-                      <div className='flex justify-center py-5'>
-                          <Button
-                              name="Primary"
-                              type="submit"
-                              disabled={isSubmitting}
-                              className="flex justify-center "
-                          />
-                      </div>
-                  </Form>
-              )}
-          </Formik>
-          <div className='flex justify-center'>
-              <p>Don't have an account?{' '}
-                  <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
-                      Register
-                  </span>
-              </p>
-          </div>
-      </div>
-  )
+  return (
+    <div>
+        <div className='flex justify-center'>
+          <Textfield 
+              type="email"
+              id="email"
+              autocomplete="email"
+              spellCheck={false}
+              required
+              placeholder="Email"
+              className='w-96 h-12'
+              value={form.email}
+              onChange={handleChange}
+          />
+        </div>
+        <div className='flex justify-center pb-5'>
+          <Textfield 
+              type="password"
+              id="password"
+              spellCheck={false}
+              required
+              placeholder="Password"
+              className='w-96 h-12'
+              value={form.password}
+              onChange={handleChange}
+          />
+        </div>
+        <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+        Forgot password?
+        </div>
+        <div className='flex justify-center py-5'>
+          <Button
+            name="Primary"
+            onClick={handleLoginCustomer}
+            className="flex justify-center "
+          />
+        </div>
+        <div className='flex justify-center'>
+        <p>Don&#39;t have a Tokopedia account?{' '}
+        <span onClick={HandleRegister} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+            Register
+        </span>
+        </p>
+        </div>
+    </div>
+    )
 }
 
 export default loginCustomer
