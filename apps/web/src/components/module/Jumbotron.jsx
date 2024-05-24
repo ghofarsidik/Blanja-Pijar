@@ -34,7 +34,7 @@ const Jumbotron = () => {
                 <div key={index} className=" bg-gray-200 h-48 flex items-center justify-center">
                     <img src={jumbotronImage[image.url] || PromotionCard} alt={image.name} className="object-cover h-full w-full" />
                 </div>
-                
+
             ))}
         </div>
     );
