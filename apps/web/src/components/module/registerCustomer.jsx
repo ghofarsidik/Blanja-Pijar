@@ -2,13 +2,14 @@ import React from 'react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import {Button} from '@material-tailwind/react'
-import registCustomer from '../../utils/registCustomer.js';
-
-
+import { Button } from '@material-tailwind/react';
+import registCustomer from '../../utils/registCustomer';
+import { useDispatch } from 'react-redux';
 
 const RegisterCustomer = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const validationSchema = registCustomer;
 
   const formik = useFormik({
     initialValues: {
@@ -18,9 +19,9 @@ const RegisterCustomer = () => {
       showPassword: false,
       name: '',
       gender: '',
-      role:'customer',
+      role: 'customer',
     },
-    validationSchema: registCustomer,
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
@@ -31,11 +32,15 @@ const RegisterCustomer = () => {
           },
           body: JSON.stringify(values),
         });
-  
+        
         if (!response.ok) {
-          throw new Error('Something went wrong');
+          throw new Error('Error pada bagian response');
         }
   
+        localStorage.setItem('token', data.token);
+
+        navigate('/login');
+
         const data = await response.json();
         console.log('Success:', data);
       } catch (error) {
@@ -86,8 +91,8 @@ const RegisterCustomer = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            {formik.touched.phone && formik.errors.phone && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone}</div>
+            {formik.touched.phone_number && formik.errors.phone_number && (
+              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone_number}</div>
             )}
           </div>
           <div className="flex flex-col">
@@ -134,10 +139,14 @@ const RegisterCustomer = () => {
             <div className="text-red-500 text-[12px] font-poppins">{formik.errors.gender}</div>
           )}
         </div>
-          <Button type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}>Daftar</Button>
-       </form>
+
+        <div className='flex justify-center py-10'>
+        <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} text="Daftar">Daftar</Button>
+        </div>
+      </form>
     </div>
   );
 };
 export default RegisterCustomer;
+
 
