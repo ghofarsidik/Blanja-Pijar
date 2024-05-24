@@ -1,7 +1,7 @@
 import axios from "axios";
 console.log(import.meta.env.VITE_URL_BLANJA);
 const API = axios.create({
-  baseURL: import.meta.env.VITE_URL_BLANJA,
+  baseURL: "http://localhost:3000/v1",
 });
 
 API.interceptors.request.use(

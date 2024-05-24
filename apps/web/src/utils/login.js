@@ -10,10 +10,10 @@ export const loginSchema = Yup.object().shape({
     .matches(
       /[!@#$%^&*(),.?":{}|<>_-]/,
       'Password must contain at least 1 special character (!@#$%^&*(),.?":{}|<>_-)'
-    ),
-  role: Yup.string()
-    .oneOf(["Seller", "Customer"], "Role is required")
-    .required("Gender is required"),
+    ).required("Password is required"),
+  // role: Yup.string()
+  //   .oneOf(["Seller", "Customer"], "Role is required")
+  //   .required("Gender is required"),
 });
 
 export default loginSchema;
