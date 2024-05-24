@@ -18,7 +18,7 @@ const navigate = useNavigate()
     navigate('/login')
   }
 
-  const token = "dummy";
+  const token = "";
   
   return (
     <nav className="w-full h-[100px] mx-auto flex items-center bg-white shadow-md">
