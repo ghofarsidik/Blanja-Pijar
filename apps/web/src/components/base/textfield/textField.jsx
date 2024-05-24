@@ -1,24 +1,24 @@
-import React from 'react'
+import React from 'react';
 
-const Textfield = ({ label, type, id, placeholder, spellCheck, className, props, onChange,autocomplete}) => {
+const Textfield = ({ label, type, id, name, placeholder, spellCheck, className, onChange, onBlur, value, autoComplete }) => {
   return (
-    <form>
     <div className="form-group grid items-center space-x-4">
-      <label htmlFor={id} className="w-1/4">{label}</label>
+      {label && <label htmlFor={id} className="w-1/4">{label}</label>}
       <input
-        type={type} 
-        id={id} 
-        spellCheck={spellCheck} 
-        required 
+        type={type}
+        id={id}
+        name={name}
+        spellCheck={spellCheck}
+        required
         placeholder={placeholder}
         className={`p-5 border border-gray-300 rounded focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300 ${className}`}
-        {...props}
-        autoComplete={autocomplete}
+        autoComplete={autoComplete}
         onChange={onChange}
+        onBlur={onBlur}
+        value={value}
       />
     </div>
-  </form>
-  )
-}
+  );
+};
 
-export default Textfield
+export default Textfield;

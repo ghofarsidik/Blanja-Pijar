@@ -21,8 +21,8 @@ const navigate = useNavigate()
   const token = "";
   
   return (
-    <nav className="w-full h-[100px] mx-auto flex items-center bg-white shadow-md">
-      <img className="ml-[50px] dekstop:ml-[150px]" src={Logo} alt="" />
+    <nav className="w-full h-[100px] mx-auto flex items-center bg-white">
+      <img className="ml-[10%]" src={Logo} alt="" />
 
       <div className="flex items-center flex-grow mx-5">
         <div className="flex-grow flex rounded-full bg-white border border-abu overflow-hidden">
@@ -40,7 +40,7 @@ const navigate = useNavigate()
         </button>
       </div>
 
-      <div className="flex h-[40px] items-center space-x-[20px] mr-[50px] dekstop:mr-[150px]">
+      <div className="flex h-[40px] items-center space-x-[20px] mr-[10%]">
         <button className="flex items-center h-9 w-[44px]">
           <img className="mx-auto" src={Cart} alt="Cart" />
         </button>
@@ -58,7 +58,7 @@ const navigate = useNavigate()
         </>
       ) : (
       <>
-      <button onClick={HandleLogin} className="h-9 w-[100px] border border-abu text-sm text-abu rounded-full hover:bg-red-700 hover:text-white hover:border-0">
+      <button onClick={HandleLogin} className="h-9 w-[100px] border-0 hover:border-main-abu text-sm bg-red-700 text-white rounded-full hover:bg-white hover:text-black hover:border">
           Masuk
         </button>
         <button onClick={HandleRegister} className="h-9 w-[100px] border border-abu text-sm text-abu rounded-full hover:bg-red-700 hover:text-white hover:border-0">
