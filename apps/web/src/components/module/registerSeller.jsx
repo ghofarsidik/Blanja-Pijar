@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Input from '../base/input';
 import {Button} from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import registSeller from '../../utils/registSeller.js'
@@ -21,7 +20,7 @@ const RegisterSeller = () => {
       store_name: '',
       role:'seller',
     },
-    validationSchema: registSeller,
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
       try {
@@ -37,6 +36,10 @@ const RegisterSeller = () => {
           throw new Error('Something went wrong');
         }
   
+        localStorage.setItem('token', data.token);
+
+        navigate('/');
+
         const data = await response.json();
         console.log('Success:', data);
       } catch (error) {
@@ -81,14 +84,14 @@ const RegisterSeller = () => {
             <input
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
-              name="phone"
+              name="phone_number"
               placeholder="Masukkan telepon"
-              value={formik.values.phone}
+              value={formik.values.phone_number}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            {formik.touched.phone && formik.errors.phone && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone}</div>
+            {formik.touched.phone_number && formik.errors.phone_number && (
+              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone_number}</div>
             )}
           </div>
           <div className="flex flex-col">
@@ -96,7 +99,7 @@ const RegisterSeller = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
               name="store_name"
-              placeholder="Masukkan email"
+              placeholder="Masukkan nama toko"
               value={formik.values.store_name}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -129,7 +132,10 @@ const RegisterSeller = () => {
             )}
           </div>
         </div>
-        <Button name="Daftar" type="submit" className="flex justify-center w-full" disabled={formik.isSubmitting} text="Daftar" />
+
+        <div className='flex justify-center py-10'>
+        <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} text="Daftar">Daftar</Button> 
+        </div>
       </form>
     </div>
   );

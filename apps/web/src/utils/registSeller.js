@@ -12,7 +12,7 @@ const registSeller = Yup.object().shape({
       'Password must contain at least 1 special character (!@#$%^&*(),.?":{}|<>_-)'
     )
     .required("Password is required"),
-  phone: Yup.string()
+  phone_number: Yup.string()
     .min(10, "Phone number must be at least 10 characters")
     .max(13, "Phone number max in 13 characters")
     .required("Phone number is required"),
