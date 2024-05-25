@@ -22,7 +22,7 @@ func GetAllStore(c *fiber.Ctx) error {
 
 func GetDetailStore(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
-	foundStore := models.GetDetailAddress(id)
+	foundStore := models.GetDetailStore(id)
 	if foundStore.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "Store not found",

@@ -4,7 +4,7 @@ import (
 	"log"
 	"server/src/configs"
 
-	// "server/src/helpers"
+	"server/src/helpers"
 	"server/src/routes"
 	"strconv"
 
@@ -28,7 +28,7 @@ func main() {
 		ExposeHeaders: "Content-Length",
 	}))
 	configs.InitDB()
-	// helpers.Migration()
+	helpers.Migration()
 	routes.Router(app)
 	app.Listen(":" + strconv.Itoa(PORT))
 }

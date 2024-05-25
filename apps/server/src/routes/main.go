@@ -13,6 +13,7 @@ func Router(app *fiber.App) {
 	api.Get("/users", controllers.GetAllUser)
 	api.Get("/user", middlewares.JwtMiddleware(), controllers.GetDetailUser)
 	api.Post("/refreshToken", controllers.RefreshToken)
+	api.Put("/user", middlewares.JwtMiddleware(), controllers.UploadPhotoUser)
 	api.Put("/user", middlewares.JwtMiddleware(), controllers.UpdateUser)
 	api.Delete("/user/:id", controllers.DeleteUser)
 
@@ -25,7 +26,7 @@ func Router(app *fiber.App) {
 	api.Get("/products", controllers.GetAllProducts)
 	api.Get("/product/:id", controllers.GetDetailProduct)
 	api.Post("/product", controllers.CreateProduct)
-	api.Put("/product/uploadServer/:id", controllers.UploadImageProductServer)
+	api.Post("/product/uploadServer/:id", controllers.UploadImageProductServer)
 	api.Put("/product/upload/:id", controllers.UploadImageProduct)
 	api.Put("/product/:id", controllers.UpdateProduct)
 	api.Delete("/product/:id", controllers.DeleteProduct)
@@ -43,6 +44,10 @@ func Router(app *fiber.App) {
 	api.Put("/store/:id", controllers.UpdateStore)
 	// api.Put("/store/upload/:id", controllers.UploadImagestore)
 	api.Delete("/store/:id", controllers.DeleteStore)
+
+	api.Get("/carts", controllers.GetAllCarts)
+	api.Get("/carts/details", controllers.GetAllCartDetails)
+	api.Post("/cart", controllers.AddToCart)
 
 	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.LoginUser)

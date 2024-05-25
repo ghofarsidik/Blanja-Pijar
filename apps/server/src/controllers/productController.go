@@ -61,14 +61,20 @@ func GetDetailProduct(c *fiber.Ctx) error {
 func CreateProduct(c *fiber.Ctx) error {
 	var newProduct models.Product
 	if err := c.BodyParser(&newProduct); err != nil {
-		c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request body",
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message":    "Invalid request body",
+			"statusCode": fiber.StatusBadRequest,
 		})
-		return err
 	}
-	models.CreateProduct(&newProduct)
+	if err := models.CreateProduct(&newProduct); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
+			"message":    err.Error(),
+			"statusCode": fiber.StatusNotAcceptable,
+		})
+	}
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "Product created successfully",
+		"message":     "Product created successfully",
+		"statusCoded": fiber.StatusOK,
 	})
 }
 
@@ -139,13 +145,14 @@ func UploadImageProduct(c *fiber.Ctx) error {
 	filePath := helpers.UploadFile(file)
 	image := helpers.TransformPathFile(filePath)
 	uploadPhoto := map[string]interface{}{
-		"Image": image,
+		"image":      image,
+		"product_id": id,
 	}
 
 	if err := c.SaveFile(file, filePath); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Gagal menyimpan file: " + err.Error())
 	}
-	if err := models.UploadPhotoProduct(id, uploadPhoto); err != nil {
+	if err := models.UploadPhotoProduct(uploadPhoto); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Gagal mengunggah file" + err.Error())
 	}
 	return c.SendString(fmt.Sprintf("File %s berhasil diunggah ", file.Filename))
@@ -188,7 +195,8 @@ func UploadImageProductServer(c *fiber.Ctx) error {
 
 	uploadResult, err := services.UploadCloudinary(c, file)
 	uploadPhoto := map[string]interface{}{
-		"Image": uploadResult.URL,
+		"image":      uploadResult.URL,
+		"product_id": id,
 	}
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -196,7 +204,7 @@ func UploadImageProductServer(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := models.UploadPhotoProduct(id, uploadPhoto); err != nil {
+	if err := models.UploadPhotoProduct(uploadPhoto); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Gagal mengunggah file" + err.Error())
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
