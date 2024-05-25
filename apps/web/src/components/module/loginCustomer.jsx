@@ -23,13 +23,14 @@ const LoginCustomer = ({ role }) => {
       console.log('Submitting form with values:', values);
       // setErrorMessage('');
       try {
-        const response = await fetch('http://localhost:3000/v1/auth/login', {
-          method: 'POST',
+        const response = await fetch("http://localhost:3000/v1/auth/login", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
         });
+        console.log(response);
 
         if (!response.ok) {
           throw new Error('Error pada response');
@@ -52,9 +53,9 @@ const LoginCustomer = ({ role }) => {
 
 
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
-      setSubmitting(false)
+      setSubmitting(false);
     },
   });
 
@@ -73,7 +74,9 @@ const LoginCustomer = ({ role }) => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.email}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -90,37 +93,52 @@ const LoginCustomer = ({ role }) => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.password}
+              </div>
             )}
           </div>
 
-          <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
+          <div className="flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer">
             Forgot password?
           </div>
 
-          <div className='flex justify-center py-5'>
-            <Button type="submit" className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} >
+          <div className="flex justify-center py-5">
+            <button
+              type="submit"
+              className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
+              disabled={formik.isSubmitting}
+            >
               Login Customer
-            </Button>
+            </button>
           </div>
         </div>
       </form>
 
-      <div className='flex justify-center'>
-        <p>Don't have an account?{' '}
-          <span onClick={() => navigate('/register')} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+      <div className="flex justify-center">
+        <p>
+          Don't have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
+          >
             Register
           </span>
         </p>
       </div>
     </div>
   );
-}
+};
 
 export default LoginCustomer;

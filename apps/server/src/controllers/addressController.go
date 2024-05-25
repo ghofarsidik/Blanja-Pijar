@@ -34,7 +34,8 @@ func CreateAddress(c *fiber.Ctx) error {
 	var newAddress models.Address
 	if err := c.BodyParser(&newAddress); err != nil {
 		c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "invalid request body",
+			"message":    "invalid request body",
+			"statusCode": fiber.StatusBadRequest,
 		})
 		return err
 	}

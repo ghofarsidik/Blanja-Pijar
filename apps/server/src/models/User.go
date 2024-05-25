@@ -112,3 +112,7 @@ func DeleteUser(id int) error {
 	results := configs.DB.Delete(&User{}, "id = ?", id)
 	return results.Error
 }
+func UploadPhotoUser(id uint, images map[string]interface{}) error {
+	result := configs.DB.Model(&User{}).Where("id = ?", id).Updates(&images)
+	return result.Error
+}

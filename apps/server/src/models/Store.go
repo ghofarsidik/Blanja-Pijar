@@ -18,13 +18,19 @@ type Store struct {
 
 func GetAllStore() []*Store {
 	var results []*Store
-	configs.DB.Preload("User").Find(&results)
+	configs.DB.Preload("User").Preload("Product", func(db *gorm.DB) *gorm.DB {
+		var items []*APIProduct
+		return configs.DB.Model(&Product{}).Find(&items)
+	}).Find(&results)
 	return results
 }
 
 func GetDetailStore(id int) *Store {
 	var results Store
-	configs.DB.Preload("User").First(&results, "id = ?", id)
+	configs.DB.Preload("User").Preload("Product", func(db *gorm.DB) *gorm.DB {
+		var items []*APIProduct
+		return configs.DB.Model(&Product{}).Find(&items)
+	}).First(&results, "id = ?", id)
 	return &results
 }
 
