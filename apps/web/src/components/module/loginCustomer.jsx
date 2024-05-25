@@ -1,26 +1,27 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Button } from "@material-tailwind/react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginAction } from "../../configs/redux/action/auth.action";
-import { useNavigate } from "react-router-dom";
-import loginRegist from "../../utils/login";
-import api from "../../utils/api";
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Button } from '@material-tailwind/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from '../../configs/redux/action/auth.action';
+import { useNavigate } from 'react-router-dom';
+import loginRegist from '../../utils/login';
+
 
 const LoginCustomer = ({ role }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
+
     initialValues: {
-      email: "",
-      password: "",
-      showPassword: false,
+      email: '',
+      password: '',
     },
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
-      console.log("Handling form submission");
-      console.log("Submitting form with values:", values);
+      console.log("Handling form submission")
+      console.log('Submitting form with values:', values);
+      // setErrorMessage('');
       try {
         const response = await fetch("http://localhost:3000/v1/auth/login", {
           method: "POST",
@@ -32,46 +33,31 @@ const LoginCustomer = ({ role }) => {
         console.log(response);
 
         if (!response.ok) {
-          throw new Error("Ada kesalahan silahkan cari tahu");
+          throw new Error('Error pada response');
         }
 
         const data = await response.json();
-        console.log("Success:", data);
-        dispatch(loginAction(data.user, data.token));
-        navigate("/");
+        console.log('Success:', data.data);
+        console.log(data.data.Token)
+        console.log(localStorage)
+
+        localStorage.setItem('token', data.data.Token);
+        localStorage.setItem('refreshToken', data.data.RefreshToken);
+
+        
+        if (data.data.role !== 'customer') {
+          throw new Error('Anda tidak memiliki akses sebagai seller.');
+        }else{
+          navigate('/');
+        }
+
+
       } catch (error) {
         console.error("Error:", error);
       }
       setSubmitting(false);
     },
   });
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     email: '',
-  //     password: '',
-  //     showPassword: false,
-  //   },
-  //   validationSchema: loginRegist,
-  //   onSubmit: async (values, { setSubmitting }) => {
-  //     console.log('Submitting form with values:', values);
-  //     try {
-  //       const response = await api.post('/auth/login', values);
-  //       const { token, user } = response.data;
-
-  //       // Dispatch login action
-  //       dispatch(loginAction(user, token));
-
-  //       alert('Login successful');
-  //       navigate('/');
-  //     } catch (error) {
-  //       console.error('Login error:', error);
-  //       alert('Failed to login. Please check your email and password.');
-  //     } finally {
-  //       setSubmitting(false);
-  //     }
-  //   },
-  // });
 
   return (
     <div>

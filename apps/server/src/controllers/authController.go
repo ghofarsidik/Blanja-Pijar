@@ -101,6 +101,7 @@ func LoginUser(c *fiber.Ctx) error {
 		"ID":           user.ID,
 		"Token":        token,
 		"RefreshToken": refreshToken,
+		"role": user.Role,
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"statusCode": fiber.StatusOK,

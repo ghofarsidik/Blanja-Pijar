@@ -22,10 +22,9 @@ export const loginAction = (email, password, role) => {
   return async (dispatch) => {
     dispatch(loginRequest());
     try {
-      const response = await axios.post(`${import.meta.env.VITE_URL_BLANJA}/login`, {
+      const response = await axios.post(`http://localhost:3000/v1/auth/login`, {
         email,
         password,
-        role,
       });
       if (response.status === 200) {
         const { token, refreshToken } = response.data.data;
