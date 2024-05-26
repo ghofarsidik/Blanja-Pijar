@@ -7,14 +7,14 @@ import (
 
 func Migration() {
 	configs.DB.AutoMigrate(
-		// &models.User{},
-		// &models.Address{},
-		// &models.Store{},
+		&models.User{},
+		&models.Address{},
+		&models.Store{},
 		&models.Cart{},
 		&models.CartDetail{},
-		// &models.Category{},
-		// &models.Product{},
-		// &models.ProductImage{},
-		// &models.ProductColor{}
+		&models.Category{},
+		&models.Product{},
+		&models.ProductImage{},
+		&models.ProductColor{},
 	)
 }

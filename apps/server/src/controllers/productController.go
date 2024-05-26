@@ -46,6 +46,31 @@ func GetAllProducts(c *fiber.Ctx) error {
 		"page":      page,
 	})
 }
+func FilterProducts(c *fiber.Ctx) error {
+	filter := c.Query("condition")
+	pageOld := c.Query("page")
+	limitOld := c.Query("limit")
+	page, _ := strconv.Atoi(pageOld)
+	limit, _ := strconv.Atoi(limitOld)
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 5
+	}
+	offset := (page - 1) * limit
+	products := models.FilterProducts(filter, limit, offset)
+	count := helpers.CountData("products")
+	totalPage := math.Ceil(float64(count) / float64(limit))
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":   "Successfully retrieved all products",
+		"data":      products,
+		"totalData": count,
+		"totalPage": totalPage,
+		"limit":     limit,
+		"page":      page,
+	})
+}
 
 func GetDetailProduct(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))

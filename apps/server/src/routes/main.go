@@ -24,11 +24,15 @@ func Router(app *fiber.App) {
 	api.Delete("/address/:id", controllers.DeleteAddress)
 
 	api.Get("/products", controllers.GetAllProducts)
+	api.Get("/products/filter", controllers.FilterProducts)
 	api.Get("/product/:id", controllers.GetDetailProduct)
 	api.Post("/product", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.CreateProduct)
 	api.Post("/product/uploadServer/:id", middlewares.JwtMiddleware(), controllers.UploadImageProductServer)
 	api.Put("/product/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.UpdateProduct)
 	api.Delete("/product/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.DeleteProduct)
+
+	api.Get("/color", controllers.GetAllColors)
+	api.Post("/color", controllers.CreateProductColor)
 
 	api.Get("/categories", controllers.GetAllCategories)
 	api.Get("/category/:id", controllers.GetDetailCategory)
