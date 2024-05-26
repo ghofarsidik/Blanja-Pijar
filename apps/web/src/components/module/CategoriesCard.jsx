@@ -74,7 +74,7 @@ const CategoriesCard = () => {
   function ButtonPrev({ onClick, next }) {
     return (
       <div className={`${
-        next ? "rotate-180 -left-[100px] -top-[120px]" : "rotate-0 -left-[261px] top-[105px]"
+        next ? "rotate-180 -left-[110px] -top-[120px]" : "rotate-0 -left-[241px] top-[102px]"
       } relative h-6 w-6`}>
         <button
           onClick={onClick}
