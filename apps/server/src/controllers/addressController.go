@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"server/src/helpers"
+	"server/src/middlewares"
 	"server/src/models"
 	"strconv"
 
@@ -31,6 +32,8 @@ func GetDetailAddress(c *fiber.Ctx) error {
 }
 
 func CreateAddress(c *fiber.Ctx) error {
+	claims := middlewares.GetUserClaims(c)
+	id := claims["ID"].(float64)
 	var newAddress models.Address
 	if err := c.BodyParser(&newAddress); err != nil {
 		c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -39,13 +42,23 @@ func CreateAddress(c *fiber.Ctx) error {
 		})
 		return err
 	}
+	createAddress := map[string]interface{}{
+		"user_id":        id,
+		"label":          newAddress.Label,
+		"address":        newAddress.Address,
+		"received_name":  newAddress.ReceivedName,
+		"contact_number": newAddress.ContactNumber,
+		"postal_code":    newAddress.PostalCode,
+		"city":           newAddress.City,
+		"primary":        newAddress.PrimaryAddress,
+	}
 	addressExist := models.GetAddressByNameAndAddress(newAddress.ReceivedName, newAddress.Address, uint(newAddress.UserID))
 	if addressExist.ID != 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Address already exists",
 		})
 	}
-	models.CreateAddress(&newAddress)
+	models.CreateAddress(createAddress)
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "success created new address",
 	})

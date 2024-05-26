@@ -44,9 +44,10 @@ type APIStore struct {
 
 type APICart struct {
 	gorm.Model
-	Quantity uint   `json:"quantity"`
-	Status   string `json:"status"`
-	UserID   string `json:"user_id"`
+	Quantity   uint         `json:"quantity"`
+	Status     string       `json:"status"`
+	UserID     string       `json:"user_id"`
+	CartDetail []CartDetail `json:"cart_detail"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
@@ -86,6 +87,8 @@ func GetDetailUser(id interface{}) *User {
 	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
 		var items []*APICart
 		return db.Model(&Cart{}).Find(&items)
+	}).Preload("Cart.CartDetail", func(db *gorm.DB) *gorm.DB {
+		return db.Select("ID", "CreatedAt", "UpdatedAt", "DeletedAt", "TotalPrice", "ProductID", "CartID")
 	}).First(&user, "id = ?", id)
 	return &user
 }

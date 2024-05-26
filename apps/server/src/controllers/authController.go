@@ -97,11 +97,8 @@ func LoginUser(c *fiber.Ctx) error {
 		})
 	}
 	item := map[string]interface{}{
-		"Email":        user.Email,
-		"ID":           user.ID,
 		"Token":        token,
 		"RefreshToken": refreshToken,
-		"role": user.Role,
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"statusCode": fiber.StatusOK,

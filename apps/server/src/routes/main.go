@@ -20,17 +20,20 @@ func Router(app *fiber.App) {
 
 	api.Get("/address", controllers.GetAllAddresses)
 	api.Get("/address/:id", controllers.GetDetailAddress)
-	api.Post("/address", controllers.CreateAddress)
-	api.Put("/address/:id", controllers.UpdateAddress)
+	api.Post("/address", middlewares.JwtMiddleware(), controllers.CreateAddress)
+	api.Put("/address/:id", middlewares.JwtMiddleware(), controllers.UpdateAddress)
 	api.Delete("/address/:id", controllers.DeleteAddress)
 
 	api.Get("/products", controllers.GetAllProducts)
+	api.Get("/products/filter", controllers.FilterProducts)
 	api.Get("/product/:id", controllers.GetDetailProduct)
-	api.Post("/product", controllers.CreateProduct)
-	api.Post("/product/uploadServer/:id", controllers.UploadImageProductServer)
-	api.Put("/product/upload/:id", controllers.UploadImageProduct)
-	api.Put("/product/:id", controllers.UpdateProduct)
-	api.Delete("/product/:id", controllers.DeleteProduct)
+	api.Post("/product", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.CreateProduct)
+	api.Post("/product/uploadServer/:id", middlewares.JwtMiddleware(), controllers.UploadImageProductServer)
+	api.Put("/product/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.UpdateProduct)
+	api.Delete("/product/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.DeleteProduct)
+
+	api.Get("/color", controllers.GetAllColors)
+	api.Post("/color", controllers.CreateProductColor)
 
 	api.Get("/categories", controllers.GetAllCategories)
 	api.Get("/category/:id", controllers.GetDetailCategory)
@@ -41,14 +44,14 @@ func Router(app *fiber.App) {
 
 	api.Get("/stores", controllers.GetAllStore)
 	api.Get("/store/:id", controllers.GetDetailStore)
-	api.Post("/store", middlewares.JwtMiddleware(), controllers.CreateStore)
-	api.Put("/store/:id", controllers.UpdateStore)
-	// api.Put("/store/upload/:id", controllers.UploadImagestore)
-	api.Delete("/store/:id", controllers.DeleteStore)
+	api.Post("/store", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.CreateStore)
+	api.Put("/store/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.UpdateStore)
+	api.Delete("/store/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.DeleteStore)
 
 	api.Get("/carts", controllers.GetAllCarts)
+	api.Get("/cart", middlewares.JwtMiddleware(), controllers.GetCartByUserId)
+	api.Post("/cart", middlewares.JwtMiddleware(), controllers.AddToCart)
 	api.Get("/carts/details", controllers.GetAllCartDetails)
-	api.Post("/cart", controllers.AddToCart)
 
 	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.LoginUser)
