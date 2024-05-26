@@ -38,7 +38,7 @@ const Jumbotron = () => {
       <button
         onClick={onClick}
         className={`${
-          next ? "rotate-180 left-[1039px]" : "rotate-0"
+          next ? "rotate-180 left-[1039px] top-10" : "rotate-0"
         } w-[52px] h-[52px] left-[90px] top-[65px] flex items-center justify-center bg-white text-main-abu rounded-full hover:bg-gray-400 focus:outline-none absolute z-10 shadow-md`}
       >
         <svg

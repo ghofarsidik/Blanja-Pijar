@@ -1,10 +1,7 @@
-import MainRouter from './configs/router';
-
+import MainRouter from "./configs/router";
 
 const App = () => {
-  return (
-    <MainRouter />
-  );
-}
+  return <MainRouter />;
+};
 
 export default App;
