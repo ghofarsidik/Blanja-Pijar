@@ -1,60 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Button } from '@material-tailwind/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginAction } from '../../configs/redux/action/auth.action';
+import { loginUser, getUser } from '../../configs/redux/action/authSlice';
 import { useNavigate } from 'react-router-dom';
 import loginRegist from '../../utils/login';
 
-
-const LoginCustomer = ({ role }) => {
+const LoginCustomer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const formik = useFormik({
+  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (user && user.role === 'customer') {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
     validationSchema: loginRegist,
-    onSubmit: async (values, { setSubmitting }) => {
-      console.log("Handling form submission")
-      console.log('Submitting form with values:', values);
-      // setErrorMessage('');
-      try {
-        const response = await fetch("http://localhost:3000/v1/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
-        console.log(response);
-
-        if (!response.ok) {
-          throw new Error('Error pada response');
-        }
-
-        const data = await response.json();
-        console.log('Success:', data.data);
-        console.log(data.data.Token)
-        console.log(localStorage)
-
-        localStorage.setItem('token', data.data.Token);
-        localStorage.setItem('refreshToken', data.data.RefreshToken);
-
-        
-        if (data.data.role !== 'customer') {
-          throw new Error('Anda tidak memiliki akses sebagai seller.');
-        }else{
-          navigate('/');
-        }
-
-
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(loginUser(values));
       setSubmitting(false);
     },
   });
@@ -93,12 +68,7 @@ const LoginCustomer = ({ role }) => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() =>
-                  formik.setFieldValue(
-                    "showPassword",
-                    !formik.values.showPassword
-                  )
-                }
+                onClick={() => formik.setFieldValue('showPassword', !formik.values.showPassword)}
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
@@ -118,11 +88,12 @@ const LoginCustomer = ({ role }) => {
             <button
               type="submit"
               className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || loading}
             >
-              Login Customer
+              {loading ? 'Loading...' : 'Login Customer'}
             </button>
           </div>
+          {error && <div className="text-red-500 text-center">{error}</div>}
         </div>
       </form>
 

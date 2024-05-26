@@ -1,58 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import { Button } from '@material-tailwind/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { loginUser, getUser } from '../../configs/redux/action/authSlice';
 import loginRegist from '../../utils/login';
-import { HttpStatusCode } from 'axios';
 
 const LoginSeller = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (user && user.role === 'seller') {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const formik = useFormik({
-    
     initialValues: {
       email: '',
       password: '',
-      role:"seller",
+      role: 'seller',
       showPassword: false,
     },
     validationSchema: loginRegist,
-    onSubmit: async (values,{setSubmitting}) => {
-      console.log("Handling form submission")
-      console.log('Submitting form with values:', values);
-
-      try {
-        const response = await fetch('http://localhost:3000/v1/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
-
-        if (!response.ok) {
-          throw new Error('Ada kesalahan silahkan cari tahu');
-        }
-
-        const data = await response.json();
-        console.log('Success:', data);
-        console.log('Success:', data.data);
-        console.log(data.data.Token)
-        console.log(localStorage)
-
-        localStorage.setItem('token', data.data.Token);
-        localStorage.setItem('refreshToken', data.data.RefreshToken);
-        
-        if (data.data.role !== 'seller') {
-          throw new Error('Anda tidak memiliki akses sebagai seller.');
-        }else{
-          navigate('/');
-        }
-
-      } catch (error) {
-        console.error('Error:', error);
-      }
-      setSubmitting(false)
+    onSubmit: (values, { setSubmitting }) => {
+      console.log('Submitting form with values:', values); 
+      dispatch(loginUser(values));
+      setSubmitting(false);
     },
   });
 
@@ -103,10 +85,11 @@ const LoginSeller = () => {
           </div>
 
           <div className='flex justify-center py-5'>
-            <Button type="submit" className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} >
-              Login Seller
+            <Button type="submit" className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting || loading} >
+              {loading ? 'Loading...' : 'Login Seller'}
             </Button>
           </div>
+          {error && <div className="text-red-500 text-center">{error}</div>}
         </div>
       </form>
 

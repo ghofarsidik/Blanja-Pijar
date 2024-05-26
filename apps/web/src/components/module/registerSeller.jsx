@@ -37,14 +37,15 @@ const RegisterSeller = () => {
           throw new Error('Something went wrong');
         }
 
+        const data = await response.json();
         localStorage.setItem('token', data.token);
 
         navigate('/');
-
-        const data = await response.json();
         console.log('Success:', data);
       } catch (error) {
         console.error('Error:', error);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -135,7 +136,9 @@ const RegisterSeller = () => {
         </div>
 
         <div className='flex justify-center py-10'>
-          <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} loading>   {loading ? 'Loading...' : 'Daftar'}</Button>
+          <Button type="submit" className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting}>
+            {loading ? 'Loading...' : 'Daftar'}
+          </Button>
         </div>
       </form>
     </div>
