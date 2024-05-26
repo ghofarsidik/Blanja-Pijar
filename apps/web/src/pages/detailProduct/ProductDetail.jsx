@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import ProductList from './ProductList';
+import Dummy from "../../assets/images/dummy/dummy.png"
+import Cart from '../../components/base/card/card';
 
 const ProductDetail = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -169,7 +170,12 @@ const ProductDetail = ({ product }) => {
         </div>
       </div>
       <div className="border-t border-gray-200 w-full my-10 shadow-black"></div>
-      <ProductList />
+      <Cart
+            image={Dummy}
+            product_name="Men's formal suit - Black & White"
+            price="$ 40.0"
+            store="Zalora Cloth"
+          />
     </div>
   );
 };
