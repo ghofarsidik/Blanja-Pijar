@@ -1,8 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"server/src/middlewares"
 	"server/src/models"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,57 +24,40 @@ func GetAllCartDetails(c *fiber.Ctx) error {
 		"data":       carts_details,
 	})
 }
+func GetCartByUserId(c *fiber.Ctx) error {
+	claims := middlewares.GetUserClaims(c)
+	userID := claims["ID"].(float64)
+	res := models.GetCartByUserId(uint(userID))
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "OK",
+		"statusCode": fiber.StatusOK,
+		"data":       res,
+	})
 
+}
 func AddToCart(c *fiber.Ctx) error {
-	var addToCartRequest models.AddToCartRequest
-	if err := c.BodyParser(&addToCartRequest); err != nil {
+	var request models.AddToCartRequest
+	claims := middlewares.GetUserClaims(c)
+	userID := uint(claims["ID"].(float64))
+
+	if err := c.BodyParser(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message":    "invalid request body",
+			"message":    "Failed to parse request body",
 			"statusCode": fiber.StatusBadRequest,
 		})
 	}
 
-	results, err := models.AddToCart(addToCartRequest)
+	results, err := models.AddToCart(userID, &request)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"cart": results,
-	})
-}
-
-func UpdateCartQuantity(c *fiber.Ctx) error {
-	userID, err := strconv.Atoi(c.Params("user_id"))
-
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid user ID",
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message":    fmt.Sprintf("Failed to add to cart, %v", err.Error()),
+			"statusCode": fiber.StatusInternalServerError,
 		})
 	}
 
-	productID, err := strconv.Atoi(c.Params("product_id"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid product ID",
-		})
-	}
-
-	quantityChange, err := strconv.Atoi(c.Params("quantity_change"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid quantity change",
-		})
-	}
-
-	results, err := models.UpdateCartQuantity(uint(userID), uint(productID), quantityChange)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"cart": results,
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message":    "Added to cart successfully",
+		"cart":       results,
+		"statusCode": fiber.StatusCreated,
 	})
 }

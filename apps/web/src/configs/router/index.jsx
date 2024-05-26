@@ -13,7 +13,7 @@ const MainRouter = () => {
     { path: "/register", element: <Register /> },
     { path: "/cart", element: <Cart />},
     { path: "/test", element: <Test />},
-    { path: "/detailProduct/:id", element: <ProductDetailPage />}
+    { path: "/product/:id", element: <ProductDetailPage />}
   ]);
 
   return <RouterProvider router={router} />;

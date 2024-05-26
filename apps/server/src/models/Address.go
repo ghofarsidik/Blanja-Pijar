@@ -37,8 +37,8 @@ func GetAddressByNameAndAddress(name string, address string, id uint) *Address {
 	return &results
 }
 
-func CreateAddress(newAddress *Address) error {
-	results := configs.DB.Create(&newAddress)
+func CreateAddress(newAddress map[string]interface{}) error {
+	results := configs.DB.Model(&Address{}).Create(&newAddress)
 	return results.Error
 }
 

@@ -57,6 +57,16 @@ func GetAllProducts(sort, name string, limit, offset int) []*Product {
 	return items
 }
 
+func FilterProducts(filter string, limit, offset int) []*Product {
+	var items []*Product
+	filter = "%" + filter + "%"
+	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
+		var items []*APIProductImage
+		return configs.DB.Model(&ProductImage{}).Find(&items)
+	}).Limit(limit).Offset(offset).Where("condition ILIKE ?", filter).Find(&items)
+	return items
+}
+
 func GetDetailProduct(id int) *Product {
 	var item Product
 	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
