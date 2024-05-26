@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -10,6 +10,7 @@ const RegisterCustomer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const validationSchema = registCustomer;
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -24,6 +25,7 @@ const RegisterCustomer = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
+      setLoading(true);
       try {
         const response = await fetch('http://localhost:3000/v1/auth/register', {
           method: 'POST',
@@ -36,15 +38,15 @@ const RegisterCustomer = () => {
         if (!response.ok) {
           throw new Error('Error pada bagian response');
         }
-  
-        localStorage.setItem('token', data.token);
-
-        navigate('/login');
 
         const data = await response.json();
         console.log('Success:', data);
+        localStorage.setItem('token', data.token);
+        navigate('/login');
       } catch (error) {
         console.error('Error:', error);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -141,12 +143,17 @@ const RegisterCustomer = () => {
         </div>
 
         <div className='flex justify-center py-10'>
-        <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} text="Daftar">Daftar</Button>
+          <Button
+            type="submit"
+            className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
+            disabled={formik.isSubmitting || loading}
+          >
+            {loading ? 'Loading...' : 'Daftar'}
+          </Button>
         </div>
       </form>
     </div>
   );
 };
+
 export default RegisterCustomer;
-
-

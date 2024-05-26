@@ -6,7 +6,9 @@ import Categories from "../../components/module/Categories";
 import { Recommendation } from "../../components/module/recommendation";
 
 
+
 const Home = () => {
+
   const items = [
     {title: "new", desc:"You've never seen it before!", children: (
       <Cart
@@ -15,6 +17,7 @@ const Home = () => {
             price="$ 40.0"
             store="Zalora Cloth"
           />
+          
     ) }, 
     {title: "Popular", desc:"Find clothes that are trending recently", children: (
       <Cart
@@ -39,6 +42,7 @@ const Home = () => {
         </Recommendation>
         </div>
       ))}
+      
     </div>
   );
 };
