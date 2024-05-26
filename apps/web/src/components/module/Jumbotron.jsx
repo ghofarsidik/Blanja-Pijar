@@ -35,11 +35,12 @@ const Jumbotron = () => {
 
   function ButtonPrev({ onClick, next }) {
     return (
+      <div className={`${
+        next ? "rotate-180 left-[1070px] -top-[88px]" : "rotate-0 left-[90px] top-[95px]"
+      } relative h-6 w-6 z-10`}>
       <button
         onClick={onClick}
-        className={`${
-          next ? "rotate-180 left-[1039px] top-10" : "rotate-0"
-        } w-[52px] h-[52px] left-[90px] top-[65px] flex items-center justify-center bg-white text-main-abu rounded-full hover:bg-gray-400 focus:outline-none absolute z-10 shadow-md`}
+        className={` w-[52px] h-[52px] flex items-center justify-center bg-white text-main-abu rounded-full hover:bg-gray-400 focus:outline-none absolute shadow-md`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -56,6 +57,7 @@ const Jumbotron = () => {
           />
         </svg>
       </button>
+      </div>
     );
   }
 
