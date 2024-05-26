@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {Button} from '@material-tailwind/react';
+import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import registSeller from '../../utils/registSeller.js'
 
 const RegisterSeller = () => {
   const navigate = useNavigate();
   const validationSchema = registSeller;
+  const [loading, setLoading] = useState(false);
 
-  
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -18,11 +18,12 @@ const RegisterSeller = () => {
       showPassword: false,
       name: '',
       store_name: '',
-      role:'seller',
+      role: 'seller',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log('Submitting form with values:', values);
+      setLoading(true);
       try {
         const response = await fetch('http://localhost:3000/v1/auth/register', {
           method: 'POST',
@@ -31,11 +32,11 @@ const RegisterSeller = () => {
           },
           body: JSON.stringify(values),
         });
-  
+
         if (!response.ok) {
           throw new Error('Something went wrong');
         }
-  
+
         localStorage.setItem('token', data.token);
 
         navigate('/');
@@ -134,7 +135,7 @@ const RegisterSeller = () => {
         </div>
 
         <div className='flex justify-center py-10'>
-        <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} text="Daftar">Daftar</Button> 
+          <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} loading>   {loading ? 'Loading...' : 'Daftar'}</Button>
         </div>
       </form>
     </div>
