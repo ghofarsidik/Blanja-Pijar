@@ -4,8 +4,10 @@ import * as Yup from 'yup';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import registSeller from '../../utils/registSeller.js'
+import { useDispatch } from 'react-redux';
 
 const RegisterSeller = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const validationSchema = registSeller;
   const [loading, setLoading] = useState(false);
@@ -22,8 +24,7 @@ const RegisterSeller = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
-      setLoading(true);
+      dispatch(registerStart());
       try {
         const response = await fetch('http://localhost:3000/v1/auth/register', {
           method: 'POST',
@@ -40,11 +41,11 @@ const RegisterSeller = () => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
 
-        navigate('/');
-        console.log('Success:', data);
+        dispatch(registerSuccess(data.user));
+        navigate('/')
       } catch (error) {
-        console.error('Error:', error);
-      } finally {
+        dispatch(registerFailure(error.message));
+      }finally {
         setLoading(false);
       }
     },

@@ -24,8 +24,7 @@ const RegisterCustomer = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
-      setLoading(true);
+      dispatch(registerStart());
       try {
         const response = await fetch('http://localhost:3000/v1/auth/register', {
           method: 'POST',
@@ -34,18 +33,19 @@ const RegisterCustomer = () => {
           },
           body: JSON.stringify(values),
         });
-        
+
         if (!response.ok) {
-          throw new Error('Error pada bagian response');
+          throw new Error('Something went wrong');
         }
 
         const data = await response.json();
-        console.log('Success:', data);
         localStorage.setItem('token', data.token);
-        navigate('/login');
+
+        dispatch(registerSuccess(data.user));
+        navigate('/')
       } catch (error) {
-        console.error('Error:', error);
-      } finally {
+        dispatch(registerFailure(error.message));
+      }finally {
         setLoading(false);
       }
     },
