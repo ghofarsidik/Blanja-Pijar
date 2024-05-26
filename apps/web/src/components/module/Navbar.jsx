@@ -5,20 +5,20 @@ import Cart from "../../assets/images/logo/cart.png";
 import Mail from "../../assets/images/logo/mail.png";
 import Bell from "../../assets/images/logo/bell.png";
 import Profile from "../../assets/images/dummy/dummyProfile.png";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const HandleRegister = () => {
-    navigate('/register')
-  }
+    navigate("/register");
+  };
   const HandleLogin = () => {
-    navigate('/login')
-  }
+    navigate("/login");
+  };
 
-  const token = "";
+  const token = localStorage.getItem("token");
+  console.log(token);
   
   return (
     <nav className="w-full h-[100px] mx-auto flex items-center bg-white">

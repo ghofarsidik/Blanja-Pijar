@@ -14,8 +14,7 @@ func InitDB() {
 	url := os.Getenv("URL")
 	var err error
 	DB, err = gorm.Open(postgres.Open(url), &gorm.Config{})
-
 	if err != nil {
-		log.Fatal("Failed to connect to the database: %v", err)
+		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 }
