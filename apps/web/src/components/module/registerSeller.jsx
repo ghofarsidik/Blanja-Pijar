@@ -4,8 +4,10 @@ import * as Yup from 'yup';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import registSeller from '../../utils/registSeller.js'
+import { useDispatch } from 'react-redux';
 
 const RegisterSeller = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const validationSchema = registSeller;
   const [loading, setLoading] = useState(false);
@@ -22,8 +24,7 @@ const RegisterSeller = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
-      setLoading(true);
+      dispatch(registerStart());
       try {
         const response = await fetch('http://localhost:3000/v1/auth/register', {
           method: 'POST',
@@ -37,14 +38,15 @@ const RegisterSeller = () => {
           throw new Error('Something went wrong');
         }
 
+        const data = await response.json();
         localStorage.setItem('token', data.token);
 
-        navigate('/');
-
-        const data = await response.json();
-        console.log('Success:', data);
+        dispatch(registerSuccess(data.user));
+        navigate('/')
       } catch (error) {
-        console.error('Error:', error);
+        dispatch(registerFailure(error.message));
+      }finally {
+        setLoading(false);
       }
     },
   });
@@ -135,7 +137,9 @@ const RegisterSeller = () => {
         </div>
 
         <div className='flex justify-center py-10'>
-          <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} loading>   {loading ? 'Loading...' : 'Daftar'}</Button>
+          <Button type="submit" className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting}>
+            {loading ? 'Loading...' : 'Daftar'}
+          </Button>
         </div>
       </form>
     </div>

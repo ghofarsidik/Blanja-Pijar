@@ -23,7 +23,14 @@ const products = [
     rating: 4,
     colors: ['black','blue','red','green'],
     condition: "NEW",
-    description: "Description of product 1",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+    Donec non magna rutrum, pellentesque augue eu, sagittis velit. Phasellus quis laoreet dolor. Fusce nec pharetra quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent sed enim vel turpis blandit imperdiet ac ac felis. Etiam tincidunt tristique placerat. Pellentesque a consequat mauris, vel suscipit ipsum. 
+    Donec ac mauris vitae diam commodo vehicula. Donec quam elit, sollicitudin eu nisl at, ornare suscipit magna.
+    
+    Donec non magna rutrum, pellentesque augue eu, sagittis velit. Phasellus quis laoreet dolor. Fusce nec pharetra quam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent sed enim vel turpis blandit imperdiet ac ac felis.
+    
+    In ultricies rutrum tempus. Mauris vel molestie orci.`,
     quantity: 10,
     reviewScore: 5.0,
     reviewCount: {

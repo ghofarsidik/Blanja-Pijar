@@ -1,9 +1,13 @@
-import { legacy_createStore as createStore, applyMiddleware, compose,} from 'redux';
-import { thunk } from 'redux-thunk';
-import rootReducer from './reducer/reducer.jsx';
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from '../../configs/redux/action/authSlice';
+import authRegistReducer from './action/authRegist';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+export const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    auth: authRegistReducer,
+  },
+});
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
-export default store;
+export default store
