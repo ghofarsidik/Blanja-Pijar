@@ -21,7 +21,7 @@ const RegisterSeller = () => {
       password: "",
       showPassword: false,
       name: "",
-      store_name: "",
+      // store_name: "",
       role: "seller",
     },
     validationSchema: validationSchema,
@@ -109,7 +109,7 @@ const RegisterSeller = () => {
               </div>
             )}
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <input
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
@@ -124,7 +124,7 @@ const RegisterSeller = () => {
                 {formik.errors.store_name}
               </div>
             )}
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <div className="relative">
               <input

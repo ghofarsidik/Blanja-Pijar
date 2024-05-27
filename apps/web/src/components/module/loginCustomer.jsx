@@ -33,7 +33,7 @@ const LoginCustomer = () => {
         //   return;
         // }
         toastify('success', 'Login successful');
-        navigate('/');
+        navigate('/login');
       } catch (error) {
         setSubmitting(false);
         toastify('error', error.message);

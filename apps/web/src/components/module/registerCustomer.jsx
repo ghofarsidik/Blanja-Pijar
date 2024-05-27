@@ -46,7 +46,7 @@ const RegisterCustomer = () => {
 
         dispatch(registerSuccess(data.user));
         toastify("success", "Registration successful");
-        navigate('/');
+        navigate('/login');
       } catch (error) {
         dispatch(registerFailure(error.message));
         toastify("error", error.message);

@@ -13,7 +13,7 @@ type User struct {
 	Email        string       `json:"email" validate:"required,email"`
 	Password     string       `json:"password" validate:"required"`
 	Image        string       `json:"image"`
-	Gender       string       `json:"gender" default:"male"`
+	Gender       string       `json:"gender"`
 	Birthday     string       `json:"birthday"`
 	Phone_number string       `json:"phone_number" validate:"min=10,max=13"`
 	Role         string       `json:"role" validate:"required"`
@@ -87,8 +87,6 @@ func GetDetailUser(id interface{}) *User {
 	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
 		var items []*APICart
 		return db.Model(&Cart{}).Find(&items)
-	}).Preload("Cart.CartDetail", func(db *gorm.DB) *gorm.DB {
-		return db.Select("ID", "CreatedAt", "UpdatedAt", "DeletedAt", "TotalPrice", "ProductID", "CartID")
 	}).First(&user, "id = ?", id)
 	return &user
 }

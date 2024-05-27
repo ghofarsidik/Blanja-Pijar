@@ -39,6 +39,8 @@ const userSlice = createSlice({
       .addCase(getActiveUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
       });
   },
 });
