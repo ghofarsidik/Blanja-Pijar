@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dummy from "../../assets/images/dummy/dummy.png";
 import Cart from "../../components/base/card/card";
+import axios from "axios";
 
 const ProductDetail = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
+  const [myStore, setMyStore] = useState();
   const [selectedColor, setSelectedColor] = useState(null);
   const [purchaseAmount, setPurchaseAmount] = useState(1);
   const [mainImage, setMainImage] = useState(product?.product_image[0]?.image);
-  console.log(mainImage);
 
-  console.log("Product detail:", product);
-
+  console.log("Product detail:", myStore);
+  const getStore = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/v1/store/${product?.store_id}`
+      );
+      setMyStore(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleSizeSelection = (size) => {
     setSelectedSize(size);
   };
@@ -32,12 +42,18 @@ const ProductDetail = ({ product }) => {
   const handleThumbnailClick = (image) => {
     setMainImage(image);
   };
-
+  useEffect(() => {
+    getStore();
+  }, []);
   return (
     <div className="p-5 mx-[10%]">
-      <div className="flex">
-        <div className="w-1/2 flex flex-col items-center">
-          <img src={mainImage} alt={product.title} className="object-contain w-full" />
+      <div className="flex justify-between w-full">
+        <div className="w-[30%] flex flex-col items-center">
+          <img
+            src={mainImage}
+            alt={product.title}
+            className="w-[500px] object-cover max-h-[350px] rounded"
+          />
           <div className="flex mt-2 space-x-2">
             {product?.product_image?.map((image, index) => (
               <div>
@@ -45,7 +61,7 @@ const ProductDetail = ({ product }) => {
                   key={index}
                   src={image?.image}
                   alt={`Thumbnail ${index}`}
-                  className="w-20 h-20 object-cover cursor-pointer"
+                  className="max-w-20 max-h-20 object-cover cursor-pointer"
                   onClick={() => handleThumbnailClick(image?.image)}
                 />
                 {console.log(image)}
@@ -56,7 +72,7 @@ const ProductDetail = ({ product }) => {
         <div className="">
           <h1 className="text-3xl mb-4">{product?.name}</h1>
           <h1 className="text-black">Store:</h1>
-          {/* <p className="text-gray-500">{product.store}</p> */}
+          <p className="text-gray-500">{myStore?.name}</p>
           <h1>Rating:</h1>
           <div className="flex items-center mt-2">
             {Array.from({ length: 4 }, (_, index) => (

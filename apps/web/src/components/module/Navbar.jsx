@@ -22,7 +22,9 @@ const Navbar = () => {
 
   return (
     <nav className="w-full h-[100px] mx-auto flex items-center bg-white">
-      <img className="ml-[10%]" src={Logo} alt="" />
+      <a href="/" className="ml-[10%]">
+        <img src={Logo} alt="" />
+      </a>
 
       <div className="flex items-center flex-grow mx-5">
         <div className="flex-grow flex rounded-full bg-white border border-abu overflow-hidden">
