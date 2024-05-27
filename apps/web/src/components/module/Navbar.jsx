@@ -6,9 +6,11 @@ import Mail from "../../assets/images/logo/mail.png";
 import Bell from "../../assets/images/logo/bell.png";
 import Profile from "../../assets/images/dummy/dummyProfile.png";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const Navbar = () => {
+const Navbar = ({onSearch}) => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const HandleRegister = () => {
     navigate("/register");
@@ -19,6 +21,20 @@ const Navbar = () => {
 
   const token = localStorage.getItem("token");
   console.log(token);
+
+  const handleInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchClick = () => {
+    onSearch(searchQuery);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      onSearch(searchQuery);
+    }
+  };
   
   return (
     <nav className="w-full h-[100px] mx-auto flex items-center bg-white">
@@ -29,9 +45,12 @@ const Navbar = () => {
           <input
             className="flex-grow h-[40px] text-base focus:outline-none focus:ring-0 placeholder:text-abu px-4"
             type="text"
+            value={searchQuery}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             placeholder="Search"
           />
-          <button className="p-2">
+          <button className="p-2" type="submit" onClick={handleSearchClick}>
             <img src={Search} alt="Search" />
           </button>
         </div>

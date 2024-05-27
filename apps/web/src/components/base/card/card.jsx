@@ -1,9 +1,9 @@
 import Rating from "../star_rating/star_rating";
 
-const Card = ({image, product_name, price, store }) => {
+const Card = ({image, product_name, price, store, onClick }) => {
   return (
-    <div className="w-[208px] h-[278px] bg-white border rounded-xl">
-      <img className="w-[208px] h-[136px] rounded-t-xl" src={image} alt="" />
+    <div className="w-[208px] h-[278px] bg-white border rounded-xl" onClick={onClick}>
+      <img className="w-[208px] h-[136px] rounded-t-xl object-contain" src={image} alt="" />
       <p className="text-base font-blanja_metropolis font-medium pt-[10px] pl-3">
         {product_name}
       </p>

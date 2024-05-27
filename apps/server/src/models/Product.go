@@ -53,7 +53,7 @@ func GetAllProducts(sort, name string, limit, offset int) []*Product {
 	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
 		var items []*APIProductImage
 		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).Order(sort).Limit(limit).Offset(offset).Where("name ILIKE ?", name).Find(&items)
+	}).Preload("Store").Order(sort).Limit(limit).Offset(offset).Where("name ILIKE ?", name).Find(&items)
 	return items
 }
 
@@ -63,7 +63,7 @@ func FilterProducts(filter string, limit, offset int) []*Product {
 	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
 		var items []*APIProductImage
 		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).Limit(limit).Offset(offset).Where("condition ILIKE ?", filter).Find(&items)
+	}).Preload("Store").Limit(limit).Offset(offset).Where("condition ILIKE ?", filter).Find(&items)
 	return items
 }
 
