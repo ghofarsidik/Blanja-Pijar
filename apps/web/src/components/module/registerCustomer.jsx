@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { Button } from '@material-tailwind/react';
-import registCustomer from '../../utils/registCustomer';
-import { useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { Button } from "@material-tailwind/react";
+import registCustomer from "../../utils/registCustomer";
+import { useDispatch } from "react-redux";
+import { authRegister } from "../../utils/authRegister";
+import { toastify } from "../base/toastify";
 
 const RegisterCustomer = () => {
   const dispatch = useDispatch();
@@ -14,40 +16,22 @@ const RegisterCustomer = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      phone_number: '',
-      password: '',
+      email: "",
+      phone_number: "",
+      password: "",
       showPassword: false,
-      name: '',
-      gender: '',
-      role: 'customer',
+      name: "",
+      // gender: "",
+      role: "customer",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
-      setLoading(true);
-      try {
-        const response = await fetch('http://localhost:3000/v1/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Error pada bagian response');
-        }
-
-        const data = await response.json();
-        console.log('Success:', data);
-        localStorage.setItem('token', data.token);
-        navigate('/login');
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
+      const response = await authRegister(values);
+      if (response?.status === 201) {
+        toastify("success", response?.data?.message);
       }
+      toastify("error", response?.response?.data?.message);
+
     },
   });
 
@@ -66,7 +50,9 @@ const RegisterCustomer = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.name && formik.errors.name && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.name}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.name}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -80,7 +66,9 @@ const RegisterCustomer = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.email}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -94,7 +82,9 @@ const RegisterCustomer = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.phone_number && formik.errors.phone_number && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone_number}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.phone_number}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -111,44 +101,61 @@ const RegisterCustomer = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.password}
+              </div>
             )}
           </div>
-          <h1>Gender:</h1>
+          {/* <h1>Gender:</h1>
           <div className="flex space-x-4">
             <button
               type="button"
-              className={`px-4 py-2 rounded ${formik.values.gender === 'Male' ? 'bg-[#DB3022]' : 'bg-[#FFF5E0]'}`}
-              onClick={() => formik.setFieldValue('gender', 'Male')}
+              className={`px-4 py-2 rounded ${
+                formik.values.gender === "Male"
+                  ? "bg-[#DB3022]"
+                  : "bg-[#FFF5E0]"
+              }`}
+              onClick={() => formik.setFieldValue("gender", "Male")}
             >
               Male
             </button>
             <button
               type="button"
-              className={`px-4 py-2 rounded ${formik.values.gender === 'Female' ? 'bg-[#DB3022]' : 'bg-[#FFF5E0]'}`}
-              onClick={() => formik.setFieldValue('gender', 'Female')}
+              className={`px-4 py-2 rounded ${
+                formik.values.gender === "Female"
+                  ? "bg-[#DB3022]"
+                  : "bg-[#FFF5E0]"
+              }`}
+              onClick={() => formik.setFieldValue("gender", "Female")}
             >
               Female
             </button>
           </div>
           {formik.touched.gender && formik.errors.gender && (
-            <div className="text-red-500 text-[12px] font-poppins">{formik.errors.gender}</div>
-          )}
+            <div className="text-red-500 text-[12px] font-poppins">
+              {formik.errors.gender}
+            </div>
+          )} */}
         </div>
 
-        <div className='flex justify-center py-10'>
+        <div className="flex justify-center py-10">
           <Button
             type="submit"
             className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
             disabled={formik.isSubmitting || loading}
           >
-            {loading ? 'Loading...' : 'Daftar'}
+            {loading ? "Loading..." : "Daftar"}
           </Button>
         </div>
       </form>

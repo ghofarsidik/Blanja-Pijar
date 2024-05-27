@@ -1,58 +1,31 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import { Button } from '@material-tailwind/react';
-import { useNavigate } from 'react-router-dom';
-import loginRegist from '../../utils/login';
-import { HttpStatusCode } from 'axios';
+import { useFormik } from "formik";
+import { Button } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import loginRegist from "../../utils/login";
+import { authLogin } from "../../utils/authLogin";
 
 const LoginSeller = () => {
   const navigate = useNavigate();
-
   const formik = useFormik({
-    
     initialValues: {
-      email: '',
-      password: '',
-      role:"seller",
+      email: "",
+      password: "",
       showPassword: false,
     },
     validationSchema: loginRegist,
-    onSubmit: async (values,{setSubmitting}) => {
-      console.log("Handling form submission")
-      console.log('Submitting form with values:', values);
-
-      try {
-        const response = await fetch('http://localhost:3000/v1/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
-
-        if (!response.ok) {
-          throw new Error('Ada kesalahan silahkan cari tahu');
-        }
-
-        const data = await response.json();
-        console.log('Success:', data);
-        console.log('Success:', data.data);
-        console.log(data.data.Token)
-        console.log(localStorage)
-
-        localStorage.setItem('token', data.data.Token);
-        localStorage.setItem('refreshToken', data.data.RefreshToken);
-        
-        if (data.data.role !== 'seller') {
-          throw new Error('Anda tidak memiliki akses sebagai seller.');
-        }else{
-          navigate('/');
-        }
-
-      } catch (error) {
-        console.error('Error:', error);
+    onSubmit: async (values) => {
+      const response = await authLogin(values);
+      if (response?.status === 200) {
+        localStorage.setItem("token", response?.data?.data?.Token);
+        localStorage.setItem(
+          "refreshToken",
+          response?.data?.data?.RefreshToken
+        );
+        navigate("/");
+        toastify("success", response?.data?.message);
+      } else {
+        toastify("error", response?.response?.data?.message);
       }
-      setSubmitting(false)
     },
   });
 
@@ -71,7 +44,9 @@ const LoginSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.email}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -88,37 +63,52 @@ const LoginSeller = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.password}
+              </div>
             )}
           </div>
 
-          <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
+          <div className="flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer">
             Forgot password?
           </div>
 
-          <div className='flex justify-center py-5'>
-            <Button type="submit" className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} >
+          <div className="flex justify-center py-5">
+            <Button
+              type="submit"
+              className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
+              disabled={formik.isSubmitting}
+            >
               Login Seller
             </Button>
           </div>
         </div>
       </form>
 
-      <div className='flex justify-center'>
-        <p>Don't have an account?{' '}
-          <span onClick={() => navigate('/register')} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+      <div className="flex justify-center">
+        <p>
+          Don't have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
+          >
             Register
           </span>
         </p>
       </div>
     </div>
   );
-}
+};
 
 export default LoginSeller;

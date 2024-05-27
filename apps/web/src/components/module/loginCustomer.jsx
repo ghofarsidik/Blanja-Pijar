@@ -1,61 +1,33 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Button } from '@material-tailwind/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginAction } from '../../configs/redux/action/auth.action';
-import { useNavigate } from 'react-router-dom';
-import loginRegist from '../../utils/login';
+import React from "react";
+import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import loginRegist from "../../utils/login";
+import { authLogin } from "../../utils/authLogin";
+import { toastify } from "../base/toastify";
 
-
-const LoginCustomer = ({ role }) => {
+const LoginCustomer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
-
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validationSchema: loginRegist,
-    onSubmit: async (values, { setSubmitting }) => {
-      console.log("Handling form submission")
-      console.log('Submitting form with values:', values);
-      // setErrorMessage('');
-      try {
-        const response = await fetch("http://localhost:3000/v1/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
-        console.log(response);
-
-        if (!response.ok) {
-          throw new Error('Error pada response');
-        }
-
-        const data = await response.json();
-        console.log('Success:', data.data);
-        console.log(data.data.Token)
-        console.log(localStorage)
-
-        localStorage.setItem('token', data.data.Token);
-        localStorage.setItem('refreshToken', data.data.RefreshToken);
-
-        
-        if (data.data.role !== 'customer') {
-          throw new Error('Anda tidak memiliki akses sebagai seller.');
-        }else{
-          navigate('/');
-        }
-
-
-      } catch (error) {
-        console.error("Error:", error);
+    onSubmit: async (values) => {
+      const response = await authLogin(values);
+      if (response?.status === 200) {
+        localStorage.setItem("token", response?.data?.data?.Token);
+        localStorage.setItem(
+          "refreshToken",
+          response?.data?.data?.RefreshToken
+        );
+        navigate("/");
+        toastify("success", response?.data?.message);
+      } else {
+        toastify("error", response?.response?.data?.message);
       }
-      setSubmitting(false);
     },
   });
 

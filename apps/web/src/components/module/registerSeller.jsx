@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Button } from '@material-tailwind/react';
-import { useNavigate } from 'react-router-dom';
-import registSeller from '../../utils/registSeller.js'
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Button } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import registSeller from "../../utils/registSeller.js";
+import { authRegister } from "../../utils/authRegister.js";
+import { toastify } from "../base/toastify.js";
 
 const RegisterSeller = () => {
   const navigate = useNavigate();
@@ -12,40 +14,24 @@ const RegisterSeller = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      phone_number: '',
-      password: '',
+      email: "",
+      phone_number: "",
+      password: "",
       showPassword: false,
-      name: '',
-      store_name: '',
-      role: 'seller',
+      name: "",
+      store_name: "",
+      role: "seller",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('Submitting form with values:', values);
       setLoading(true);
-      try {
-        const response = await fetch('http://localhost:3000/v1/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
-
-        if (!response.ok) {
-          throw new Error('Something went wrong');
-        }
-
-        localStorage.setItem('token', data.token);
-
-        navigate('/');
-
-        const data = await response.json();
-        console.log('Success:', data);
-      } catch (error) {
-        console.error('Error:', error);
+      const response = await authRegister(values);
+      if (response?.status === 201) {
+        toastify("success", response?.data?.data?.message);
+        navigate("/login");
       }
+      toastify("error", response?.response?.data?.message);
+      setLoading(false);
     },
   });
 
@@ -64,7 +50,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.name && formik.errors.name && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.name}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.name}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -78,7 +66,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.email}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -92,7 +82,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.phone_number && formik.errors.phone_number && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone_number}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.phone_number}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -106,7 +98,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.store_name && formik.errors.store_name && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.store_name}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.store_name}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -123,19 +117,35 @@ const RegisterSeller = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.password}
+              </div>
             )}
           </div>
         </div>
 
-        <div className='flex justify-center py-10'>
-          <Button name="Daftar" type="submit" className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting} loading>   {loading ? 'Loading...' : 'Daftar'}</Button>
+        <div className="flex justify-center py-10">
+          <Button
+            name="Daftar"
+            type="submit"
+            className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
+            disabled={formik.isSubmitting}
+            loading={loading}
+          >
+            {" "}
+            {loading ? "Loading..." : "Daftar"}
+          </Button>
         </div>
       </form>
     </div>
