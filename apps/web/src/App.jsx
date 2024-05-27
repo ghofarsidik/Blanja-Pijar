@@ -1,24 +1,21 @@
 import axios from "axios";
 import MainRouter from "./configs/router";
+import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getActiveUser } from "./configs/redux/features/userSlice";
 
 const App = () => {
-  const keepLogin = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/v1/user", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const dispatch = useDispatch();
   useEffect(() => {
-    keepLogin();
+    dispatch(getActiveUser());
   }, []);
-  return <MainRouter />;
+  return (
+    <>
+      <ToastContainer />
+      <MainRouter />
+    </>
+  );
 };
 
 export default App;

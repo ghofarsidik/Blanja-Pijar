@@ -14,13 +14,13 @@ const RegisterSeller = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      phone_number: '',
-      password: '',
+      email: "",
+      phone_number: "",
+      password: "",
       showPassword: false,
-      name: '',
-      store_name: '',
-      role: 'seller',
+      name: "",
+      store_name: "",
+      role: "seller",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -48,6 +48,8 @@ const RegisterSeller = () => {
       }finally {
         setLoading(false);
       }
+      toastify("error", response?.response?.data?.message);
+      setLoading(false);
     },
   });
 
@@ -66,7 +68,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.name && formik.errors.name && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.name}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.name}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -80,7 +84,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.email}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -94,7 +100,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.phone_number && formik.errors.phone_number && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.phone_number}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.phone_number}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -108,7 +116,9 @@ const RegisterSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.store_name && formik.errors.store_name && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.store_name}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.store_name}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -125,13 +135,20 @@ const RegisterSeller = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.password}
+              </div>
             )}
           </div>
         </div>

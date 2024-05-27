@@ -53,7 +53,9 @@ const LoginSeller = () => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.email}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.email}
+              </div>
             )}
           </div>
           <div className="flex flex-col">
@@ -70,17 +72,24 @@ const LoginSeller = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue("showPassword", !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-[12px] font-poppins">{formik.errors.password}</div>
+              <div className="text-red-500 text-[12px] font-poppins">
+                {formik.errors.password}
+              </div>
             )}
           </div>
 
-          <div className='flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer'>
+          <div className="flex justify-center ml-64 text-red-maroon hover:font-semibold hover:text-orange-500 cursor-pointer">
             Forgot password?
           </div>
 
@@ -93,15 +102,19 @@ const LoginSeller = () => {
         </div>
       </form>
 
-      <div className='flex justify-center'>
-        <p>Don't have an account?{' '}
-          <span onClick={() => navigate('/register')} className='text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer'>
+      <div className="flex justify-center">
+        <p>
+          Don't have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
+          >
             Register
           </span>
         </p>
       </div>
     </div>
   );
-}
+};
 
 export default LoginSeller;

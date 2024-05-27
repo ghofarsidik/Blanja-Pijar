@@ -185,7 +185,10 @@ func UploadImageProductServer(c *fiber.Ctx) error {
 	}
 
 	if err := models.UploadPhotoProduct(uploadPhoto); err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Gagal mengunggah file" + err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal mengunggah file" + err.Error(),
+			"image":   uploadPhoto,
+		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message":    fmt.Sprintf("Sukses mengunggah photo product dengan ID %d", id),
