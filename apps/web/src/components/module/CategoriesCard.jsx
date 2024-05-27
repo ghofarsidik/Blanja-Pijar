@@ -40,12 +40,13 @@ const categoriesImages = {
 const CategoriesCard = () => {
   const [categories, setCategories] = useState([]);
   // const [currentIndex, setCurrentIndex] = useState(0);
-
+  console.log(categories);
   useEffect(() => {
     axios
-      .get("https://fakestoreapi.com/cat")
+      .get("http://localhost:3000/v1/categories")
       .then((response) => {
-        setCategories(response.data);
+        console.log(response);
+        setCategories(response.data?.data);
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
@@ -73,9 +74,13 @@ const CategoriesCard = () => {
 
   function ButtonPrev({ onClick, next }) {
     return (
-      <div className={`${
-        next ? "rotate-180 -left-[110px] -top-[120px]" : "rotate-0 -left-[241px] top-[102px]"
-      } relative h-6 w-6`}>
+      <div
+        className={`${
+          next
+            ? "rotate-180 -left-[110px] -top-[120px]"
+            : "rotate-0 -left-[241px] top-[102px]"
+        } relative h-6 w-6`}
+      >
         <button
           onClick={onClick}
           className={` w-[52px] h-[52px] flex items-center justify-center bg-white text-main-abu rounded-full hover:bg-gray-400 focus:outline-none absolute`}
@@ -101,7 +106,7 @@ const CategoriesCard = () => {
   }
 
   const settings = {
-    dots: true,
+    // dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 4,
