@@ -5,9 +5,30 @@ import Jumbotron from "../../components/module/Jumbotron";
 import Categories from "../../components/module/Categories";
 import { Recommendation } from "../../components/module/recommendation";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [newCondition, setNewCondition] = useState();
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/v1/products/filter",
+        {
+          params: {
+            condition: "new",
+          },
+        }
+      );
+      setNewCondition(response?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getAllProducts();
+  }, []);
   const items = [
     {
       title: "new",

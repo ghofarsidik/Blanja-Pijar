@@ -13,7 +13,7 @@ type User struct {
 	Email        string       `json:"email" validate:"required,email"`
 	Password     string       `json:"password" validate:"required"`
 	Image        string       `json:"image"`
-	Gender       string       `json:"gender"`
+	Gender       string       `json:"gender" default:"male"`
 	Birthday     string       `json:"birthday"`
 	Phone_number string       `json:"phone_number" validate:"min=10,max=13"`
 	Role         string       `json:"role" validate:"required"`
