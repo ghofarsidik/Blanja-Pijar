@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../../configs/redux/action/cartSlice';
+// import { addToCart } from '../../configs/redux/action/cartSlice';
 import Dummy from "../../assets/images/dummy/dummy.png";
 import Cart from '../../components/base/card/card';
 
