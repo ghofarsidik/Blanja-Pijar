@@ -1,7 +1,8 @@
+//src/configs/redux/action/authSlice.js
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const loginUser = createAsyncThunk('auth/loginUser', async (values, thunkAPI) => {
-  console.log('Login attempt:', values);
   try {
     const response = await fetch("http://localhost:3000/v1/auth/login", {
       method: "POST",
@@ -10,11 +11,11 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (values, thunk
     });
     if (!response.ok) throw new Error('Login failed');
     const data = await response.json();
-    localStorage.setItem('token', data.data.Token);
-    localStorage.setItem('refreshToken', data.data.RefreshToken);
-    console.log('Login success:', data.data);
-    console.log('Stored token:', localStorage.getItem('token'));
-    return data.data;
+    const user = data.data;
+
+    localStorage.setItem('token', user.Token);
+    localStorage.setItem('refreshToken', user.RefreshToken);
+    return user;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);
   }
@@ -22,14 +23,12 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (values, thunk
 
 export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
   const token = localStorage.getItem('token');
-  console.log('Fetching user with token:', token);
   try {
     const response = await fetch("http://localhost:3000/v1/auth/user", {
       headers: { "Authorization": `Bearer ${token}` },
     });
     if (!response.ok) throw new Error('Failed to fetch user');
     const userData = await response.json();
-    console.log('User data:', userData);
     return userData;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);
@@ -56,6 +55,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -73,6 +73,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthenticated } = authSlice.actions;
+export const { setAuthenticated, logout } = authSlice.actions;
 
 export default authSlice.reducer;

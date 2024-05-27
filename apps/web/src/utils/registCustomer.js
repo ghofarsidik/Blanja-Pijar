@@ -18,7 +18,7 @@ export const registCustomer = Yup.object().shape({
     .required("Phone number is required"),
   name: Yup.string().required("Name is required"),
   gender: Yup.string()
-    .oneOf(["Male", "Female"], "Gender is required")
+    .oneOf(["male", "female"], "Gender is required")
     .required("Gender is required"),
 });
 
