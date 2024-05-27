@@ -17,7 +17,7 @@ const registSeller = Yup.object().shape({
     .max(13, "Phone number max in 13 characters")
     .required("Phone number is required"),
   name: Yup.string().required("Name is required"),
-  store_name: Yup.string().required("Nama toko wajib diisi"),
+  // store_name: Yup.string().required("Nama toko wajib diisi"),
 });
 
 export default registSeller;

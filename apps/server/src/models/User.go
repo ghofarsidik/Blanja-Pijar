@@ -87,8 +87,6 @@ func GetDetailUser(id interface{}) *User {
 	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
 		var items []*APICart
 		return db.Model(&Cart{}).Find(&items)
-	}).Preload("Cart.CartDetail", func(db *gorm.DB) *gorm.DB {
-		return db.Select("ID", "CreatedAt", "UpdatedAt", "DeletedAt", "TotalPrice", "ProductID", "CartID")
 	}).First(&user, "id = ?", id)
 	return &user
 }

@@ -60,6 +60,7 @@ func FilterProducts(c *fiber.Ctx) error {
 	}
 	offset := (page - 1) * limit
 	products := models.FilterProducts(filter, limit, offset)
+	// fmt.Println("product", products)
 	count := helpers.CountData("products")
 	totalPage := math.Ceil(float64(count) / float64(limit))
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -185,7 +186,10 @@ func UploadImageProductServer(c *fiber.Ctx) error {
 	}
 
 	if err := models.UploadPhotoProduct(uploadPhoto); err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Gagal mengunggah file" + err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal mengunggah file" + err.Error(),
+			"image":   uploadPhoto,
+		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message":    fmt.Sprintf("Sukses mengunggah photo product dengan ID %d", id),
