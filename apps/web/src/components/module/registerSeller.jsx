@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Button } from "@material-tailwind/react";
-import { useNavigate } from "react-router-dom";
-import registSeller from "../../utils/registSeller.js";
-import { authRegister } from "../../utils/authRegister.js";
-import { toastify } from "../base/toastify.js";
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Button } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
+import registSeller from '../../utils/registSeller.js'
+import { useDispatch } from 'react-redux';
 
 const RegisterSeller = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const validationSchema = registSeller;
   const [loading, setLoading] = useState(false);
@@ -24,11 +24,29 @@ const RegisterSeller = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
-      const response = await authRegister(values);
-      if (response?.status === 201) {
-        toastify("success", response?.data?.data?.message);
-        navigate("/login");
+      dispatch(registerStart());
+      try {
+        const response = await fetch('http://localhost:3000/v1/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+          throw new Error('Something went wrong');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+
+        dispatch(registerSuccess(data.user));
+        navigate('/')
+      } catch (error) {
+        dispatch(registerFailure(error.message));
+      }finally {
+        setLoading(false);
       }
       toastify("error", response?.response?.data?.message);
       setLoading(false);
@@ -135,16 +153,9 @@ const RegisterSeller = () => {
           </div>
         </div>
 
-        <div className="flex justify-center py-10">
-          <Button
-            name="Daftar"
-            type="submit"
-            className={`bg-red-500  justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
-            disabled={formik.isSubmitting}
-            loading={loading}
-          >
-            {" "}
-            {loading ? "Loading..." : "Daftar"}
+        <div className='flex justify-center py-10'>
+          <Button type="submit" className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting}>
+            {loading ? 'Loading...' : 'Daftar'}
           </Button>
         </div>
       </form>

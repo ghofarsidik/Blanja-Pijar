@@ -36,8 +36,8 @@ const ProductDetail = ({ product }) => {
   return (
     <div className="p-5 mx-[10%]">
       <div className="flex">
-        <div className="w-1/2">
-          <img src={mainImage} alt={product.title} className="object-contain" />
+        <div className="w-1/2 flex flex-col items-center">
+          <img src={mainImage} alt={product.title} className="object-contain w-full" />
           <div className="flex mt-2 space-x-2">
             {product?.product_image?.map((image, index) => (
               <div>
@@ -169,25 +169,25 @@ const ProductDetail = ({ product }) => {
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">4</span>
-              <div className="w-24 h-2  bg-red-500 ml-2 rounded-full"></div>
+              <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
               <span className="ml-2">{product.reviewCount[4]}</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">3</span>
-              <div className="w-24 h-2  bg-red-500 ml-2 rounded-full"></div>
+              <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
               <span className="ml-2">{product.reviewCount[3]}</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">2</span>
-              <div className="w-24 h-2  bg-red-500 ml-2 rounded-full"></div>
+              <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
               <span className="ml-2">{product.reviewCount[2]}</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500 ">★</span>
               <span className="ml-2">1</span>
-              <div className="w-24 h-2  bg-red-500 ml-2 rounded-full"></div>
+              <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
               <span className="ml-2">{product.reviewCount[1]}</span>
             </div>
           </div> */}

@@ -26,9 +26,29 @@ const RegisterCustomer = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const response = await authRegister(values);
-      if (response?.status === 201) {
-        toastify("success", response?.data?.message);
+      dispatch(registerStart());
+      try {
+        const response = await fetch('http://localhost:3000/v1/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+          throw new Error('Something went wrong');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+
+        dispatch(registerSuccess(data.user));
+        navigate('/')
+      } catch (error) {
+        dispatch(registerFailure(error.message));
+      }finally {
+        setLoading(false);
       }
       toastify("error", response?.response?.data?.message);
 

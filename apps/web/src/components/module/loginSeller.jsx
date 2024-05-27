@@ -1,31 +1,40 @@
-import { useFormik } from "formik";
-import { Button } from "@material-tailwind/react";
-import { useNavigate } from "react-router-dom";
-import loginRegist from "../../utils/login";
-import { authLogin } from "../../utils/authLogin";
+import React, { useEffect } from 'react';
+import { useFormik } from 'formik';
+import { Button } from '@material-tailwind/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { loginUser, getUser } from '../../configs/redux/action/authSlice';
+import loginRegist from '../../utils/login';
 
 const LoginSeller = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (user && user.role === 'seller') {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
+      role: 'seller',
       showPassword: false,
     },
     validationSchema: loginRegist,
-    onSubmit: async (values) => {
-      const response = await authLogin(values);
-      if (response?.status === 200) {
-        localStorage.setItem("token", response?.data?.data?.Token);
-        localStorage.setItem(
-          "refreshToken",
-          response?.data?.data?.RefreshToken
-        );
-        navigate("/");
-        toastify("success", response?.data?.message);
-      } else {
-        toastify("error", response?.response?.data?.message);
-      }
+    onSubmit: (values, { setSubmitting }) => {
+      console.log('Submitting form with values:', values); 
+      dispatch(loginUser(values));
+      setSubmitting(false);
     },
   });
 
@@ -84,15 +93,12 @@ const LoginSeller = () => {
             Forgot password?
           </div>
 
-          <div className="flex justify-center py-5">
-            <Button
-              type="submit"
-              className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
-              disabled={formik.isSubmitting}
-            >
-              Login Seller
+          <div className='flex justify-center py-5'>
+            <Button type="submit" className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting || loading} >
+              {loading ? 'Loading...' : 'Login Seller'}
             </Button>
           </div>
+          {error && <div className="text-red-500 text-center">{error}</div>}
         </div>
       </form>
 

@@ -1,33 +1,36 @@
-import React from "react";
-import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import loginRegist from "../../utils/login";
-import { authLogin } from "../../utils/authLogin";
-import { toastify } from "../base/toastify";
+import React, { useEffect } from 'react';
+import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, getUser } from '../../configs/redux/action/authSlice';
+import { useNavigate } from 'react-router-dom';
+import loginRegist from '../../utils/login';
 
 const LoginCustomer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (user && user.role === 'customer') {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     validationSchema: loginRegist,
-    onSubmit: async (values) => {
-      const response = await authLogin(values);
-      if (response?.status === 200) {
-        localStorage.setItem("token", response?.data?.data?.Token);
-        localStorage.setItem(
-          "refreshToken",
-          response?.data?.data?.RefreshToken
-        );
-        navigate("/");
-        toastify("success", response?.data?.message);
-      } else {
-        toastify("error", response?.response?.data?.message);
-      }
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(loginUser(values));
+      setSubmitting(false);
     },
   });
 
@@ -65,12 +68,7 @@ const LoginCustomer = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() =>
-                  formik.setFieldValue(
-                    "showPassword",
-                    !formik.values.showPassword
-                  )
-                }
+                onClick={() => formik.setFieldValue('showPassword', !formik.values.showPassword)}
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
@@ -90,11 +88,12 @@ const LoginCustomer = () => {
             <button
               type="submit"
               className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || loading}
             >
-              Login Customer
+              {loading ? 'Loading...' : 'Login Customer'}
             </button>
           </div>
+          {error && <div className="text-red-500 text-center">{error}</div>}
         </div>
       </form>
 
