@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, getUser } from '../../configs/redux/action/authSlice';
 import loginRegist from '../../utils/login';
+import { toastify } from '../base/toastify';
 
 const LoginSeller = () => {
   const dispatch = useDispatch();
@@ -27,14 +28,22 @@ const LoginSeller = () => {
     initialValues: {
       email: '',
       password: '',
-      role: 'seller',
       showPassword: false,
     },
     validationSchema: loginRegist,
-    onSubmit: (values, { setSubmitting }) => {
-      console.log('Submitting form with values:', values); 
-      dispatch(loginUser(values));
-      setSubmitting(false);
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const action = await dispatch(loginUser(values)).unwrap();
+        // if (action.role !== 'seller') {
+        //   toastify('error', 'Only seller can log in');
+        //   return;
+        // }
+        toastify('success', 'Login successful');
+        navigate('/login');
+      } catch (error) {
+        setSubmitting(false);
+        toastify('error', error.message);
+      }
     },
   });
 

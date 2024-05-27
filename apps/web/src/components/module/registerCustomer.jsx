@@ -5,8 +5,8 @@ import * as Yup from "yup";
 import { Button } from "@material-tailwind/react";
 import registCustomer from "../../utils/registCustomer";
 import { useDispatch } from "react-redux";
-import { authRegister } from "../../utils/authRegister";
 import { toastify } from "../base/toastify";
+import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
 
 const RegisterCustomer = () => {
   const dispatch = useDispatch();
@@ -21,11 +21,12 @@ const RegisterCustomer = () => {
       password: "",
       showPassword: false,
       name: "",
-      // gender: "",
+      gender: "",
       role: "customer",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setLoading(true);
       dispatch(registerStart());
       try {
         const response = await fetch('http://localhost:3000/v1/auth/register', {
@@ -44,14 +45,14 @@ const RegisterCustomer = () => {
         localStorage.setItem('token', data.token);
 
         dispatch(registerSuccess(data.user));
-        navigate('/')
+        toastify("success", "Registration successful");
+        navigate('/login');
       } catch (error) {
         dispatch(registerFailure(error.message));
-      }finally {
+        toastify("error", error.message);
+      } finally {
         setLoading(false);
       }
-      toastify("error", response?.response?.data?.message);
-
     },
   });
 
@@ -137,27 +138,27 @@ const RegisterCustomer = () => {
               </div>
             )}
           </div>
-          {/* <h1>Gender:</h1>
+          <h1>Gender:</h1>
           <div className="flex space-x-4">
             <button
               type="button"
               className={`px-4 py-2 rounded ${
-                formik.values.gender === "Male"
+                formik.values.gender === "male"
                   ? "bg-[#DB3022]"
                   : "bg-[#FFF5E0]"
               }`}
-              onClick={() => formik.setFieldValue("gender", "Male")}
+              onClick={() => formik.setFieldValue("gender", "male")}
             >
               Male
             </button>
             <button
               type="button"
               className={`px-4 py-2 rounded ${
-                formik.values.gender === "Female"
+                formik.values.gender === "female"
                   ? "bg-[#DB3022]"
                   : "bg-[#FFF5E0]"
               }`}
-              onClick={() => formik.setFieldValue("gender", "Female")}
+              onClick={() => formik.setFieldValue("gender", "female")}
             >
               Female
             </button>
@@ -166,7 +167,7 @@ const RegisterCustomer = () => {
             <div className="text-red-500 text-[12px] font-poppins">
               {formik.errors.gender}
             </div>
-          )} */}
+          )}
         </div>
 
         <div className="flex justify-center py-10">

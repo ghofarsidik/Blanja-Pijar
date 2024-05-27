@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, getUser } from '../../configs/redux/action/authSlice';
+import { loginUser } from '../../configs/redux/action/authSlice';
 import { useNavigate } from 'react-router-dom';
 import loginRegist from '../../utils/login';
+import { toastify } from "../base/toastify";
 
 const LoginCustomer = () => {
   const dispatch = useDispatch();
@@ -11,26 +12,32 @@ const LoginCustomer = () => {
   const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user.role === 'customer') {
       navigate('/');
     }
-  }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
-    if (user && user.role === 'customer') {
-      navigate('/');
-    }
-  }, [user, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
+      role: "customer",
+      showPassword: false,
     },
     validationSchema: loginRegist,
-    onSubmit: (values, { setSubmitting }) => {
-      dispatch(loginUser(values));
-      setSubmitting(false);
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        // const action = await dispatch(loginUser(values)).unwrap();
+        // if (action.role !== 'customer') {
+        //   toastify('error', 'Only customers can log in');
+        //   return;
+        // }
+        toastify('success', 'Login successful');
+        navigate('/');
+      } catch (error) {
+        setSubmitting(false);
+        toastify('error', error.message);
+      }
     },
   });
 

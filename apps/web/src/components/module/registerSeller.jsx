@@ -5,6 +5,8 @@ import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import registSeller from '../../utils/registSeller.js'
 import { useDispatch } from 'react-redux';
+import { toastify } from '../base/toastify.js';
+import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
 
 const RegisterSeller = () => {
   const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const RegisterSeller = () => {
       password: "",
       showPassword: false,
       name: "",
-      store_name: "",
+      // store_name: "",
       role: "seller",
     },
     validationSchema: validationSchema,
@@ -42,9 +44,11 @@ const RegisterSeller = () => {
         localStorage.setItem('token', data.token);
 
         dispatch(registerSuccess(data.user));
-        navigate('/')
+        navigate('/login')
+        toastify("success", "Registration successful");
       } catch (error) {
         dispatch(registerFailure(error.message));
+        toastify("error", error.message);
       }finally {
         setLoading(false);
       }
@@ -105,7 +109,7 @@ const RegisterSeller = () => {
               </div>
             )}
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <input
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
@@ -120,7 +124,7 @@ const RegisterSeller = () => {
                 {formik.errors.store_name}
               </div>
             )}
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <div className="relative">
               <input
