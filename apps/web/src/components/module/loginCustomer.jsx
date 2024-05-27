@@ -27,13 +27,13 @@ const LoginCustomer = () => {
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const action = await dispatch(loginUser(values)).unwrap();
+        // const action = await dispatch(loginUser(values)).unwrap();
         // if (action.role !== 'customer') {
         //   toastify('error', 'Only customers can log in');
         //   return;
         // }
         toastify('success', 'Login successful');
-        navigate('/login');
+        navigate('/');
       } catch (error) {
         setSubmitting(false);
         toastify('error', error.message);
