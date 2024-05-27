@@ -65,7 +65,7 @@ const Home = () => {
                 product_name={product?.name || ""}
                 price={`$${product?.price}` || ""}
                 store={product?.Store?.name || ""}
-                onClick={() => handleProductDetail(product.id)}
+                onClick={() => handleProductDetail(product.ID)}
               />
             ))
           ) : (
@@ -84,7 +84,7 @@ const Home = () => {
                 product_name={product?.name || ""}
                 price={`$${product?.price}` || ""}
                 store={product?.Store?.name || ""}
-                onClick={() => handleProductDetail(product.id)}
+                onClick={() => handleProductDetail(product.ID)}
               />
             ))}
           </Recommendation>
@@ -100,7 +100,7 @@ const Home = () => {
                 product_name={product?.name || ""}
                 price={`$${product?.price}` || ""}
                 store={product?.Store?.name || ""}
-                onClick={() => handleProductDetail(product.id)}
+                onClick={() => handleProductDetail(product.ID)}
               />
             ))}
           </Recommendation>
