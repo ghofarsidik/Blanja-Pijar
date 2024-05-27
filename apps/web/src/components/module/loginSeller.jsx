@@ -34,15 +34,15 @@ const LoginSeller = () => {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         const action = await dispatch(loginUser(values)).unwrap();
-        // if (action.role !== 'seller') {
-        //   toastify('error', 'Only seller can log in');
-        //   return;
-        // }
         toastify('success', 'Login successful');
-        navigate('/login');
+        navigate('/');
       } catch (error) {
         setSubmitting(false);
-        toastify('error', error.message);
+        if (error.message) {
+          toastify('error', "ada yang salah");
+        } else {
+          toastify('error', error);
+        }
       }
     },
   });
@@ -107,7 +107,7 @@ const LoginSeller = () => {
               {loading ? 'Loading...' : 'Login Seller'}
             </Button>
           </div>
-          {error && <div className="text-red-500 text-center">{error}</div>}
+          {error && <div className="text-red-500 text-center">{error.message || 'An error occurred'}</div>}
         </div>
       </form>
 
