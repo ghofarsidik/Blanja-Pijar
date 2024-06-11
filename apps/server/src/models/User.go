@@ -13,10 +13,10 @@ type User struct {
 	Email        string       `json:"email" validate:"required,email"`
 	Password     string       `json:"password" validate:"required"`
 	Image        string       `json:"image"`
-	Gender       string       `json:"gender"`
+	Gender       string       `json:"gender" type:"string;null"`
 	Birthday     string       `json:"birthday"`
 	Phone_number string       `json:"phone_number" validate:"min=10,max=13"`
-	Role         string       `json:"role" validate:"required"`
+	Role         string       `json:"role" type:"string;null"`
 	Address      []APIAddress `json:"address"`
 	Store        []APIStore   `json:"store"`
 	Cart         []Cart       `json:"cart"`
@@ -24,14 +24,16 @@ type User struct {
 
 type APIAddress struct {
 	gorm.Model
-	Label          string `json:"label"`
-	ReceivedName   string `json:"received_name"`
-	ContactNumber  string `json:"contact_number"`
-	Address        string `json:"address" `
-	PostalCode     string `json:"postal_code"`
-	City           string `json:"city"`
-	PrimaryAddress bool   `json:"primary" gorm:"default:0"`
-	UserID         int    `json:"user_id"`
+	Label          string  `json:"label"`
+	ReceivedName   string  `json:"received_name"`
+	ContactNumber  string  `json:"contact_number"`
+	Address        string  `json:"address" `
+	PostalCode     string  `json:"postal_code"`
+	City           string  `json:"city"`
+	PrimaryAddress bool    `json:"primary" gorm:"default:0"`
+	Longitude      float64 `json:"longitude"`
+	Latitude       float64 `json:"latitude"`
+	UserID         int     `json:"user_id"`
 }
 
 type APIStore struct {

@@ -41,12 +41,14 @@ const Home = () => {
     if (query) {
       // API.get(`/products/filter?search=${query}`)
       fetch(`http://localhost:3000/v1/products?search=${query}`)
-      .then((response) => response.json())
-      .then((data) => setSearchResults(data.data))
-      .catch((error) => console.error("Error fetching search results:", error));
-  } else {
-    setSearchResults([]);
-  }
+        .then((response) => response.json())
+        .then((data) => setSearchResults(data.data))
+        .catch((error) =>
+          console.error("Error fetching search results:", error)
+        );
+    } else {
+      setSearchResults([]);
+    }
   };
 
   return (
