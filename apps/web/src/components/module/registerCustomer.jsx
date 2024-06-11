@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
-import * as Yup from "yup";
 import { Button } from "@material-tailwind/react";
 import registCustomer from "../../utils/registCustomer";
 import { useDispatch } from "react-redux";
 import { toastify } from "../base/toastify";
 import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
+import './Register.css';
 
 const RegisterCustomer = () => {
   const dispatch = useDispatch();
@@ -57,9 +57,9 @@ const RegisterCustomer = () => {
   });
 
   return (
-    <div className="w-full flex flex-col gap-10">
+    <div className="w-full flex flex-col gap-1">
       <form onSubmit={formik.handleSubmit}>
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-3">
           <div className="flex flex-col">
             <input
               className="border border-gray-500 rounded py-2 px-2"
@@ -139,29 +139,29 @@ const RegisterCustomer = () => {
             )}
           </div>
           <h1>Gender:</h1>
-          <div className="flex space-x-4">
-            <button
-              type="button"
-              className={`px-4 py-2 rounded ${
-                formik.values.gender === "male"
-                  ? "bg-[#DB3022]"
-                  : "bg-[#FFF5E0]"
-              }`}
-              onClick={() => formik.setFieldValue("gender", "male")}
-            >
+          <div className="flex space-x-4 items-center">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="male"
+                checked={formik.values.gender === "male"}
+                onChange={() => formik.setFieldValue("gender", "male")}
+                className="mr-2 custom-radio"
+              />
               Male
-            </button>
-            <button
-              type="button"
-              className={`px-4 py-2 rounded ${
-                formik.values.gender === "female"
-                  ? "bg-[#DB3022]"
-                  : "bg-[#FFF5E0]"
-              }`}
-              onClick={() => formik.setFieldValue("gender", "female")}
-            >
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="female"
+                checked={formik.values.gender === "female"}
+                onChange={() => formik.setFieldValue("gender", "female")}
+                className="mr-2 custom-radio"
+              />
               Female
-            </button>
+            </label>
           </div>
           {formik.touched.gender && formik.errors.gender && (
             <div className="text-red-500 text-[12px] font-poppins">
@@ -169,8 +169,7 @@ const RegisterCustomer = () => {
             </div>
           )}
         </div>
-
-        <div className="flex justify-center py-10">
+        <div className="flex justify-center py-2">
           <Button
             type="submit"
             className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
@@ -180,6 +179,17 @@ const RegisterCustomer = () => {
           </Button>
         </div>
       </form>
+      <div className="flex justify-center">
+        <p>
+         Already have an account?{" "}
+          <span
+            onClick={() => navigate("/login")}
+            className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
+          >
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 };
