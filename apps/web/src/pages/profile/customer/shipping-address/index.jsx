@@ -7,61 +7,81 @@ import {
   Step,
   Stepper,
 } from "@material-tailwind/react";
-import { useCallback, useMemo, useRef, useState } from "react";
-import {
-  MapContainer,
-  Marker,
-  TileLayer,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
-import "./map.module.css";
+import { useEffect, useState } from "react";
+import { Maps } from "../../../../components/module/Maps";
+import axios from "axios";
 
-function LocationMarker({ position, setPosition }) {
-  const markerRef = useRef(null);
-  const eventHandlers = useMemo(
-    () => ({
-      dragend() {
-        const marker = markerRef.current;
-        if (marker != null) {
-          setPosition(marker.getLatLng());
-        }
-      },
-    }),
-    []
-  );
-
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
-
-  return position === null ? null : (
-    <Marker
-      position={position}
-      draggable={true}
-      eventHandlers={eventHandlers}
-      ref={markerRef}
-    >
-      <Popup>You are here</Popup>
-    </Marker>
-  );
-}
-export default function ShippingAddress() {
+export default function ShippingAddress({ activeUser }) {
+  console.log(activeUser);
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
   const [isFirstStep, setIsFirstStep] = useState(false);
+  const [newAddress, setNewAddress] = useState({
+    label: "",
+    received_name: "",
+    contact_number: "",
+    address: "",
+    postal_code: "",
+    latitude: "",
+    longitude: "",
+    primary: false,
+    user_id: activeUser?.ID,
+  });
   const [position, setPosition] = useState([51.505, -0.09]);
   const handleOpen = () => setOpen(!open);
-
-  const handleNext = () => !isLastStep && setActiveStep((cur) => cur + 1);
+  const handleNext = () => {
+    !isLastStep && setActiveStep((cur) => cur + 1);
+    activeStep === 1 && onSubmit();
+  };
   const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
+  const onSubmit = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_URL_BLANJA}/address`,
+        newAddress,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+    // console.log(newAddress);
+    handleOpen();
+  };
+  const FORM = [
+    {
+      label: "Recipient’s name)",
+      name: "received_name",
+    },
+    {
+      label: "Recipient's telephone number",
+      name: "contact_number",
+    },
+    {
+      label: "Address",
+      name: "address",
+    },
+    {
+      label: "Postal code",
+      name: "postal_code",
+    },
+    {
+      label: "City or Subdistrict",
+      name: "city",
+    },
+  ];
+  useEffect(() => {
+    setNewAddress({
+      ...newAddress,
+      latitude: position?.lat,
+      longitude: position?.lng,
+    });
+  }, [position]);
   return (
     <>
       <div className="border-b border-gray-300 py-3">
@@ -79,7 +99,7 @@ export default function ShippingAddress() {
             Add new address
           </h1>
         </div>
-        <form action="">
+        <form action={onSubmit}>
           <Dialog open={open} handler={handleOpen} size="md">
             <DialogHeader>
               <div className="flex flex-col gap-5 w-full">
@@ -142,81 +162,54 @@ export default function ShippingAddress() {
             </DialogHeader>
             <DialogBody>
               <div className={`${activeStep === 0 ? "block" : "hidden"}`}>
-                <MapContainer
-                  center={position}
-                  zoom={13}
-                  scrollWheelZoom={false}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <LocationMarker
-                    position={position}
-                    setPosition={setPosition}
-                  />
-                </MapContainer>
+                <Maps position={position} setPosition={setPosition} />
               </div>
-
               <div className={`${activeStep === 1 ? "block" : "hidden"}`}>
                 <div className="w-full px-10">
                   <label htmlFor="">
                     Save label address as (ex: home, office)
                   </label>
                   <input
+                    name="label"
+                    value={newAddress?.label}
+                    onChange={(e) =>
+                      setNewAddress({ ...newAddress, label: e.target.value })
+                    }
                     type="text"
                     className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 px-10 pt-3">
-                  <div>
-                    <label htmlFor="" className="text-sm ">
-                      Recipent's name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="" className="text-sm ">
-                      Recipent's telephone number
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="" className="text-sm ">
-                      Detail address
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="" className="text-sm ">
-                      Postal code
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="" className="text-sm ">
-                      City or subdisctric
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
-                    />
-                  </div>
+                  {FORM?.map((item) => (
+                    <div>
+                      <label htmlFor="" className="text-sm ">
+                        {item?.label}
+                      </label>
+                      <input
+                        value={newAddress[item?.name]}
+                        onChange={(e) =>
+                          setNewAddress({
+                            ...newAddress,
+                            [e?.target?.name]: e?.target?.value,
+                          })
+                        }
+                        name={item?.name}
+                        type="text"
+                        className="w-full border border-gray-400 px-3 py-2 rounded-md outline-none"
+                      />
+                    </div>
+                  ))}
                 </div>
                 <div className="flex items-center gap-3 px-10 pt-5">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    onChange={(e) =>
+                      setNewAddress({
+                        ...newAddress,
+                        primary: e?.target?.checked,
+                      })
+                    }
+                  />
                   <p className="text-gray-700 text-sm">
                     Make it the primary address
                   </p>
@@ -233,7 +226,7 @@ export default function ShippingAddress() {
                   >
                     Prev
                   </Button>
-                  <Button onClick={handleNext} color="red">
+                  <Button onClick={handleNext} color="red" type="submit">
                     {isLastStep ? "Submit" : "Next"}
                   </Button>
                 </div>
@@ -241,16 +234,24 @@ export default function ShippingAddress() {
             </DialogFooter>
           </Dialog>
         </form>
-        <div className="border border-red-500 h-[150px] w-full px-3 py-2">
-          <h1>Andreas Jane</h1>
-          <p className="text-gray-600 my-1">
-            Perumahan Sapphire Mediterania, Wiradadi, Kec. Sokaraja, Kabupaten
-            Banyumas, Jawa Tengah, 53181 [Tokopedia Note: blok c 16] Sokaraja,
-            Kab. Banyumas, 53181
-          </p>
-          <button className="text-red-400 font-semibold mt-5">
-            Change address
-          </button>
+        <div className="-mt-14 max-h-[300px] overflow-y-scroll flex flex-col gap-y-3">
+          {activeUser?.address?.map((item) => (
+            <div
+              className={`${
+                item?.primary === true && "bg-main-red/20"
+              } border border-red-500 h-[150px] w-full px-3 py-2`}
+              key={item?.id}
+            >
+              <h1>{item?.received_name}</h1>
+              <p className="text-gray-600 my-1">
+                {item?.address} {item?.postal_code}
+                
+              </p>
+              <button className="text-red-400 font-semibold mt-5">
+                Change address
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </>

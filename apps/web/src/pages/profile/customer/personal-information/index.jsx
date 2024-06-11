@@ -4,12 +4,18 @@ import { useEffect, useState } from "react";
 import { SelectOption } from "../../../../components/base/select";
 import foto from "../../../../assets/images/profile/Mask Group.png";
 
-export default function PersonalInformation() {
+export default function PersonalInformation({ activeUser }) {
   const currentYear = dayjs().year();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [daysInMonth, setDaysInMonth] = useState([]);
-
+  const [detailProfile, setDetailProfile] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+    gender: "",
+  });
+  console.log(detailProfile);
   const years = Array.from(
     { length: currentYear - 1900 + 1 },
     (_, i) => 1900 + i
@@ -22,6 +28,15 @@ export default function PersonalInformation() {
     );
     setDaysInMonth(days);
   }, [selectedYear, selectedMonth]);
+  useEffect(() => {
+    setDetailProfile({
+      ...detailProfile,
+      name: activeUser?.name,
+      phone_number: activeUser?.phone_number,
+      gender: activeUser?.gender,
+      email: activeUser?.email,
+    });
+  }, []);
   return (
     <>
       <div className="border-b border-gray-300 py-3">
@@ -35,7 +50,7 @@ export default function PersonalInformation() {
               Name
             </label>
             <div className="w-2/3">
-              <Input label="Johanes Mikael" />
+              <Input label="Name" value={detailProfile?.name} />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -43,7 +58,7 @@ export default function PersonalInformation() {
               Email
             </label>
             <div className="w-2/3">
-              <Input label="Johanes Mikael" />
+              <Input label="Email" value={detailProfile?.email} />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -51,7 +66,7 @@ export default function PersonalInformation() {
               Phone Number
             </label>
             <div className="w-2/3">
-              <Input label="Johanes Mikael" />
+              <Input label="Phone Number" value={detailProfile?.phone_number} />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -59,8 +74,32 @@ export default function PersonalInformation() {
               Gender
             </label>
             <div className="flex gap-10 w-2/3">
-              <Radio name="type" label="Male" color="orange" />
-              <Radio name="type" label="Female" color="orange" />
+              <Radio
+                name="type"
+                label="Male"
+                color="red"
+                value={"male"}
+                onChange={(e) =>
+                  setDetailProfile({
+                    ...detailProfile,
+                    gender: e?.target?.value,
+                  })
+                }
+                checked={detailProfile?.gender === "male"}
+              />
+              <Radio
+                name="type"
+                label="Female"
+                color="red"
+                value={"female"}
+                onChange={(e) =>
+                  setDetailProfile({
+                    ...detailProfile,
+                    gender: e?.target?.value,
+                  })
+                }
+                checked={detailProfile?.gender === "female"}
+              />
             </div>
           </div>
           <div className="flex justify-end items-center gap-2">
@@ -102,7 +141,7 @@ export default function PersonalInformation() {
         </div>
         <div className="bg-gray-200 h-[150px] w-0.5"></div>
         <div className="w-[200px] items-center flex flex-col pr-20">
-          <img src={foto} alt="" className="w-28 h-28" />
+          <img src={activeUser?.image} alt="" className="w-28 h-28 rounded-full" />
           <button className="border-2 border-gray-200 rounded-full py-1 px-3 mt-5 text-sm text-gray-500">
             Select image
           </button>

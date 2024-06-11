@@ -43,14 +43,16 @@ func CreateAddress(c *fiber.Ctx) error {
 		return err
 	}
 	createAddress := map[string]interface{}{
-		"user_id":        id,
-		"label":          newAddress.Label,
-		"address":        newAddress.Address,
-		"received_name":  newAddress.ReceivedName,
-		"contact_number": newAddress.ContactNumber,
-		"postal_code":    newAddress.PostalCode,
-		"city":           newAddress.City,
-		"primary":        newAddress.PrimaryAddress,
+		"user_id":         id,
+		"label":           newAddress.Label,
+		"address":         newAddress.Address,
+		"received_name":   newAddress.ReceivedName,
+		"contact_number":  newAddress.ContactNumber,
+		"postal_code":     newAddress.PostalCode,
+		"city":            newAddress.City,
+		"primary_address": newAddress.PrimaryAddress,
+		"latitude":        newAddress.Latitude,
+		"longitude":       newAddress.Longitude,
 	}
 	addressExist := models.GetAddressByNameAndAddress(newAddress.ReceivedName, newAddress.Address, uint(newAddress.UserID))
 	if addressExist.ID != 0 {
@@ -61,6 +63,7 @@ func CreateAddress(c *fiber.Ctx) error {
 	models.CreateAddress(createAddress)
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "success created new address",
+		"data":    newAddress,
 	})
 }
 
