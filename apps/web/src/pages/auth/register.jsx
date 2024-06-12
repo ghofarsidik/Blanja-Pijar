@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.svg';
+import Logo from '../../assets/logo/Group 1158.png';
 import RegisterCustomer from '../../components/module/registerCustomer';
 import RegisterSeller from '../../components/module/registerSeller';
 
@@ -13,25 +13,26 @@ const Register = () => {
                 <Link to='/'><img src={Logo} alt="Logo" className="h-[50px] w-fit" /></Link>
             </div>
             <h1 className="font-bold text-lg text-center mb-6">Please sign up with your account</h1>
-            <div className="flex mb-6">
+            <div className="relative flex mb-6 border border-gray-600 rounded">
+                <div
+                    className={`absolute top-0 left-0 w-32 h-full bg-[#DB3022] transition-transform duration-300 ease-in-out transform ${role === 'customer' ? 'translate-x-0' : 'translate-x-full'}`}
+                />
                 <button
-                    className={`w-32 py-2 text-center mx-2 ${role === 'customer' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={`relative w-32 py-2 text-center transition duration-300 ease-in-out ${role === 'customer' ? 'text-white' : 'text-gray-700'}`}
                     onClick={() => setRole('customer')}
                 >
-                    Customer
+                    <span className={`relative z-10 ${role === 'customer' ? 'text-white' : 'text-gray-700'}`}>Customer</span>
                 </button>
                 <button
-                    className={`w-32 py-2 text-center mx-2 ${role === 'seller' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={`relative w-32 py-2 text-center transition duration-300 ease-in-out ${role === 'seller' ? 'text-white' : 'text-gray-700'}`}
                     onClick={() => setRole('seller')}
                 >
-                    Seller
+                    <span className={`relative z-10 ${role === 'seller' ? 'text-white' : 'text-gray-700'}`}>Seller</span>
                 </button>
             </div>
-            <div className="w-1/3 flex flex-col gap-10 items-center">
+
+            <div className="w-1/3 flex flex-col gap-5 items-center">
                 {role === 'customer' ? <RegisterCustomer /> : <RegisterSeller />}
-                <p className="w-full text-center font-normal text-base text-[#1F2A36]">
-                    Already have an account? <Link className="text-[#DB3022]" to="/login">Login</Link>
-                </p>
             </div>
         </div>
     );

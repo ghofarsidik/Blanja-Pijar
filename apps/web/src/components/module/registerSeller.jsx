@@ -7,6 +7,7 @@ import registSeller from '../../utils/registSeller.js'
 import { useDispatch } from 'react-redux';
 import { toastify } from '../base/toastify.js';
 import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
+import './Register.css';
 
 const RegisterSeller = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const RegisterSeller = () => {
       password: "",
       showPassword: false,
       name: "",
+      gender: "",
       // store_name: "",
       role: "seller",
     },
@@ -49,7 +51,7 @@ const RegisterSeller = () => {
       } catch (error) {
         dispatch(registerFailure(error.message));
         toastify("error", error.message);
-      }finally {
+      } finally {
         setLoading(false);
       }
       toastify("error", response?.response?.data?.message);
@@ -58,9 +60,9 @@ const RegisterSeller = () => {
   });
 
   return (
-    <div className="w-full flex flex-col gap-10">
+    <div className="w-full flex flex-col gap-1">
       <form onSubmit={formik.handleSubmit}>
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-3">
           <div className="flex flex-col">
             <input
               className="border border-gray-500 rounded py-2 px-2"
@@ -155,14 +157,54 @@ const RegisterSeller = () => {
               </div>
             )}
           </div>
+          <h1>Gender:</h1>
+          <div className="flex space-x-4 items-center">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="male"
+                checked={formik.values.gender === "male"}
+                onChange={() => formik.setFieldValue("gender", "male")}
+                className="mr-2 custom-radio"
+              />
+              Male
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="female"
+                checked={formik.values.gender === "female"}
+                onChange={() => formik.setFieldValue("gender", "female")}
+                className="mr-2 custom-radio"
+              />
+              Female
+            </label>
+          </div>
+          {formik.touched.gender && formik.errors.gender && (
+            <div className="text-red-500 text-[12px] font-poppins">
+              {formik.errors.gender}
+            </div>
+          )}
         </div>
-
-        <div className='flex justify-center py-10'>
+        <div className='flex justify-center py-2'>
           <Button type="submit" className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting}>
             {loading ? 'Loading...' : 'Daftar'}
           </Button>
         </div>
       </form>
+      <div className="flex justify-center">
+        <p>
+          Already have an account?{" "}
+          <span
+            onClick={() => navigate("/login")}
+            className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
+          >
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 };
