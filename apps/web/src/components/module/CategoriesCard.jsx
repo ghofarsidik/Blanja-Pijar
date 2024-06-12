@@ -20,56 +20,56 @@ import axios from "axios";
 
 const categoriesImages = {
   "T-Shirt": Tshirt,
-  Shorts: Shorts,
-  Pants: Pants,
-  Jacket: Jacket,
-  Accessories: Accessories,
-  Bagpack: Bagpack,
-  Cap: Cap,
-  Dress: Dress,
-  FormalSuits: FormalSuit,
-  Glasses: Glasses,
-  Handbag: Handbag,
-  HighHeels: HighHeels,
-  Shoes: Shoes,
-  Socks: Socks,
-  Tie: Tie,
-  WristWatch: WristWatch,
+  "Shorts": Shorts,
+  "Pants": Pants,
+  "Jacket": Jacket,
+  "Accessories": Accessories,
+  "Bagpack": Bagpack,
+  "Cap": Cap,
+  "Dress": Dress,
+  "FormalSuits": FormalSuit,
+  "Glasses": Glasses,
+  "Handbag": Handbag,
+  "HighHeels": HighHeels,
+  "Shoes": Shoes,
+  "Socks": Socks,
+  "Tie": Tie,
+  "WristWatch": WristWatch,
 };
 
-const CategoriesCard = () => {
-  const [categories, setCategories] = useState([]);
+const CategoriesCard = ({onCategoryClick, categories}) => {
+  // const [categories, setCategories] = useState([]);
   // const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    axios
-      .get("https://fakestoreapi.com/cat")
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-        //data dummy
-        setCategories([
-          { id: 1, name: "T-Shirt" },
-          { id: 2, name: "Shorts" },
-          { id: 3, name: "Pants" },
-          { id: 4, name: "Jacket" },
-          { id: 5, name: "Accessories" },
-          { id: 6, name: "Bagpack" },
-          { id: 7, name: "Cap" },
-          { id: 8, name: "Dress" },
-          { id: 9, name: "FormalSuits" },
-          { id: 10, name: "Glasses" },
-          { id: 11, name: "Handbag" },
-          { id: 12, name: "HighHeels" },
-          { id: 13, name: "Shoes" },
-          { id: 14, name: "Socks" },
-          { id: 15, name: "Tie" },
-          { id: 16, name: "WristWatch" },
-        ]);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("https://fakestoreapi.com/cat")
+  //     .then((response) => {
+  //       setCategories(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching categories:", error);
+  //       //data dummy
+  //       setCategories([
+  //         { id: 1, name: "T-Shirt" },
+  //         { id: 2, name: "Shorts" },
+  //         { id: 3, name: "Pants" },
+  //         { id: 4, name: "Jacket" },
+  //         { id: 5, name: "Accessories" },
+  //         { id: 6, name: "Bagpack" },
+  //         { id: 7, name: "Cap" },
+  //         { id: 8, name: "Dress" },
+  //         { id: 9, name: "FormalSuits" },
+  //         { id: 10, name: "Glasses" },
+  //         { id: 11, name: "Handbag" },
+  //         { id: 12, name: "HighHeels" },
+  //         { id: 13, name: "Shoes" },
+  //         { id: 14, name: "Socks" },
+  //         { id: 15, name: "Tie" },
+  //         { id: 16, name: "WristWatch" },
+  //       ]);
+  //     });
+  // }, []);
 
   function ButtonPrev({ onClick, next }) {
     return (
@@ -115,9 +115,9 @@ const CategoriesCard = () => {
   return (
     <Slider {...settings}>
       {categories.map((category, index) => (
-        <div>
+        <div key={index} onClick={()=> onCategoryClick(category)} >
           <img
-            key={index}
+            // key={index}
             className="w-[180px] h-[220px]"
             src={categoriesImages[category.name]}
             alt={category.name}

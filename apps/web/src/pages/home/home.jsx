@@ -15,12 +15,14 @@ const Home = () => {
   const [usedProducts, setUsedProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
     // API.get('/products/filter?limit=10&condition=new')
     fetch("http://localhost:3000/v1/products/filter?limit=10&condition=new")
       .then((response) => response.json())
-      .then((data) => setNewProducts(data.data))
+      .then((data) => {setNewProducts(data.data)
+      })
       .catch((error) => console.error("Error fetching products:", error));
   }, []);
 
@@ -38,24 +40,66 @@ const Home = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
+    setSelectedCategory(null);
     if (query) {
       // API.get(`/products/filter?search=${query}`)
       fetch(`http://localhost:3000/v1/products?search=${query}`)
-      .then((response) => response.json())
-      .then((data) => setSearchResults(data.data))
-      .catch((error) => console.error("Error fetching search results:", error));
-  } else {
-    setSearchResults([]);
-  }
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.data);
+          setSearchResults(data.data);
+        })
+        .catch((error) =>
+          console.error("Error fetching search results:", error)
+        );
+    } else {
+      setSearchResults([]);
+    }
   };
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    console.log(category.name);
+    fetch(`http://localhost:3000/v1/category/${category.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data.product);
+        setSearchResults(data.data.product);
+      })
+      .catch((error) =>
+        console.error("Error fetching category results: ", error)
+      );
+  };
+
+  // const handleCategoryClick = (category) => {
+  //   setSelectedCategory(category);
+  //   // console.log(category.name);
+  //   fetch(`http://localhost:3000/v1/products`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // Filter produk 
+  //       const filteredProducts = data.data.filter(product => product.category_id === category.id);
+  //       console.log(filteredProducts);
+  //       setSearchResults(filteredProducts);
+  //     })
+  //     .catch((error) =>
+  //       console.error("Error fetching category results: ", error)
+  //     );
+  // };
+  
 
   return (
     <div className="container mx-auto mb-10">
       <Navbar onSearch={handleSearch} />
-      {searchQuery ? (
+      {searchQuery || selectedCategory ? (
         <Recommendation
-          title="Search Results"
-          desc={`Results for "${searchQuery}"`}
+          title={
+            searchQuery
+              ? `Search Results for "${searchQuery}"`
+              : selectedCategory
+              ? `Category Results for "${selectedCategory.name}"`
+              : "Category Results"
+          }
         >
           {searchResults.length > 0 ? (
             searchResults.map((product, index) => (
@@ -63,7 +107,7 @@ const Home = () => {
                 key={index}
                 image={product?.product_image[0]?.image || NoImage}
                 product_name={product?.name || ""}
-                price={`$${product?.price}` || ""}
+                price={`${product?.price}` || ""}
                 store={product?.Store?.name || ""}
                 onClick={() => handleProductDetail(product.ID)}
               />
@@ -75,14 +119,17 @@ const Home = () => {
       ) : (
         <>
           <Jumbotron />
-          <Categories />
+          <Categories
+            onCategoryClick={handleCategoryClick}
+            categories={Categories}
+          />
           <Recommendation title="New" desc="You've never seen it before!">
             {newProducts.map((product, index) => (
               <Card
                 key={index}
                 image={product?.product_image[0]?.image || NoImage}
                 product_name={product?.name || ""}
-                price={`$${product?.price}` || ""}
+                price={`${product?.price}` || ""}
                 store={product?.Store?.name || ""}
                 onClick={() => handleProductDetail(product.ID)}
               />
@@ -98,7 +145,7 @@ const Home = () => {
                 key={index}
                 image={product?.product_image[0]?.image || NoImage}
                 product_name={product?.name || ""}
-                price={`$${product?.price}` || ""}
+                price={`${product?.price}` || ""}
                 store={product?.Store?.name || ""}
                 onClick={() => handleProductDetail(product.ID)}
               />

@@ -17,6 +17,12 @@ const LoginCustomer = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
+  useEffect(() => {
+    if (user && user.role === 'customer') {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -27,16 +33,16 @@ const LoginCustomer = () => {
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        // const action = await dispatch(loginUser(values)).unwrap();
-        // if (action.role !== 'customer') {
-        //   toastify('error', 'Only customers can log in');
-        //   return;
-        // }
+        const action = await dispatch(loginUser(values)).unwrap();
         toastify('success', 'Login successful');
         navigate('/');
       } catch (error) {
         setSubmitting(false);
-        toastify('error', error.message);
+        if (error.message) {
+          toastify('error', 'ada yang salah');
+        } else {
+          toastify('error', error);
+        }
       }
     },
   });
