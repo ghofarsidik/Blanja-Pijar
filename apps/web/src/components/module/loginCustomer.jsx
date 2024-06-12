@@ -103,7 +103,7 @@ const LoginCustomer = () => {
               className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
               disabled={formik.isSubmitting || loading}
             >
-              {loading ? 'Loading...' : 'Login Customer'}
+              {loading ? 'Loading...' : 'Login'}
             </button>
           </div>
           {error && <div className="text-red-500 text-center">{error}</div>}

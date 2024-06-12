@@ -45,10 +45,14 @@ const Home = () => {
       // API.get(`/products/filter?search=${query}`)
       fetch(`http://localhost:3000/v1/products?search=${query}`)
         .then((response) => response.json())
+<<<<<<< HEAD
         .then((data) => {
           console.log(data.data);
           setSearchResults(data.data);
         })
+=======
+        .then((data) => setSearchResults(data.data))
+>>>>>>> 42e9ac53fa443af7a57d086f4de4b4f20262cc63
         .catch((error) =>
           console.error("Error fetching search results:", error)
         );
