@@ -47,7 +47,7 @@ const ProductDetailPage = () => {
   const getDetailProduct = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/v1/product/${id}`
+        `https://blanja-kelompok-1-production.up.railway.app/v1/product/${id}`
       );
       setProduct(response?.data);
     } catch (error) {
@@ -62,7 +62,6 @@ const ProductDetailPage = () => {
   return (
     <div>
       <Navbar />
-      <Link></Link>
       {product ? <ProductDetail product={product} /> : <p>Product not found</p>}
     </div>
   );

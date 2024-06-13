@@ -15,15 +15,17 @@ type Category struct {
 
 type APIProduct struct {
 	gorm.Model
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Price       float64 `json:"price"`
-	Stock       uint    `json:"stock"`
-	Size        string  `json:"size"`
-	Condition   string  `json:"condition"`
-	Color       string  `json:"color"`
-	StoreID     string  `json:"store_id"`
-	CategoryID  string  `json:"category_id"`
+	Name         string          `json:"name"`
+	Description  string          `json:"description"`
+	Price        float64         `json:"price"`
+	Stock        uint            `json:"stock"`
+	Size         string          `json:"size"`
+	Condition    string          `json:"condition"`
+	Color        string          `json:"color"`
+	ProductImage APIProductImage `json:"product_image" gorm:"foreignKey:ProductID"`
+	StoreID      string          `json:"store_id"`
+	Store        Store           `gorm:"foreignKey:StoreID"`
+	CategoryID   string          `json:"category_id"`
 }
 
 func GetAllCategories() []*Category {
@@ -37,10 +39,12 @@ func GetAllCategories() []*Category {
 
 func GetDetailCategory(id int) *Category {
 	var results Category
-	configs.DB.Preload("Product", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProduct
-		return configs.DB.Model(&Product{}).Find(&items)
-	}).First(&results, "id = ?", id)
+	configs.DB.
+		Preload("Product", func(db *gorm.DB) *gorm.DB {
+			var items []*APIProduct
+			return configs.DB.Model(&Product{}).Find(&items)
+		}).
+		First(&results, "id = ?", id)
 	return &results
 }
 

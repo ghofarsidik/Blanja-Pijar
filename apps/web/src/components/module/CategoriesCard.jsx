@@ -20,30 +20,30 @@ import axios from "axios";
 
 const categoriesImages = {
   "T-Shirt": Tshirt,
-  Shorts: Shorts,
-  Pants: Pants,
-  Jacket: Jacket,
-  Accessories: Accessories,
-  Bagpack: Bagpack,
-  Cap: Cap,
-  Dress: Dress,
-  FormalSuits: FormalSuit,
-  Glasses: Glasses,
-  Handbag: Handbag,
-  HighHeels: HighHeels,
-  Shoes: Shoes,
-  Socks: Socks,
-  Tie: Tie,
-  WristWatch: WristWatch,
+  "Shorts": Shorts,
+  "Pants": Pants,
+  "Jacket": Jacket,
+  "Accessories": Accessories,
+  "Bagpack": Bagpack,
+  "Cap": Cap,
+  "Dress": Dress,
+  "FormalSuits": FormalSuit,
+  "Glasses": Glasses,
+  "Handbag": Handbag,
+  "HighHeels": HighHeels,
+  "Shoes": Shoes,
+  "Socks": Socks,
+  "Tie": Tie,
+  "WristWatch": WristWatch,
 };
 
-const CategoriesCard = () => {
-  const [categories, setCategories] = useState([]);
+const CategoriesCard = ({onCategoryClick, categories}) => {
+  // const [categories, setCategories] = useState([]);
   // const [currentIndex, setCurrentIndex] = useState(0);
   console.log(categories);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/v1/categories")
+      .get("https://blanja-kelompok-1-production.up.railway.app/v1/categories")
       .then((response) => {
         console.log(response);
         setCategories(response.data?.data);
@@ -120,9 +120,9 @@ const CategoriesCard = () => {
   return (
     <Slider {...settings}>
       {categories.map((category, index) => (
-        <div>
+        <div key={index} onClick={()=> onCategoryClick(category)} >
           <img
-            key={index}
+            // key={index}
             className="w-[180px] h-[220px]"
             src={categoriesImages[category.name]}
             alt={category.name}

@@ -9,17 +9,17 @@ import (
 
 type User struct {
 	gorm.Model
-	Name         string       `json:"name" validate:"required,min=3"`
-	Email        string       `json:"email" validate:"required,email"`
-	Password     string       `json:"password" validate:"required"`
-	Image        string       `json:"image"`
-	Gender       string       `json:"gender" type:"string;null"`
-	Birthday     string       `json:"birthday"`
-	Phone_number string       `json:"phone_number" validate:"min=10,max=13"`
-	Role         string       `json:"role" type:"string;null"`
-	Address      []APIAddress `json:"address"`
-	Store        []APIStore   `json:"store"`
-	Cart         []Cart       `json:"cart"`
+	Name         string        `json:"name" validate:"required,min=3"`
+	Email        string        `json:"email" validate:"required,email"`
+	Password     string        `json:"password" validate:"required"`
+	Image        string        `json:"image"`
+	Gender       string        `json:"gender" type:"string;null"`
+	Birthday     string        `json:"birthday"`
+	Phone_number string        `json:"phone_number" validate:"min=10,max=13"`
+	Role         string        `json:"role" type:"string;null"`
+	Address      []APIAddress  `json:"address"`
+	Store        []APIStore    `json:"store"`
+	Transaction  []Transaction `json:"transaction"`
 }
 
 type APIAddress struct {
@@ -52,6 +52,17 @@ type APICart struct {
 	CartDetail []CartDetail `json:"cart_detail"`
 }
 
+type APITransaction struct {
+	gorm.Model
+	Quantity        uint64  `json:"quantity"`
+	TotalAmount     float64 `json:"total_amount"`
+	ShippingAddress string  `json:"shipping_address" `
+	Status          string  `json:"status"`
+	UserID          uint    `json:"user_id"`
+	ProductID       uint64  `json:"product_id"`
+	PaymentMethod   string  `json:"payment_method"`
+}
+
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	validRoles := map[string]bool{
 		"seller":   true,
@@ -68,12 +79,14 @@ func GetAllUser() []*User {
 	configs.DB.Preload("Address", func(db *gorm.DB) *gorm.DB {
 		var items []*APIAddress
 		return db.Model(&Address{}).Find(&items)
-	}).Preload("Store", func(db *gorm.DB) *gorm.DB {
+	}).Preload("Stores", func(db *gorm.DB) *gorm.DB {
 		var items []*APIStore
 		return db.Model(&Store{}).Find(&items)
-	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
-		var items []*APICart
-		return db.Model(&Cart{}).Find(&items)
+	}).Preload("Transactions", func(db *gorm.DB) *gorm.DB {
+		var items []*APITransaction
+		return db.Model(&Transaction{}).Preload("Product", func(db *gorm.DB) *gorm.DB {
+			return db.Preload("Product")
+		}).Find(&items)
 	}).Find(&results)
 	return results
 }
@@ -86,9 +99,8 @@ func GetDetailUser(id interface{}) *User {
 	}).Preload("Store", func(db *gorm.DB) *gorm.DB {
 		var items []*APIStore
 		return db.Model(&Store{}).Find(&items)
-	}).Preload("Cart", func(db *gorm.DB) *gorm.DB {
-		var items []*APICart
-		return db.Model(&Cart{}).Find(&items)
+	}).Preload("Transaction", func(db *gorm.DB) *gorm.DB {
+		return db.Preload("Product")
 	}).First(&user, "id = ?", id)
 	return &user
 }

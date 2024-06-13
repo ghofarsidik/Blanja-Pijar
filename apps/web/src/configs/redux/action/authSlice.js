@@ -1,37 +1,34 @@
-//src/configs/redux/action/authSlice.js
+// src/configs/redux/action/authSlice.js
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+const BASE_URL = "https://blanja-kelompok-1-production.up.railway.app/v1";
 
 export const loginUser = createAsyncThunk('auth/loginUser', async (values, thunkAPI) => {
   try {
-    const response = await fetch("http://localhost:3000/v1/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
+    const response = await axios.post(`${BASE_URL}/auth/login`, values, {
+      headers: { "Content-Type": "application/json" }
     });
-    if (!response.ok) throw new Error('Login failed');
-    const data = await response.json();
-    const user = data.data;
+    const user = response.data.data;
 
     localStorage.setItem('token', user.Token);
     localStorage.setItem('refreshToken', user.RefreshToken);
     return user;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
+    return thunkAPI.rejectWithValue(error.response ? error.response.data.message : error.message);
   }
 });
 
 export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
   const token = localStorage.getItem('token');
   try {
-    const response = await fetch("http://localhost:3000/v1/auth/user", {
-      headers: { "Authorization": `Bearer ${token}` },
+    const response = await axios.get(`${BASE_URL}/auth/user`, {
+      headers: { "Authorization": `Bearer ${token}` }
     });
-    if (!response.ok) throw new Error('Failed to fetch user');
-    const userData = await response.json();
-    return userData;
+    return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
+    return thunkAPI.rejectWithValue(error.response ? error.response.data.message : error.message);
   }
 });
 

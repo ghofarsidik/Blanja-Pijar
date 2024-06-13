@@ -30,7 +30,7 @@ const RegisterSeller = () => {
     onSubmit: async (values) => {
       dispatch(registerStart());
       try {
-        const response = await fetch('http://localhost:3000/v1/auth/register', {
+        const response = await fetch('https://blanja-kelompok-1-production.up.railway.app/v1/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

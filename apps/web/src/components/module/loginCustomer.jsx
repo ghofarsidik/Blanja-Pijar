@@ -34,8 +34,13 @@ const LoginCustomer = () => {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         const action = await dispatch(loginUser(values)).unwrap();
-        toastify('success', 'Login successful');
-        navigate('/');
+        // if (action.role !== "customer") {
+        //   toastify("error", "Only customers can log in");
+        //   navigate("/");
+        //   return;
+        // }
+        toastify("success", "Login successful");
+        navigate("/");
       } catch (error) {
         setSubmitting(false);
         if (error.message) {

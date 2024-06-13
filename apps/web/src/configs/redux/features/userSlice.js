@@ -5,7 +5,7 @@ export const getActiveUser = createAsyncThunk(
   "user/getActiveUser",
   async (_, thunkApi) => {
     try {
-      const res = await axios.get(`http://localhost:3000/v1/user`, {
+      const res = await axios.get(`https://blanja-kelompok-1-production.up.railway.app/v1/user`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

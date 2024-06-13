@@ -28,7 +28,7 @@ func Router(app *fiber.App) {
 	api.Get("/products/filter", controllers.FilterProducts)
 	api.Get("/product/:id", controllers.GetDetailProduct)
 	api.Post("/product", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.CreateProduct)
-	api.Post("/product/uploadServer/:id", middlewares.JwtMiddleware(),  middlewares.ValidateSellerRole(),controllers.UploadImageProductServer)
+	api.Post("/product/uploadServer/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.UploadImageProductServer)
 	api.Put("/product/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.UpdateProduct)
 	api.Delete("/product/:id", middlewares.JwtMiddleware(), middlewares.ValidateSellerRole(), controllers.DeleteProduct)
 
@@ -55,4 +55,8 @@ func Router(app *fiber.App) {
 
 	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.LoginUser)
+
+	api.Get("/transactions", controllers.GetAllTransaction)
+	api.Post("/transaction", middlewares.JwtMiddleware(), controllers.CreateTransaction)
+	api.Post("/payment/callback", controllers.PaymentCallback)
 }
