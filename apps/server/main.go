@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
+	"net/http"
 	"server/src/configs"
+	"server/src/services"
 
 	"server/src/helpers"
 	"server/src/routes"
@@ -11,6 +15,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
+	"golang.ngrok.com/ngrok"
+	"golang.ngrok.com/ngrok/config"
 )
 
 func main() {
@@ -28,7 +34,25 @@ func main() {
 		ExposeHeaders: "Content-Length",
 	}))
 	configs.InitDB()
+	services.InitMidtrans()
 	helpers.Migration()
 	routes.Router(app)
 	app.Listen(":" + strconv.Itoa(PORT))
+
+}
+func run(ctx context.Context) error {
+	listener, err := ngrok.Listen(ctx,
+		config.HTTPEndpoint(),
+		ngrok.WithAuthtokenFromEnv(),
+	)
+	if err != nil {
+		return err
+	}
+
+	log.Println("App URL", listener.URL())
+	return http.Serve(listener, http.HandlerFunc(handler))
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "<h1>Hello from ngrok-go!</h1>")
 }

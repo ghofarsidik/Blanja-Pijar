@@ -6,6 +6,7 @@ import Cart from "../../pages/cart/cart";
 import ProductDetailPage from "../../pages/detailProduct/ProductDetailPage";
 import Customer from "../../pages/privatePage/Customer";
 import Profile from "../../pages/profile";
+import CheckoutPage from "../../pages/checkout";
 
 const MainRouter = () => {
   const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const MainRouter = () => {
     },
     { path: "/profile/:path", element: <Profile /> },
     { path: "/product/:id", element: <ProductDetailPage /> },
+    { path: "/checkout", element: <CheckoutPage /> },
   ]);
 
   return <RouterProvider router={router} />;

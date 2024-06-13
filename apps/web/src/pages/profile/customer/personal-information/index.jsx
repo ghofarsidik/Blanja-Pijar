@@ -16,6 +16,9 @@ export default function PersonalInformation({ activeUser }) {
     gender: "",
   });
   console.log(detailProfile);
+  const handleChange = (e) => {
+    setDetailProfile({ ...detailProfile, [e?.target?.name]: e?.target?.value });
+  };
   const years = Array.from(
     { length: currentYear - 1900 + 1 },
     (_, i) => 1900 + i
@@ -50,7 +53,12 @@ export default function PersonalInformation({ activeUser }) {
               Name
             </label>
             <div className="w-2/3">
-              <Input label="Name" value={detailProfile?.name} />
+              <Input
+                onChange={(e) => handleChange(e)}
+                label="Name"
+                value={detailProfile?.name}
+                name="name"
+              />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -58,7 +66,12 @@ export default function PersonalInformation({ activeUser }) {
               Email
             </label>
             <div className="w-2/3">
-              <Input label="Email" value={detailProfile?.email} />
+              <Input
+                onChange={(e) => handleChange(e)}
+                label="Email"
+                value={detailProfile?.email}
+                name="email"
+              />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -66,7 +79,12 @@ export default function PersonalInformation({ activeUser }) {
               Phone Number
             </label>
             <div className="w-2/3">
-              <Input label="Phone Number" value={detailProfile?.phone_number} />
+              <Input
+                onChange={(e) => handleChange(e)}
+                label="Phone Number"
+                value={detailProfile?.phone_number}
+                name="phone_number"
+              />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -141,7 +159,11 @@ export default function PersonalInformation({ activeUser }) {
         </div>
         <div className="bg-gray-200 h-[150px] w-0.5"></div>
         <div className="w-[200px] items-center flex flex-col pr-20">
-          <img src={activeUser?.image} alt="" className="w-28 h-28 rounded-full" />
+          <img
+            src={activeUser?.image}
+            alt=""
+            className="w-28 h-28 rounded-full"
+          />
           <button className="border-2 border-gray-200 rounded-full py-1 px-3 mt-5 text-sm text-gray-500">
             Select image
           </button>
