@@ -6,7 +6,7 @@ import (
 	"server/src/configs"
 	"server/src/services"
 
-	"server/src/helpers"
+	// "server/src/helpers"
 	"server/src/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -39,7 +39,7 @@ func main() {
 	}))
 	configs.InitDB()
 	services.InitMidtrans()
-	helpers.Migration()
+	// helpers.Migration()
 	routes.Router(app)
 	app.Listen(getPort())
 

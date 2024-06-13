@@ -2,46 +2,76 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/module/Navbar";
 import { Checkbox } from "@material-tailwind/react";
 import DummyProduct from "../../assets/images/dummy/dummyproduct.png";
+import noImage from "../../../src/assets/images/logo/noimage.jpg";
+import API from "../../configs/api";
 
 const Cart = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [items, setItems] = useState([
-    {
-      isChecked: false,
-      name: "Men's formal suit - Black",
-      brand: "Zalora Cloth",
-      image: DummyProduct,
-      quantity: 1,
-      price: 100,
-    },
-    {
-      isChecked: false,
-      name: "Men's formal suit - Black",
-      brand: "Zalora Cloth",
-      image: DummyProduct,
-      quantity: 2,
-      price: 100,
-    },
-    {
-      isChecked: false,
-      name: "Men's formal suit - Black",
-      brand: "Zalora Cloth",
-      image: DummyProduct,
-      quantity: 3,
-      price: 100,
-    },
-    {
-      isChecked: false,
-      name: "Men's formal suit - Black",
-      brand: "Zalora Cloth",
-      image: DummyProduct,
-      quantity: 4,
-      price: 100,
-    },
+    // {
+    //   isChecked: false,
+    //   name: "Men's formal suit - Black",
+    //   brand: "Zalora Cloth",
+    //   image: DummyProduct,
+    //   quantity: 1,
+    //   price: 100,
+    // },
+    // {
+    //   isChecked: false,
+    //   name: "Men's formal suit - Black",
+    //   brand: "Zalora Cloth",
+    //   image: DummyProduct,
+    //   quantity: 2,
+    //   price: 100,
+    // },
+    // {
+    //   isChecked: false,
+    //   name: "Men's formal suit - Black",
+    //   brand: "Zalora Cloth",
+    //   image: DummyProduct,
+    //   quantity: 3,
+    //   price: 100,
+    // },
+    // {
+    //   isChecked: false,
+    //   name: "Men's formal suit - Black",
+    //   brand: "Zalora Cloth",
+    //   image: DummyProduct,
+    //   quantity: 4,
+    //   price: 100,
+    // },
   ]);
 
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedCount, setSelectedCount] = useState(0);
+
+  useEffect(() => {
+    const getCardData = async () => {
+      try {
+        const response = await API.get("/cart")
+        console.log("cart data: ", response);
+        const data = response.data.data
+        console.log("data tampil :", data);
+        console.log("data lagi:", data[0]);
+        // const cartFormatItems = data.map(cart =>
+        //   cart.cart_detail.map(item => ({
+        //     isChecked: false,
+        //     name: item.Product.name || "no data",
+        //     brand: item.product.Store.name || "no data",
+        //     image: detail.Product.image || noImage,
+        //     quantity: item.quantity,
+        //     price: item.Product.price,
+        //   }))
+        // ).flat();
+        // setItems(cartFormatItems)
+
+        setItems(data)
+      } catch (error) {
+        console.log("Error get cart data: ", error);
+      }
+    };
+    getCardData()
+  }, []);
 
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
@@ -105,7 +135,9 @@ const Cart = () => {
             <div className="flex-grow flex gap-x-2">
               {" "}
               <p className="font-semibold">Pilih semua barang</p>{" "}
-              <div className="text-main-abu">({selectedCount} barang dipilih)</div>
+              <div className="text-main-abu">
+                ({selectedCount} barang dipilih)
+              </div>
             </div>
             <button
               className="pr-[16px] text-main-red"
@@ -138,10 +170,22 @@ const Cart = () => {
                 </div>
               </div>
               <div className="ml-5 flex items-center">
-                <button className="bg-main-abu text-white w-6 h-6 rounded-full mr-2 text-[16px] font-bold" onClick={() => handleQuantityChange(index, -1)}> &minus; </button>
+                <button
+                  className="bg-main-abu text-white w-6 h-6 rounded-full mr-2 text-[16px] font-bold"
+                  onClick={() => handleQuantityChange(index, -1)}
+                >
+                  {" "}
+                  &minus;{" "}
+                </button>
                 <div className="w-3 text-center">{item.quantity}</div>
-                <button className="bg-main-abu text-white w-6 h-6 rounded-full ml-2 text-[16px] font-bold" onClick={() => handleQuantityChange(index, +1)}> + </button>
-                </div>
+                <button
+                  className="bg-main-abu text-white w-6 h-6 rounded-full ml-2 text-[16px] font-bold"
+                  onClick={() => handleQuantityChange(index, +1)}
+                >
+                  {" "}
+                  +{" "}
+                </button>
+              </div>
               <div className="ml-5 text-base font-semibold pr-[1%] w-28 text-left">
                 Price: ${item.price * item.quantity}
               </div>
