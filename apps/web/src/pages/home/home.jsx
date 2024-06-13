@@ -1,5 +1,4 @@
 import Navbar from "../../components/module/Navbar";
-import Dummy from "../../assets/images/dummy/dummy.png";
 import NoImage from "../../assets/images/logo/noimage.jpg";
 import Card from "../../components/base/card/card";
 import Jumbotron from "../../components/module/Jumbotron";
@@ -16,31 +15,34 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const getData = async () => {
+
+  const getNewData = async () => {
     try {
-      const response = await API.get("/products");
-      console.log(response);
+      const response = await API.get("/products/filter?limit=10&condition=new");
+      console.log("new data: :", response);
+      setNewProducts(response.data.data);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    // API.get('/products/filter?limit=10&condition=new')
-    // fetch("http://localhost:3000/v1/products/filter?limit=10&condition=new")
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     setNewProducts(data.data);
-    //   })
-    //   .catch((error) => console.error("Error fetching products:", error));
-    getData();
+    getNewData();
   }, []);
 
   useEffect(() => {
-    // API.get('/products')
-    fetch("http://localhost:3000/v1/products/filter?limit=10&condition=used")
-      .then((response) => response.json())
-      .then((data) => setUsedProducts(data.data))
-      .catch((error) => console.error("Error fetching products:", error));
+    const getUsedData = async () => {
+      try {
+        const response = await API.get(
+          "/products/filter?limit=10&condition=used"
+        );
+        // console.log("used data: ", response);
+        setUsedProducts(response.data.data);
+      } catch (error) {
+        console.log("Error fetching used products:", error);
+      }
+    };
+
+    getUsedData();
   }, []);
 
   const handleProductDetail = (productId) => {
@@ -51,13 +53,13 @@ const Home = () => {
     setSearchQuery(query);
     setSelectedCategory(null);
     if (query) {
-      // API.get(`/products/filter?search=${query}`)
-      fetch(`http://localhost:3000/v1/products?search=${query}`)
-        .then((response) => response.json())
-        .then((data) => setSearchResults(data.data))
-        .catch((error) =>
-          console.error("Error fetching search results:", error)
-        );
+      const getSearchResult = async () => {
+        const response = await API.get(`/products?search=${query}`);
+        console.log("search data: ", response);
+        setSearchResults(response.data.data);
+      };
+
+      getSearchResult();
     } else {
       setSearchResults([]);
     }
@@ -65,33 +67,15 @@ const Home = () => {
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-    console.log(category.name);
-    fetch(`http://localhost:3000/v1/category/${category.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data.data.product);
-        setSearchResults(data.data.product);
-      })
-      .catch((error) =>
-        console.error("Error fetching category results: ", error)
-      );
-  };
+    // console.log(category.name);
+    const getCategoryData = async () => {
+      const response = await API.get(`/category/${category.id}`);
+      // console.log("category data: ", response);
+      setSearchResults(response.data.data.product);
+    };
 
-  // const handleCategoryClick = (category) => {
-  //   setSelectedCategory(category);
-  //   // console.log(category.name);
-  //   fetch(`http://localhost:3000/v1/products`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // Filter produk
-  //       const filteredProducts = data.data.filter(product => product.category_id === category.id);
-  //       console.log(filteredProducts);
-  //       setSearchResults(filteredProducts);
-  //     })
-  //     .catch((error) =>
-  //       console.error("Error fetching category results: ", error)
-  //     );
-  // };
+    getCategoryData();
+  };
 
   return (
     <div className="container mx-auto mb-10">
