@@ -4,6 +4,7 @@ import Sort from "../../assets/images/logo/filter.png";
 import Cart from "../../assets/images/logo/cart.png";
 import Mail from "../../assets/images/logo/mail.png";
 import Bell from "../../assets/images/logo/bell.png";
+import noPhoto from "../../assets/images/logo/noPhoto.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -80,7 +81,7 @@ const Navbar = ({onSearch}) => {
             <button className="flex items-center h-9 w-[44px]">
               <img
                 className="mx-auto rounded-full"
-                src={activeUser?.image}
+                src={activeUser?.image || noPhoto}
                 alt={activeUser?.name}
               />
             </button>
