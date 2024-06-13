@@ -16,14 +16,23 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const getData = async () => {
+    try {
+      const response = await API.get("/products");
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     // API.get('/products/filter?limit=10&condition=new')
-    fetch("http://localhost:3000/v1/products/filter?limit=10&condition=new")
-      .then((response) => response.json())
-      .then((data) => {setNewProducts(data.data)
-      })
-      .catch((error) => console.error("Error fetching products:", error));
+    // fetch("http://localhost:3000/v1/products/filter?limit=10&condition=new")
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     setNewProducts(data.data);
+    //   })
+    //   .catch((error) => console.error("Error fetching products:", error));
+    getData();
   }, []);
 
   useEffect(() => {
@@ -45,14 +54,7 @@ const Home = () => {
       // API.get(`/products/filter?search=${query}`)
       fetch(`http://localhost:3000/v1/products?search=${query}`)
         .then((response) => response.json())
-<<<<<<< HEAD
-        .then((data) => {
-          console.log(data.data);
-          setSearchResults(data.data);
-        })
-=======
         .then((data) => setSearchResults(data.data))
->>>>>>> 42e9ac53fa443af7a57d086f4de4b4f20262cc63
         .catch((error) =>
           console.error("Error fetching search results:", error)
         );
@@ -81,7 +83,7 @@ const Home = () => {
   //   fetch(`http://localhost:3000/v1/products`)
   //     .then((response) => response.json())
   //     .then((data) => {
-  //       // Filter produk 
+  //       // Filter produk
   //       const filteredProducts = data.data.filter(product => product.category_id === category.id);
   //       console.log(filteredProducts);
   //       setSearchResults(filteredProducts);
@@ -90,7 +92,6 @@ const Home = () => {
   //       console.error("Error fetching category results: ", error)
   //     );
   // };
-  
 
   return (
     <div className="container mx-auto mb-10">

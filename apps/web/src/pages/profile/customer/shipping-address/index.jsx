@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { Maps } from "../../../../components/module/Maps";
 import axios from "axios";
+import API from "../../../../configs/api";
 
 export default function ShippingAddress({ activeUser }) {
   console.log(activeUser);
@@ -37,15 +38,11 @@ export default function ShippingAddress({ activeUser }) {
   const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
   const onSubmit = async () => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_URL_BLANJA}/address`,
-        newAddress,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await API.post(`/address`, newAddress, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -245,7 +242,6 @@ export default function ShippingAddress({ activeUser }) {
               <h1>{item?.received_name}</h1>
               <p className="text-gray-600 my-1">
                 {item?.address} {item?.postal_code}
-                
               </p>
               <button className="text-red-400 font-semibold mt-5">
                 Change address

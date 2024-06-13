@@ -2,25 +2,29 @@ import axios from "axios";
 import Navbar from "../../components/module/Navbar";
 import { useState } from "react";
 import useSnap from "../../hooks/useSnap";
+import API from "../../configs/api";
+import { useDispatch } from "react-redux";
+import { setTokenPayment } from "../../configs/redux/features/userSlice";
+import { setValue } from "../../configs/redux/features/paymentSlice";
 
 export default function CheckoutPage() {
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     quantity: 2,
     shipping_address: "Jalan kemana saja",
-    product_id: 9,
+    product_id: 1,
     payment_method: "transfer",
   });
   const { snapEmbed } = useSnap();
 
   const pay = async () => {
     try {
-      const response = await axios.post(
-        `http://localhost:3000/v1/transaction`,
-        data,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await API.post(`/transaction`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log(response);
+      dispatch(setValue(response?.data));
       if (response?.status === 200) {
         window.snap.pay(response?.data?.token);
       }

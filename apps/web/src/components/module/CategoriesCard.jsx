@@ -40,70 +40,37 @@ const categoriesImages = {
 const CategoriesCard = ({onCategoryClick, categories}) => {
   // const [categories, setCategories] = useState([]);
   // const [currentIndex, setCurrentIndex] = useState(0);
-<<<<<<< HEAD
-
-  // useEffect(() => {
-  //   axios
-  //     .get("https://fakestoreapi.com/cat")
-  //     .then((response) => {
-  //       setCategories(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching categories:", error);
-  //       //data dummy
-  //       setCategories([
-  //         { id: 1, name: "T-Shirt" },
-  //         { id: 2, name: "Shorts" },
-  //         { id: 3, name: "Pants" },
-  //         { id: 4, name: "Jacket" },
-  //         { id: 5, name: "Accessories" },
-  //         { id: 6, name: "Bagpack" },
-  //         { id: 7, name: "Cap" },
-  //         { id: 8, name: "Dress" },
-  //         { id: 9, name: "FormalSuits" },
-  //         { id: 10, name: "Glasses" },
-  //         { id: 11, name: "Handbag" },
-  //         { id: 12, name: "HighHeels" },
-  //         { id: 13, name: "Shoes" },
-  //         { id: 14, name: "Socks" },
-  //         { id: 15, name: "Tie" },
-  //         { id: 16, name: "WristWatch" },
-  //       ]);
-  //     });
-  // }, []);
-=======
   console.log(categories);
   useEffect(() => {
     axios
       .get("http://localhost:3000/v1/categories")
       .then((response) => {
         console.log(response);
-        setCategories(response.data?.data);
+        // setCategories(response.data?.data);
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
         //data dummy
-        setCategories([
-          { id: 1, name: "T-Shirt" },
-          { id: 2, name: "Shorts" },
-          { id: 3, name: "Pants" },
-          { id: 4, name: "Jacket" },
-          { id: 5, name: "Accessories" },
-          { id: 6, name: "Bagpack" },
-          { id: 7, name: "Cap" },
-          { id: 8, name: "Dress" },
-          { id: 9, name: "FormalSuits" },
-          { id: 10, name: "Glasses" },
-          { id: 11, name: "Handbag" },
-          { id: 12, name: "HighHeels" },
-          { id: 13, name: "Shoes" },
-          { id: 14, name: "Socks" },
-          { id: 15, name: "Tie" },
-          { id: 16, name: "WristWatch" },
-        ]);
+        // setCategories([
+        //   { id: 1, name: "T-Shirt" },
+        //   { id: 2, name: "Shorts" },
+        //   { id: 3, name: "Pants" },
+        //   { id: 4, name: "Jacket" },
+        //   { id: 5, name: "Accessories" },
+        //   { id: 6, name: "Bagpack" },
+        //   { id: 7, name: "Cap" },
+        //   { id: 8, name: "Dress" },
+        //   { id: 9, name: "FormalSuits" },
+        //   { id: 10, name: "Glasses" },
+        //   { id: 11, name: "Handbag" },
+        //   { id: 12, name: "HighHeels" },
+        //   { id: 13, name: "Shoes" },
+        //   { id: 14, name: "Socks" },
+        //   { id: 15, name: "Tie" },
+        //   { id: 16, name: "WristWatch" },
+        // ]);
       });
   }, []);
->>>>>>> 42e9ac53fa443af7a57d086f4de4b4f20262cc63
 
   function ButtonPrev({ onClick, next }) {
     return (

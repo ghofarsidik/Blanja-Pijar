@@ -1,25 +1,27 @@
-import React, { useEffect } from 'react';
-import { useFormik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../configs/redux/action/authSlice';
-import { useNavigate } from 'react-router-dom';
-import loginRegist from '../../utils/login';
+import React, { useEffect } from "react";
+import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../configs/redux/action/authSlice";
+import { useNavigate } from "react-router-dom";
+import loginRegist from "../../utils/login";
 import { toastify } from "../base/toastify";
 
 const LoginCustomer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, loading, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    if (isAuthenticated && user.role === 'customer') {
-      navigate('/');
+    if (isAuthenticated && user.role === "customer") {
+      navigate("/");
     }
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (user && user.role === 'customer') {
-      navigate('/');
+    if (user && user.role === "customer") {
+      navigate("/");
     }
   }, [user, navigate]);
 
@@ -34,23 +36,17 @@ const LoginCustomer = () => {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         const action = await dispatch(loginUser(values)).unwrap();
-<<<<<<< HEAD
-        // if (action.role !== "customer") {
-        //   toastify("error", "Only customers can log in");
-        //   return;
-        // }
+        console.log(action);
         toastify("success", "Login successful");
         navigate("/");
-=======
-        toastify('success', 'Login successful');
-        navigate('/');
->>>>>>> c67fd57d82248c8c14cd45245e74b9474c3010f1
+        localStorage.setItem("token", action.data?.Token);
+        localStorage.setItem("refreshToken", action.data?.RefreshToken);
       } catch (error) {
         setSubmitting(false);
         if (error.message) {
-          toastify('error', 'ada yang salah');
+          toastify("error", "ada yang salah");
         } else {
-          toastify('error', error);
+          toastify("error", error);
         }
       }
     },
@@ -90,7 +86,12 @@ const LoginCustomer = () => {
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm"
-                onClick={() => formik.setFieldValue('showPassword', !formik.values.showPassword)}
+                onClick={() =>
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
+                }
               >
                 {formik.values.showPassword ? "Hide" : "Show"}
               </button>
@@ -112,7 +113,7 @@ const LoginCustomer = () => {
               className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
               disabled={formik.isSubmitting || loading}
             >
-              {loading ? 'Loading...' : 'Login'}
+              {loading ? "Loading..." : "Login"}
             </button>
           </div>
           {error && <div className="text-red-500 text-center">{error}</div>}
