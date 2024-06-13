@@ -84,7 +84,7 @@ func CreateTransaction(c *fiber.Ctx) error {
 	items := []midtrans.ItemDetail{
 		{
 			ID:    fmt.Sprintf("%d", productDetail.ID),
-			Price: int64(totalAmount),
+			Price: int64(productPrice),
 			Qty:   int32(newTransaction.Quantity),
 			Name:  productDetail.Name,
 		},
