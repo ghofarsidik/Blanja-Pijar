@@ -14,7 +14,7 @@ func Router(app *fiber.App) {
 	api.Get("/users", controllers.GetAllUser)
 	api.Get("/user", middlewares.JwtMiddleware(), controllers.GetDetailUser)
 	api.Post("/refreshToken", controllers.RefreshToken)
-	api.Put("/user", middlewares.JwtMiddleware(), controllers.UploadPhotoUser)
+	api.Put("/user/upload", middlewares.JwtMiddleware(), controllers.UploadPhotoUser)
 	api.Put("/user", middlewares.JwtMiddleware(), controllers.UpdateUser)
 	api.Delete("/user/:id", controllers.DeleteUser)
 

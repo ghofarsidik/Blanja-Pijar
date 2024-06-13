@@ -10,7 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mitchellh/mapstructure"
-	"golang.org/x/crypto/bcrypt"
+	// "golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUser(c *fiber.Ctx) error {
@@ -55,10 +55,6 @@ func UpdateUser(c *fiber.Ctx) error {
 	var updateUser models.User
 	mapstructure.Decode(input, &updateUser)
 
-	errors := helpers.ValidateStruct(updateUser)
-	if len(errors) > 0 {
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(errors)
-	}
 	user, _ := models.GetUserByEmail(updateUser.Email)
 	if input["email"] != user.Email {
 		if user.Email != "" {
@@ -67,17 +63,16 @@ func UpdateUser(c *fiber.Ctx) error {
 			})
 		}
 	}
-	if input["password"] != "" {
-		err := helpers.ValidatePassword(updateUser.Password)
-		if err != nil {
-			return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
-				"message": err.Error(),
-			})
-		}
-		hashPassword, _ := bcrypt.GenerateFromPassword([]byte(updateUser.Password), bcrypt.DefaultCost)
-		updateUser.Password = string(hashPassword)
-	}
-
+	// if input["password"] != "" {
+	// 	err := helpers.ValidatePassword(updateUser.Password)
+	// 	if err != nil {
+	// 		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
+	// 			"message": err.Error(),
+	// 		})
+	// 	}
+	// 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(updateUser.Password), bcrypt.DefaultCost)
+	// 	updateUser.Password = string(hashPassword)
+	// }
 	err := models.UpdateUser(uint(userID), &updateUser)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -152,7 +147,7 @@ func UploadPhotoUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Gagal mengunggah file" + err.Error())
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message":    fmt.Sprintf("Sukses mengunggah photo dengan ID %v", userID),
+		"message":    fmt.Sprintf("Sukses mengunggah photo"),
 		"statusCode": fiber.StatusOK,
 	})
 }
