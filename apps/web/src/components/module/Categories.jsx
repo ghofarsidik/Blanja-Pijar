@@ -1,45 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import Tshirt from "../../assets/images/categories/t-shirt.png";
-import Shorts from "../../assets/images/categories/shorts.png";
-import Pants from "../../assets/images/categories/pants.png";
-import Jacket from "../../assets/images/categories/jacket.png";
-import Accessories from "../../assets/images/categories/accessories.png";
-import Bagpack from "../../assets/images/categories/bagpack.png";
-import Cap from "../../assets/images/categories/cap.png";
-import Dress from "../../assets/images/categories/dress.png";
-import FormalSuit from "../../assets/images/categories/formalsuit.png";
-import Glasses from "../../assets/images/categories/glasses.png";
-import Handbag from "../../assets/images/categories/handbag.png";
-import HighHeels from "../../assets/images/categories/highheels.png";
-import Shoes from "../../assets/images/categories/shoes.png";
-import Socks from "../../assets/images/categories/socks.png";
-import Tie from "../../assets/images/categories/tie.png";
-import WristWatch from "../../assets/images/categories/wristwatch.png";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import CategoriesComponent from "./CategoriesCard"
+import axios from 'axios';
 
 
-const categoriesImages = {
-  "T-Shirt": Tshirt,
-  "Shorts": Shorts,
-  "Pants": Pants,
-  "Jacket": Jacket,
-  "Accessories": Accessories,
-  "Bagpack": Bagpack,
-  "Cap" : Cap,
-  "Dress" : Dress,
-  "FormalSuits": FormalSuit,
-  "Glasses": Glasses,
-  "Handbag": Handbag,
-  "HighHeels": HighHeels,
-  "Shoes": Shoes,
-  "Socks": Socks,
-  "Tie": Tie,
-  "WristWatch": WristWatch
-};
+const Categories = ({onCategoryClick}) => {
+  const [categories, setCategories] = useState([]);
 
-const Categories = () => {
+  useEffect(() => {
+    axios
+      .get("https://fakestoreapi.com/cat")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+        //data dummy
+        setCategories([
+          { id: 1, name: "T-Shirt" },
+          { id: 2, name: "Shorts" },
+          { id: 3, name: "Pants" },
+          { id: 4, name: "Jacket" },
+          { id: 5, name: "Accessories" },
+          { id: 6, name: "Bagpack" },
+          { id: 7, name: "Cap" },
+          { id: 8, name: "Dress" },
+          { id: 9, name: "FormalSuits" },
+          { id: 10, name: "Glasses" },
+          { id: 11, name: "Handbag" },
+          { id: 12, name: "HighHeels" },
+          { id: 13, name: "Shoes" },
+          { id: 14, name: "Socks" },
+          { id: 15, name: "Tie" },
+          { id: 16, name: "WristWatch" },
+        ]);
+      });
+  }, []);
+
     return (
     <div className="flex h-[360px] bg-[#F0F1F9] mx-[10%]">
       <div className="w-[259px] ml-[50px] container:ml-[150px]">
@@ -51,7 +49,7 @@ const Categories = () => {
         </div>
       </div>
       <div className=' w-[900px] pt-16'>
-      <CategoriesComponent />
+      <CategoriesComponent onCategoryClick={onCategoryClick} categories={categories} />
       </div>
     </div>
   );

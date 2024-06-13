@@ -8,7 +8,13 @@ const Card = ({image, product_name, price, store, onClick }) => {
         {product_name}
       </p>
       <p className="text-base font-blanja_metropolis font-medium text-main-red pl-3">
-        {price}
+        {
+        Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR"
+    }).format(price)
+    // price
+  } 
       </p>
       <p className="text-xs font-blanja_metropolis text-main-abu pl-3">
         {store}
