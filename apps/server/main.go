@@ -1,30 +1,34 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"net/http"
+	"os"
 	"server/src/configs"
 	"server/src/services"
 
 	"server/src/helpers"
 	"server/src/routes"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
-	"golang.ngrok.com/ngrok"
-	"golang.ngrok.com/ngrok/config"
 )
 
-func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
 	}
-	PORT := 3000
+	return "0.0.0.0:" + port
+
+}
+func main() {
+	if _, err := os.Stat(".env"); err == nil {
+		if err := godotenv.Load(); err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
+	// PORT := 3000
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
@@ -37,22 +41,23 @@ func main() {
 	services.InitMidtrans()
 	helpers.Migration()
 	routes.Router(app)
-	app.Listen(":" + strconv.Itoa(PORT))
+	app.Listen(getPort())
 
 }
-func run(ctx context.Context) error {
-	listener, err := ngrok.Listen(ctx,
-		config.HTTPEndpoint(),
-		ngrok.WithAuthtokenFromEnv(),
-	)
-	if err != nil {
-		return err
-	}
 
-	log.Println("App URL", listener.URL())
-	return http.Serve(listener, http.HandlerFunc(handler))
-}
+// func run(ctx context.Context) error {
+// 	listener, err := ngrok.Listen(ctx,
+// 		config.HTTPEndpoint(),
+// 		ngrok.WithAuthtokenFromEnv(),
+// 	)
+// 	if err != nil {
+// 		return err
+// 	}
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "<h1>Hello from ngrok-go!</h1>")
-}
+// 	log.Println("App URL", listener.URL())
+// 	return http.Serve(listener, http.HandlerFunc(handler))
+// }
+
+// func handler(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Fprintln(w, "<h1>Hello from ngrok-go!</h1>")
+// }
