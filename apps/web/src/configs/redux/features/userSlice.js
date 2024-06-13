@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import API from "../../api";
 
 export const getActiveUser = createAsyncThunk(
   "user/getActiveUser",
   async (_, thunkApi) => {
     try {
-      const res = await axios.get(`http://localhost:3000/v1/user`, {
+      const res = await API.get(`/user`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -23,8 +23,13 @@ const userSlice = createSlice({
     loading: false,
     activeUser: [],
     error: "",
+    tokenPayment: [],
   },
-  reducers: {},
+  reducers: {
+    setTokenPayment: (state, action) => {
+      state.tokenPayment = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getActiveUser.pending, (state) => {
@@ -44,4 +49,5 @@ const userSlice = createSlice({
       });
   },
 });
+export const { setTokenPayment } = userSlice.actions;
 export default userSlice.reducer;

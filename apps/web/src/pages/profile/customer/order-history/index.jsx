@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Tabs,
   TabsHeader,
@@ -6,52 +6,61 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-
+import { useSelector } from "react-redux";
 
 export function OrderHistory() {
+  const { activeUser } = useSelector((state) => state.user);
+  const payment = useSelector((state) => state.payment);
+  const [transaction, setTransaction] = useState([]);
+
   const [activeTab, setActiveTab] = useState("all");
+  const handleClick = (value) => {
+    if (value === "all") {
+      setTransaction(activeUser?.transaction);
+    } else if (value === "pending") {
+      const data = activeUser?.transaction?.filter(
+        (item) => item?.status === "waiting payment"
+      );
+      setTransaction(data);
+    } else if (value === "packed") {
+      const data = activeUser?.transaction?.filter(
+        (item) => item?.status === "packed"
+      );
+      setTransaction(data);
+    } else {
+      const data = activeUser?.transaction?.filter(
+        (item) => item?.status === "payment expired"
+      );
+      setTransaction(data);
+    }
+    setActiveTab(value);
+  };
   const data = [
     {
       label: "All items",
       value: "all",
-      desc: `It really matters and then like it really doesn't matter.
-      What matters is the people who are sparked by it. And the people 
-      who are like offended by it, it doesn't matter.`,
+      desc: transaction,
     },
     {
       label: "Not yet paid",
       value: "pending",
-      desc: `Because it's about motivating the doers. Because I'm here
-      to follow my dreams and inspire other people to follow their dreams, too.`,
+      desc: transaction,
     },
     {
       label: "Packed",
       value: "packed",
-      desc: `We're not always in the position that we want to be at.
-      We're constantly growing. We're constantly making mistakes. We're
-      constantly trying to express ourselves and actualize our dreams.`,
-    },
-    {
-      label: "Sent",
-      value: "sent",
-      desc: `Because it's about motivating the doers. Because I'm here
-      to follow my dreams and inspire other people to follow their dreams, too.`,
-    },
-    {
-      label: "Completed",
-      value: "success",
-      desc: `We're not always in the position that we want to be at.
-      We're constantly growing. We're constantly making mistakes. We're
-      constantly trying to express ourselves and actualize our dreams.`,
+      desc: transaction,
     },
     {
       label: "Order cancel",
       value: "cancel",
-      desc: `We're not always in the position that we want to be at.
-      We're constantly growing. We're constantly making mistakes. We're
-      constantly trying to express ourselves and actualize our dreams.`,
+      desc: transaction,
     },
   ];
+  console.log(transaction);
+  useEffect(() => {
+    setTransaction(activeUser?.transaction);
+  }, []);
   return (
     <>
       <div className="py-3">
@@ -69,7 +78,7 @@ export function OrderHistory() {
             <Tab
               key={value}
               value={value}
-              onClick={() => setActiveTab(value)}
+              onClick={() => handleClick(value)}
               className={
                 activeTab === value
                   ? "text-main-red font-semibold"
@@ -82,8 +91,51 @@ export function OrderHistory() {
         </TabsHeader>
         <TabsBody>
           {data.map(({ value, desc }) => (
-            <TabPanel key={value} value={value}>
-              {desc}
+            <TabPanel
+              key={value}
+              value={value}
+              className="overflow-y-scroll h-[450px]"
+            >
+              <div className="flex gap-24 font-semibold text-gray-500 -ml-1 pb-3">
+                <p>Detail Product</p>
+                <p>Total payment</p>
+                <p>Payment method</p>
+                <p className="ml-20">Status</p>
+              </div>
+              {desc?.map((item) => (
+                <div key={item?.ID}>
+                  <div className="flex gap-x-36 items-center">
+                    <div>
+                      <p className="font-semibold">{item?.Product.name}</p>
+                      <div className="flex gap-1 items-center">
+                        <p className="text-gray-500 text-sm">
+                          {item?.quantity} X
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          ${item?.Product.price}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-main-red font-bold">
+                      ${item?.total_amount}
+                    </p>
+                    <p className="-ml-4 inline-block min-w-[160px]">
+                      {item?.payment_method}
+                    </p>
+                    <p
+                      className={`${
+                        item?.status === "packed"
+                          ? "text-green-500"
+                          : item?.status === "payment expired"
+                          ? "text-main-red"
+                          : "text-yellow-900"
+                      } text-sm font-semibold`}
+                    >
+                      {item?.status}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </TabPanel>
           ))}
         </TabsBody>

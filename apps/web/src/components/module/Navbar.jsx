@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-const Navbar = ({onSearch}) => {
+const Navbar = ({ onSearch }) => {
   const { activeUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +78,10 @@ const Navbar = ({onSearch}) => {
               <img className="mx-auto" src={Mail} alt="Cart" />
             </button>
 
-            <button className="flex items-center h-9 w-[44px]">
+            <button
+              className="flex items-center h-9 w-[44px]"
+              onClick={() => navigate("/profile/account")}
+            >
               <img
                 className="mx-auto rounded-full"
                 src={activeUser?.image || noPhoto}

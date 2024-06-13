@@ -5,8 +5,13 @@ import { Button } from "@material-tailwind/react";
 import registCustomer from "../../utils/registCustomer";
 import { useDispatch } from "react-redux";
 import { toastify } from "../base/toastify";
-import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
-import './Register.css';
+import {
+  registerStart,
+  registerSuccess,
+  registerFailure,
+} from "../../configs/redux/action/authRegist";
+import "./Register.css";
+import API from "../../configs/api";
 
 const RegisterCustomer = () => {
   const dispatch = useDispatch();
@@ -29,24 +34,18 @@ const RegisterCustomer = () => {
       setLoading(true);
       dispatch(registerStart());
       try {
-        const response = await fetch('http://localhost:3000/v1/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
+        const response = await API.post("/auth/register", values);
 
         if (!response.ok) {
-          throw new Error('Something went wrong');
+          throw new Error("Something went wrong");
         }
 
         const data = await response.json();
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
 
         dispatch(registerSuccess(data.user));
         toastify("success", "Registration successful");
-        navigate('/login');
+        navigate("/login");
       } catch (error) {
         dispatch(registerFailure(error.message));
         toastify("error", error.message);
@@ -181,7 +180,7 @@ const RegisterCustomer = () => {
       </form>
       <div className="flex justify-center">
         <p>
-         Already have an account?{" "}
+          Already have an account?{" "}
           <span
             onClick={() => navigate("/login")}
             className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"

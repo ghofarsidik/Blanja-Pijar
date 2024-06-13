@@ -1,33 +1,81 @@
-import { Input, Radio } from "@material-tailwind/react";
-import dayjs from "dayjs";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Input,
+  Radio,
+} from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { SelectOption } from "../../../../components/base/select";
-import foto from "../../../../assets/images/profile/Mask Group.png";
+import defaultFoto from "../../../../assets/images/logo/noPhoto.png";
+import "flowbite/dist/flowbite.css";
+import "react-datepicker/dist/react-datepicker.css";
+import ReactDatePicker from "react-datepicker";
+import API from "../../../../configs/api";
+import { toastify } from "../../../../components/base/toastify";
+import { useDispatch } from "react-redux";
+import { getActiveUser } from "../../../../configs/redux/features/userSlice";
 
 export default function PersonalInformation({ activeUser }) {
-  const currentYear = dayjs().year();
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [selectedMonth, setSelectedMonth] = useState(1);
-  const [daysInMonth, setDaysInMonth] = useState([]);
+  const today = new Date();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [file, setFile] = useState({
+    selectedImage: null,
+    file: null,
+  });
+
   const [detailProfile, setDetailProfile] = useState({
     name: "",
     email: "",
     phone_number: "",
     gender: "",
+    birthday: today,
+    password: "",
   });
-  console.log(detailProfile);
-  const years = Array.from(
-    { length: currentYear - 1900 + 1 },
-    (_, i) => 1900 + i
-  );
-  const months = Array.from({ length: 12 }, (_, i) => i + 1);
-  useEffect(() => {
-    const days = Array.from(
-      { length: dayjs(`${selectedYear}-${selectedMonth}`).daysInMonth() },
-      (_, i) => i + 1
-    );
-    setDaysInMonth(days);
-  }, [selectedYear, selectedMonth]);
+  const handleChangeImage = (e) => {
+    const file = e?.target?.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        setFile({
+          selectedImage: event.target.result,
+          file: file,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleEditUser = async () => {
+    try {
+      const response = await API.put("/user", detailProfile);
+      toastify("success", response?.data?.message);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+    dispatch(getActiveUser());
+  };
+  const handleSubmitImage = async () => {
+    if (file?.file != null) {
+      try {
+        let formData = new FormData();
+        formData.append("file", file?.file);
+        const response = await API.put("/user/upload", formData);
+        toastify("success", response?.data?.message);
+        setFile({ file: null, selectedImage: null });
+      } catch (error) {
+        toastify("error", error?.response?.data?.message);
+      }
+    }
+    setOpen(false);
+    dispatch(getActiveUser());
+  };
+  const handleOpen = () => setOpen(!open);
+  const handleChange = (e) => {
+    setDetailProfile({ ...detailProfile, [e?.target?.name]: e?.target?.value });
+  };
   useEffect(() => {
     setDetailProfile({
       ...detailProfile,
@@ -35,6 +83,7 @@ export default function PersonalInformation({ activeUser }) {
       phone_number: activeUser?.phone_number,
       gender: activeUser?.gender,
       email: activeUser?.email,
+      password: activeUser?.password,
     });
   }, []);
   return (
@@ -50,7 +99,12 @@ export default function PersonalInformation({ activeUser }) {
               Name
             </label>
             <div className="w-2/3">
-              <Input label="Name" value={detailProfile?.name} />
+              <Input
+                onChange={(e) => handleChange(e)}
+                label="Name"
+                value={detailProfile?.name}
+                name="name"
+              />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -58,7 +112,12 @@ export default function PersonalInformation({ activeUser }) {
               Email
             </label>
             <div className="w-2/3">
-              <Input label="Email" value={detailProfile?.email} />
+              <Input
+                onChange={(e) => handleChange(e)}
+                label="Email"
+                value={detailProfile?.email}
+                name="email"
+              />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -66,7 +125,12 @@ export default function PersonalInformation({ activeUser }) {
               Phone Number
             </label>
             <div className="w-2/3">
-              <Input label="Phone Number" value={detailProfile?.phone_number} />
+              <Input
+                onChange={(e) => handleChange(e)}
+                label="Phone Number"
+                value={detailProfile?.phone_number}
+                name="phone_number"
+              />
             </div>
           </div>
           <div className="flex gap-10 justify-end items-center ">
@@ -102,49 +166,69 @@ export default function PersonalInformation({ activeUser }) {
               />
             </div>
           </div>
-          <div className="flex justify-end items-center gap-2">
+          <div className="flex justify-end items-center gap-8">
             <label htmlFor="" className="text-gray-400 text-end">
               Date of birth
             </label>
-            <div className="flex gap-5">
-              <SelectOption>
-                {daysInMonth.map((day, i) => (
-                  <option key={i} value={day}>
-                    {day}
-                  </option>
-                ))}
-              </SelectOption>
-              <SelectOption
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              >
-                {months.map((month) => (
-                  <option key={month} value={month}>
-                    {dayjs()
-                      .month(month - 1)
-                      .format("MMMM")}
-                  </option>
-                ))}
-              </SelectOption>
-              <SelectOption
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </SelectOption>
+            <div className="w-[350px]">
+              <ReactDatePicker
+                autoHide
+                selected={detailProfile?.birthday}
+                onChange={(date) =>
+                  setDetailProfile({ ...detailProfile, birthday: date })
+                }
+                maxDate={today}
+                className="w-[350px] p-2 border rounded-lg"
+              />
             </div>
           </div>
+          <button
+            onClick={handleEditUser}
+            className="bg-main-red text-white w-1/3 mx-auto py-2 rounded-md mt-6"
+          >
+            Save Profile
+          </button>
         </div>
         <div className="bg-gray-200 h-[150px] w-0.5"></div>
         <div className="w-[200px] items-center flex flex-col pr-20">
-          <img src={activeUser?.image} alt="" className="w-28 h-28 rounded-full" />
-          <button className="border-2 border-gray-200 rounded-full py-1 px-3 mt-5 text-sm text-gray-500">
+          <img
+            src={activeUser?.image ? activeUser?.image : defaultFoto}
+            alt=""
+            className="w-28 h-28 rounded-full"
+          />
+          <button
+            onClick={handleOpen}
+            className="border-2 border-gray-200 rounded-full py-1 px-3 mt-5 text-sm text-gray-500"
+          >
             Select image
           </button>
+          <Dialog open={open} handler={handleOpen}>
+            <DialogHeader>Upload photo</DialogHeader>
+            <DialogBody>
+              <div
+                className="w-full h-[350px] relative"
+                style={{
+                  backgroundImage: `url(${file?.selectedImage})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {!file?.selectedImage && (
+                  <p className="top-1/2 left-1/2 absolute -translate-x-1/2 -translate-y-1/2">
+                    Choose file
+                  </p>
+                )}
+                <input
+                  type="file"
+                  className="w-full h-full opacity-0 cursor-pointer"
+                  onChange={(e) => handleChangeImage(e)}
+                />
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <Button onClick={handleSubmitImage}>Submit</Button>
+            </DialogFooter>
+          </Dialog>
         </div>
       </div>
     </>
