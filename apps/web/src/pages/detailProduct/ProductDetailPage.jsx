@@ -7,6 +7,7 @@ import product4Image from "../../assets/images/detailProduuct/product-4.jpg";
 import ProductDetail from "../detailProduct/ProductDetail";
 import Navbar from "../../components/module/Navbar";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const products = [
   {
@@ -61,6 +62,7 @@ const ProductDetailPage = () => {
   return (
     <div>
       <Navbar />
+      <Link></Link>
       {product ? <ProductDetail product={product} /> : <p>Product not found</p>}
     </div>
   );

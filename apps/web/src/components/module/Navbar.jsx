@@ -77,12 +77,14 @@ const Navbar = ({onSearch}) => {
               <img className="mx-auto" src={Mail} alt="Cart" />
             </button>
 
-            <button className="flex items-center h-9 w-[44px]">
+            <button className="flex items-center h-9 w-[44px]"
+             onClick={() => navigate("/profile/:path")}>
               <img
                 className="mx-auto rounded-full"
                 src={activeUser?.image}
                 alt={activeUser?.name}
               />
+
             </button>
           </>
         ) : (

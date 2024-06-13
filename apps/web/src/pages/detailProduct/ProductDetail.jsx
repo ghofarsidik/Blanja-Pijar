@@ -48,19 +48,19 @@ const ProductDetail = ({ product }) => {
   return (
     <div className="p-5 mx-[10%]">
       <div className="flex justify-between w-full">
-        <div className="w-[30%] flex flex-col items-center">
+        <div className="w-[30%] flex flex-col items-center border-2">
           <img
             src={mainImage}
-            alt={product.title}
+            alt={"Main iamge"}
             className="w-[500px] object-cover max-h-[350px] rounded"
           />
-          <div className="flex mt-2 space-x-2">
+          <div className="flex mt-2 space-x-2 border-2">
             {product?.product_image?.map((image, index) => (
               <div>
                 <img
                   key={index}
                   src={image?.image}
-                  alt={`Thumbnail ${index}`}
+                  alt={"content image"}
                   className="max-w-20 max-h-20 object-cover cursor-pointer"
                   onClick={() => handleThumbnailClick(image?.image)}
                 />
@@ -75,7 +75,7 @@ const ProductDetail = ({ product }) => {
           <p className="text-gray-500">{myStore?.name}</p>
           <h1>Rating:</h1>
           <div className="flex items-center mt-2">
-            {Array.from({ length: 4 }, (_, index) => (
+            {Array.from({ length: 5 }, (_, index) => (
               <span key={index} className="text-yellow-500 text-3xl">
                 ★
               </span>
@@ -101,13 +101,13 @@ const ProductDetail = ({ product }) => {
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-lg">Color</h3>
+            <h3 className="text-lg">Color:</h3>
             <div className="flex space-x-2">
               {/* {product.colors.map((color) => (
                 <button
                   key={color}
                   className={`w-8 h-8 rounded-full ${
-                    selectedColor === color ? "ring-2 ring-red-500" : ""
+                    selectedColor === color ? "ring-2 ring-[red]" : ""
                   }`}
                   style={{ backgroundColor: color }}
                   onClick={() => handleColorSelection(color)}
@@ -140,7 +140,7 @@ const ProductDetail = ({ product }) => {
             <button className="text-black py-2 px-4 mr-2 rounded-full border-2 border-black w-40">
               Add to Bag
             </button>
-            <button className="bg-red-500 text-white py-2 px-4 mr-2 rounded-full w-80">
+            <button className="bg-red-500 text-white py-2 px-4 mr-2 rounded-full w-40">
               Buy Now
             </button>
           </div>
@@ -168,45 +168,45 @@ const ProductDetail = ({ product }) => {
               <span className="text-6x1 text-gray-500 ">/5</span>
             </div>
             <div className="flex mt-2">
-              {/* {Array.from(new Array(5), (_, index) => (
+              {Array.from(new Array(5), (_, index) => (
                 <span key={index} className="text-yellow-500 text-3xl">
                   ★
                 </span>
-              ))} */}
+              ))}
             </div>
           </div>
-          {/* <div>
+          <div>
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">5</span>
               <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
-              <span className="ml-2">{product.reviewCount[5]}</span>
+              <span className="ml-2">5</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">4</span>
               <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
-              <span className="ml-2">{product.reviewCount[4]}</span>
+              <span className="ml-2">4</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">3</span>
               <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
-              <span className="ml-2">{product.reviewCount[3]}</span>
+              <span className="ml-2">3</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500">★</span>
               <span className="ml-2">2</span>
               <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
-              <span className="ml-2">{product.reviewCount[2]}</span>
+              <span className="ml-2">2</span>
             </div>
             <div className="flex items-center">
               <span className="text-yellow-500 ">★</span>
               <span className="ml-2">1</span>
               <div className="w-24 h-2 bg-red-500 ml-2 rounded-full"></div>
-              <span className="ml-2">{product.reviewCount[1]}</span>
+              <span className="ml-2">1</span>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
       <div className="border-t border-gray-200 w-full my-10 shadow-black"></div>
