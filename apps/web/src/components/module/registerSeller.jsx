@@ -3,10 +3,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
-import registSeller from '../../utils/registSeller.js'
+import registSeller from '../../utils/registSeller.js';
 import { useDispatch } from 'react-redux';
 import { toastify } from '../base/toastify.js';
 import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
+import axios from 'axios';
 import './Register.css';
 
 const RegisterSeller = () => {
@@ -23,39 +24,32 @@ const RegisterSeller = () => {
       showPassword: false,
       name: "",
       gender: "",
-      // store_name: "",
       role: "seller",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       dispatch(registerStart());
+      setLoading(true);
       try {
-        const response = await fetch('https://blanja-kelompok-1-production.up.railway.app/v1/auth/register', {
-          method: 'POST',
+        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/register', values, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(values),
         });
 
-        if (!response.ok) {
-          throw new Error('Something went wrong');
-        }
-
-        const data = await response.json();
+        const data = response.data;
         localStorage.setItem('token', data.token);
 
         dispatch(registerSuccess(data.user));
-        navigate('/login')
-        toastify("success", "Registration successful");
+        navigate('/login');
+        toastify("success", data.message);
       } catch (error) {
-        dispatch(registerFailure(error.message));
-        toastify("error", error.message);
+        const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
+        dispatch(registerFailure(errorMessage));
+        toastify("error", errorMessage);
       } finally {
         setLoading(false);
       }
-      toastify("error", response?.response?.data?.message);
-      setLoading(false);
     },
   });
 
@@ -111,22 +105,6 @@ const RegisterSeller = () => {
               </div>
             )}
           </div>
-          {/* <div className="flex flex-col">
-            <input
-              className="border border-gray-500 rounded py-2 px-2"
-              type="text"
-              name="store_name"
-              placeholder="Masukkan nama toko"
-              value={formik.values.store_name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.store_name && formik.errors.store_name && (
-              <div className="text-red-500 text-[12px] font-poppins">
-                {formik.errors.store_name}
-              </div>
-            )}
-          </div> */}
           <div className="flex flex-col">
             <div className="relative">
               <input

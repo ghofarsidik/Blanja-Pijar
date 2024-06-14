@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Dummy from "../../assets/images/dummy/dummy.png";
-import Cart from "../../components/base/card/card";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-
+import Card from "../../components/base/card/card";
+import NoImage from "../../assets/images/logo/noimage.jpg";
 import product1Image from "../../assets/images/detailProduuct/product-1.jpg";
 import product2Image from "../../assets/images/detailProduuct/product-2.jpg";
 import product3Image from "../../assets/images/detailProduuct/product-3.jpg";
@@ -69,6 +68,10 @@ const ProductDetail = ({ product }) => {
     setPurchaseAmount((prevPurchaseAmount) =>
       prevPurchaseAmount > 1 ? prevPurchaseAmount - 1 : 1
     );
+  };
+
+  const handleProductDetail = (productId) => {
+    navigate(`/product/${productId}`);
   };
 
   const handleThumbnailClick = (image) => {
@@ -269,11 +272,13 @@ const ProductDetail = ({ product }) => {
                 </div>
               </div>
               <div className="border-t border-gray-200 w-full my-10 shadow-black"></div>
-              <Cart
-                image={Dummy}
-                product_name="Men's formal suit - Black & White"
-                price="$ 40.0"
-                store="Zalora Cloth"
+              <Card
+                key={product?.ID}
+                image={product?.product_image[0]?.image || NoImage}
+                product_name={product?.name || ""}
+                price={`${product?.price}` || ""}
+                store={product?.Store?.name || ""}
+                onClick={() => handleProductDetail(product?.ID)}
               />
             </div>
           </div>
