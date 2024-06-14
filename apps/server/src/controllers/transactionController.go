@@ -49,8 +49,6 @@ func CreateTransaction(c *fiber.Ctx) error {
 	}
 	productPrice := productDetail.Price
 
-	priceInIDR := productPrice * 15000
-
 	totalAmount := productPrice * float64(newTransaction.Quantity)
 
 	createTransaction := models.Transaction{
@@ -82,7 +80,7 @@ func CreateTransaction(c *fiber.Ctx) error {
 		Client: services.MidtransClient,
 	}
 
-	priceInIDRInt := int64(priceInIDR)
+	priceInIDRInt := int64(totalAmount)
 	items := []midtrans.ItemDetail{
 		{
 			ID:    fmt.Sprintf("%d", productDetail.ID),

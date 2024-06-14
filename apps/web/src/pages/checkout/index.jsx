@@ -8,15 +8,20 @@ import GopayImage from "../../assets/images/payment/gopay.png";  // Assume you h
 import PosIndonesiaImage from "../../assets/images/payment/posindonesia.png";  // Assume you have this image
 import MastercardImage from "../../assets/images/payment/mastercard.png";  // Assume you have this image
 import "./modal.css";
+import API from "../../configs/api";
+import { useDispatch } from "react-redux";
+import { setTokenPayment } from "../../configs/redux/features/userSlice";
+import { setValue } from "../../configs/redux/features/paymentSlice";
 
 Modal.setAppElement("#root");
 
 export default function CheckoutPage() {
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     quantity: 2,
     shipping_address: "Jalan kemana saja",
-    product_id: 9,
+    product_id: 1,
     payment_method: "transfer",
   });
   const { snapEmbed } = useSnap();
@@ -32,12 +37,11 @@ export default function CheckoutPage() {
 
   const pay = async () => {
     try {
-      const response = await axios.post(
-        `https://blanja-kelompok-1-production.up.railway.app/v1/transaction`,
-        data,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await API.post(`/transaction`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log(response);
+      dispatch(setValue(response?.data));
       if (response?.status === 200) {
         window.snap.pay(response?.data?.token);
       }

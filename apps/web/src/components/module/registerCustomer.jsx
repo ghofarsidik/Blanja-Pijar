@@ -177,7 +177,7 @@ const RegisterCustomer = () => {
       </form>
       <div className="flex justify-center">
         <p>
-         Already have an account?{" "}
+          Already have an account?{" "}
           <span
             onClick={() => navigate("/login")}
             className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"

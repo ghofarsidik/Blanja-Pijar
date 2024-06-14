@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"server/src/configs"
 
 	"gorm.io/gorm"
@@ -52,11 +53,23 @@ func GetAllCarts() []*Cart {
 }
 
 func GetCartByUserId(id uint) []*Cart {
+	// var result []*Cart
+	// configs.DB.Model(&Cart{}).Preload("CartDetail", func(db *gorm.DB) *gorm.DB {
+	// 	var items []*APICartDetail
+	// 	return configs.DB.Model(&CartDetail{}).Find(&items)
+	// }).
+	// 	Preload("User").
+	// 	Where("user_id = ?", id).First(&result)
+	// return result
+
 	var result []*Cart
-	configs.DB.Model(&Cart{}).Preload("CartDetail", func(db *gorm.DB) *gorm.DB {
-		var items []*APICartDetail
-		return configs.DB.Model(&CartDetail{}).Find(&items)
-	}).Where("user_id = ?", id).First(&result)
+	configs.DB.Model(&Cart{}).
+		Preload("User"). // Preload User di Cart
+		Preload("CartDetail.Product"). // Preload Product di CartDetail
+		Preload("CartDetail.Product.Category").  // Preload Category in Product in CartDetail
+		Preload("CartDetail.Product.Store").  // Preload Store in Product in CartDetail
+		Where("user_id = ?", id).
+		Find(&result) 
 	return result
 }
 
@@ -93,9 +106,16 @@ func AddToCart(userID uint, request *AddToCartRequest) (*Cart, error) {
 
 	for _, item := range request.Products {
 		var product Product
+
+		if err := tx.Where("id = ?", item.ProductID).First(&product).Error; err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("product with ID %d not found", item.ProductID)
+		}
+
 		if product.Stock < item.Quantity {
 			tx.Rollback()
-			return nil, errors.New("product out of stock")
+			// return nil, errors.New("product out of stock")
+			return nil, fmt.Errorf("product with ID %d is out of stock", item.ProductID)
 		}
 		var cartDetail CartDetail
 		if err := tx.Where("cart_id = ? AND product_id = ?", cart.ID, item.ProductID).First(&cartDetail).Error; err == nil {

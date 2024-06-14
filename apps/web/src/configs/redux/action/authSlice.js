@@ -20,8 +20,9 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (values, thunk
   }
 });
 
-export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
-  const token = localStorage.getItem('token');
+
+export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
+  const token = localStorage.getItem("token");
   try {
     const response = await axios.get(`${BASE_URL}/auth/user`, {
       headers: { "Authorization": `Bearer ${token}` }
@@ -33,8 +34,13 @@ export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
 });
 
 const authSlice = createSlice({
-  name: 'auth',
-  initialState: { user: null, loading: false, error: null, isAuthenticated: false },
+  name: "auth",
+  initialState: {
+    user: null,
+    loading: false,
+    error: null,
+    isAuthenticated: false,
+  },
   reducers: {
     setAuthenticated(state, action) {
       state.isAuthenticated = action.payload;
@@ -42,13 +48,15 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-    }
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => { state.loading = true; })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
@@ -58,7 +66,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(getUser.pending, (state) => { state.loading = true; })
+      .addCase(getUser.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;

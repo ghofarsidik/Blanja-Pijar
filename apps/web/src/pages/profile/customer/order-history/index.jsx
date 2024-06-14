@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 
 export function OrderHistory() {
   const { activeUser } = useSelector((state) => state.user);
-  console.log(activeUser?.transaction);
+  const payment = useSelector((state) => state.payment);
   const [transaction, setTransaction] = useState([]);
 
   const [activeTab, setActiveTab] = useState("all");
@@ -51,14 +51,6 @@ export function OrderHistory() {
       value: "packed",
       desc: transaction,
     },
-    // {
-    //   label: "Sent",
-    //   value: "sent",
-    // },
-    // {
-    //   label: "Completed",
-    //   value: "success",
-    // },
     {
       label: "Order cancel",
       value: "cancel",

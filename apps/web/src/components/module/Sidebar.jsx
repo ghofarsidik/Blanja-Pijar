@@ -1,12 +1,17 @@
 import { useSelector } from "react-redux";
 import foto from "../../assets/images/profile/Mask Group.png";
+import defaultFoto from '../../assets/images/logo/noPhoto.png'
 
 export const Sidebar = ({ children }) => {
-  const {activeUser} = useSelector((state)=>state.user)
+  const { activeUser } = useSelector((state) => state.user);
   return (
     <div className="bg-gray-100 w-[35%] h-screen">
       <div className="flex justify-center items-center pl-20 py-10 gap-5">
-        <img src={activeUser?.image} alt="" className="h-16 w-16 rounded-full"/>
+        <img
+          src={activeUser?.image ? activeUser?.image : defaultFoto}
+          alt=""
+          className="h-16 w-16 rounded-full"
+        />
         <div className="flex flex-col ">
           <p className="font-bold">{activeUser?.name}</p>
           <div className="flex items-center gap-2">

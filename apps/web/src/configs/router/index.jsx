@@ -15,11 +15,13 @@ const MainRouter = () => {
     { path: "/register", element: <Register /> },
     {
       element: <Customer />,
-      children: [{ path: "/cart", element: <Cart /> }],
+      children: [
+        { path: "/cart", element: <Cart /> },
+        { path: "/checkout", element: <CheckoutPage /> },
+        { path: "/profile/:path", element: <Profile /> },
+      ],
     },
-    { path: "/profile/:path", element: <Profile /> },
     { path: "/product/:id", element: <ProductDetailPage /> },
-    { path: "/checkout", element: <CheckoutPage /> },
   ]);
 
   return <RouterProvider router={router} />;
