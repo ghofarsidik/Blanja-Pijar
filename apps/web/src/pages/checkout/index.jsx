@@ -71,7 +71,7 @@ export default function CheckoutPage() {
               <div>
                 <h3 className="font-semibold">Men's formal suit - Black</h3>
                 <p className="text-gray-500">Zalora Cloth</p>
-                <p className="font-semibold">$ 20.0</p>
+                <p className="font-semibold">Rp 25.000,00</p>
               </div>
             </div>
             <div className="border border-gray-300 rounded-lg p-4 flex items-center gap-4">
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
               <div>
                 <h3 className="font-semibold">Men's Jacket jeans</h3>
                 <p className="text-gray-500">Zalora Cloth</p>
-                <p className="font-semibold">$ 20.0</p>
+                <p className="font-semibold">Rp 25.000,00</p>
               </div>
             </div>
           </div>
@@ -143,7 +143,8 @@ export default function CheckoutPage() {
         className="Modal payment-modal"
         overlayClassName="Overlay"
       >
-        <h2 className="font-bold text-2xl mb-4">Payment</h2>
+        <h1 className="font-bold text-2xl mb-4">Payment</h1>
+        <h2 className="text-2xl mb-4">Payment method:</h2>
         <div className="payment-method">
           <img src={GopayImage} alt="Gopay" />
           <span>Gopay</span>
@@ -162,15 +163,15 @@ export default function CheckoutPage() {
         <div className="payment-summary">
           <div>
             <span>Order</span>
-            <span>$ 40.0</span>
+            <span>Rp 50.000,00</span>
           </div>
           <div>
             <span>Delivery</span>
-            <span>$ 5.0</span>
+            <span>Rp 5.000,00</span>
           </div>
           <div className="total">
             <span>Shopping summary</span>
-            <span>$ 45.0</span>
+            <span>Rp 55.000,00</span>
           </div>
           <button
             className="bg-main-red rounded-full w-full text-white py-1 mt-7"
