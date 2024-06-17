@@ -30,7 +30,8 @@ type CartDetail struct {
 	ProductID  uint    `json:"product_id"`
 	CartID     uint    `json:"cart_id"`
 	Product    Product `gorm:"foreignKey:ProductID"`
-	Cart       Cart    `gorm:"foreignKey:CartID"`
+	Quantity   uint    `json:"quantity"`
+	// Cart       Cart    `gorm:"foreignKey:CartID"`
 }
 type AddToCartRequest struct {
 	UserID   uint              `json:"user_id"`
@@ -68,6 +69,7 @@ func GetCartByUserId(id uint) []*Cart {
 		Preload("CartDetail.Product"). // Preload Product di CartDetail
 		Preload("CartDetail.Product.Category").  // Preload Category in Product in CartDetail
 		Preload("CartDetail.Product.Store").  // Preload Store in Product in CartDetail
+		// Preload("CartDetail.Product.APIProductImage").
 		Where("user_id = ?", id).
 		Find(&result) 
 	return result
@@ -120,6 +122,7 @@ func AddToCart(userID uint, request *AddToCartRequest) (*Cart, error) {
 		var cartDetail CartDetail
 		if err := tx.Where("cart_id = ? AND product_id = ?", cart.ID, item.ProductID).First(&cartDetail).Error; err == nil {
 			cartDetail.TotalPrice += product.Price * float64(item.Quantity)
+			cartDetail.Quantity += item.Quantity
 			if err := tx.Save(&cartDetail).Error; err != nil {
 				tx.Rollback()
 				return nil, err
@@ -129,6 +132,7 @@ func AddToCart(userID uint, request *AddToCartRequest) (*Cart, error) {
 				TotalPrice: product.Price * float64(item.Quantity),
 				ProductID:  item.ProductID,
 				CartID:     cart.ID,
+				Quantity: item.Quantity,
 			}
 			if err := tx.Create(&cartDetail).Error; err != nil {
 				tx.Rollback()

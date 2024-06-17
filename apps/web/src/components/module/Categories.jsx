@@ -48,7 +48,7 @@ const Categories = ({onCategoryClick}) => {
         <div className="flex space-x-6 pt-16">
         </div>
       </div>
-      <div className=' w-[900px] pt-16'>
+      <div className='w-[900px] pt-16 flex-grow'>
       <CategoriesComponent onCategoryClick={onCategoryClick} categories={categories} />
       </div>
     </div>
