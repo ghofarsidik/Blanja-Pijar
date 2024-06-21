@@ -14,7 +14,7 @@ type Cart struct {
 	Status     string       `json:"status"`
 	UserID     uint         `json:"user_id"`
 	User       User         `gorm:"foreignKey:UserID"`
-	CartDetail []CartDetail `json:"cart_detail"`
+	CartDetail []CartDetail `json:"cart_detail" gorm:"foreignKey:CartID"`
 }
 
 type APICartDetail struct {
@@ -44,6 +44,10 @@ type ProductQuantity struct {
 	Quantity  uint `json:"quantity"`
 }
 
+type DeleteCartRequest struct {
+	ProductIDs []uint `json:"product_ids"`
+}
+
 func GetAllCarts() []*Cart {
 	var results []*Cart
 	configs.DB.Model(&Cart{}).Preload("CartDetail", func(db *gorm.DB) *gorm.DB {
@@ -65,13 +69,14 @@ func GetCartByUserId(id uint) []*Cart {
 
 	var result []*Cart
 	configs.DB.Model(&Cart{}).
-		Preload("User"). // Preload User di Cart
-		Preload("CartDetail.Product"). // Preload Product di CartDetail
-		Preload("CartDetail.Product.Category").  // Preload Category in Product in CartDetail
-		Preload("CartDetail.Product.Store").  // Preload Store in Product in CartDetail
-		// Preload("CartDetail.Product.APIProductImage").
+		Preload("User").
+		Preload("CartDetail").
+		Preload("CartDetail.Product").
+		Preload("CartDetail.Product.Category").
+		Preload("CartDetail.Product.Store").
+		// Preload("CartDetail.Product.ProductImage"). 
 		Where("user_id = ?", id).
-		Find(&result) 
+		Find(&result)
 	return result
 }
 
@@ -132,7 +137,7 @@ func AddToCart(userID uint, request *AddToCartRequest) (*Cart, error) {
 				TotalPrice: product.Price * float64(item.Quantity),
 				ProductID:  item.ProductID,
 				CartID:     cart.ID,
-				Quantity: item.Quantity,
+				Quantity:   item.Quantity,
 			}
 			if err := tx.Create(&cartDetail).Error; err != nil {
 				tx.Rollback()
@@ -154,4 +159,14 @@ func AddToCart(userID uint, request *AddToCartRequest) (*Cart, error) {
 	}
 
 	return &cart, nil
+}
+
+func DeleteCartItems(userID uint, productIDs []uint) error {
+	if err := configs.DB.
+		Where("cart_id IN (SELECT id FROM carts WHERE user_id = ?) AND product_id IN (?)", userID, productIDs).
+		Delete(&CartDetail{}).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

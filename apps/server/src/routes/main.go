@@ -52,6 +52,7 @@ func Router(app *fiber.App) {
 	api.Get("/cart", middlewares.JwtMiddleware(), controllers.GetCartByUserId)
 	api.Post("/cart", middlewares.JwtMiddleware(), controllers.AddToCart)
 	api.Get("/carts/details", controllers.GetAllCartDetails)
+	api.Delete("/cart/items", controllers.DeleteCartItems)
 
 	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.LoginUser)

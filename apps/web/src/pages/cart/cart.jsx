@@ -34,7 +34,7 @@ const Cart = () => {
 
         // setItems(data[0].cart_detail)
       } catch (error) {
-        console.log("Error ge t cart data: ", error);
+        console.log("Error get cart data: ", error);
       }
     };
     getCardData()
@@ -59,6 +59,7 @@ const Cart = () => {
     setSelectAll(false); // Reset the select all checkbox
   };
 
+
   const handleQuantityChange = (index, delta) => {
     const newItems = [...items];
     newItems[index].quantity += delta;
@@ -81,7 +82,6 @@ const Cart = () => {
   return (
     <div>
       <Navbar />
-
       <div>
         <p className="text-[34px] font-bold font-blanja_metropolis mx-[10%] mt-[50px]">
           My Bag
