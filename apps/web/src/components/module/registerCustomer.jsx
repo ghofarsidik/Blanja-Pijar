@@ -5,13 +5,9 @@ import { Button } from "@material-tailwind/react";
 import registCustomer from "../../utils/registCustomer";
 import { useDispatch } from "react-redux";
 import { toastify } from "../base/toastify";
-import {
-  registerStart,
-  registerSuccess,
-  registerFailure,
-} from "../../configs/redux/action/authRegist";
-import "./Register.css";
-import API from "../../configs/api";
+import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
+import axios from 'axios';
+import './Register.css';
 
 const RegisterCustomer = () => {
   const dispatch = useDispatch();
@@ -34,21 +30,22 @@ const RegisterCustomer = () => {
       setLoading(true);
       dispatch(registerStart());
       try {
-        const response = await API.post("/auth/register", values);
+        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/register', values, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
+        const data = response.data;
+        localStorage.setItem('token', data.token);
 
         dispatch(registerSuccess(data.user));
-        toastify("success", "Registration successful");
-        navigate("/login");
+        toastify("success", data.message || "Registration successful");
+        navigate('/login');
       } catch (error) {
-        dispatch(registerFailure(error.message));
-        toastify("error", error.message);
+        const errorMessage = error.response?.data?.message || 'Something went wrong';
+        dispatch(registerFailure(errorMessage));
+        toastify("error", errorMessage);
       } finally {
         setLoading(false);
       }

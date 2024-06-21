@@ -7,6 +7,7 @@ import product4Image from "../../assets/images/detailProduuct/product-4.jpg";
 import ProductDetail from "../detailProduct/ProductDetail";
 import Navbar from "../../components/module/Navbar";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const products = [
   {
@@ -46,7 +47,7 @@ const ProductDetailPage = () => {
   const getDetailProduct = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/v1/product/${id}`
+        `https://blanja-kelompok-1-production.up.railway.app/v1/product/${id}`
       );
       setProduct(response?.data);
     } catch (error) {

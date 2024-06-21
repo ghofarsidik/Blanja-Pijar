@@ -5,6 +5,7 @@ import { loginUser } from "../../configs/redux/action/authSlice";
 import { useNavigate } from "react-router-dom";
 import loginRegist from "../../utils/login";
 import { toastify } from "../base/toastify";
+import axios from 'axios';
 
 const LoginCustomer = () => {
   const dispatch = useDispatch();
@@ -35,19 +36,22 @@ const LoginCustomer = () => {
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const action = await dispatch(loginUser(values)).unwrap();
-        console.log(action);
-        toastify("success", "Login successful");
-        navigate("/");
-        localStorage.setItem("token", action.data?.Token);
-        localStorage.setItem("refreshToken", action.data?.RefreshToken);
+        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/login', values, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = response.data;
+
+        dispatch(loginUser(data.user));
+        localStorage.setItem('token', data.token);
+        toastify("success", data.message || "Login successful");
+        navigate('/');
       } catch (error) {
         setSubmitting(false);
-        if (error.message) {
-          toastify("error", "ada yang salah");
-        } else {
-          toastify("error", error);
-        }
+        const errorMessage = error.response?.data?.message || 'Something went wrong';
+        toastify('error', errorMessage);
       }
     },
   });

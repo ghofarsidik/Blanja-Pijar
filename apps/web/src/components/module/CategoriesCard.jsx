@@ -43,7 +43,7 @@ const CategoriesCard = ({onCategoryClick, categories}) => {
   console.log(categories);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/v1/categories")
+      .get("https://blanja-kelompok-1-production.up.railway.app/v1/categories")
       .then((response) => {
         console.log(response);
         // setCategories(response.data?.data);
