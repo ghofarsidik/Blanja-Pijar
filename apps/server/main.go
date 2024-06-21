@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"server/src/configs"
+	"server/src/helpers"
 	"server/src/services"
 
 	// "server/src/helpers"
@@ -39,25 +40,8 @@ func main() {
 	}))
 	configs.InitDB()
 	services.InitMidtrans()
-	// helpers.Migration()
+	helpers.Migration()
 	routes.Router(app)
 	app.Listen(getPort())
 
 }
-
-// func run(ctx context.Context) error {
-// 	listener, err := ngrok.Listen(ctx,
-// 		config.HTTPEndpoint(),
-// 		ngrok.WithAuthtokenFromEnv(),
-// 	)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	log.Println("App URL", listener.URL())
-// 	return http.Serve(listener, http.HandlerFunc(handler))
-// }
-
-// func handler(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Fprintln(w, "<h1>Hello from ngrok-go!</h1>")
-// }

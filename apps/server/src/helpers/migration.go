@@ -16,6 +16,8 @@ func Migration() {
 		&models.Product{},
 		&models.ProductImage{},
 		&models.ProductColor{},
+		&models.ProductSize{},
 		&models.Transaction{},
+		&models.TransactionDetail{},
 	)
 }

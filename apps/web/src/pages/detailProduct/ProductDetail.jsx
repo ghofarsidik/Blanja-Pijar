@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Dummy from "../../assets/images/dummy/dummy.png";
 import Cart from "../../components/base/card/card";
 import axios from "axios";
+import API from "../../configs/api";
+import { toastify } from "../../components/base/toastify";
 
 const ProductDetail = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -11,6 +13,23 @@ const ProductDetail = ({ product }) => {
   const [mainImage, setMainImage] = useState(product?.product_image[0]?.image);
 
   console.log("Product detail:", myStore);
+
+  const addToCart = async () => {
+    try {
+      const res = await API.post("/cart", {
+        product_id: product.ID,
+        quantity: purchaseAmount,
+        size: selectedSize,
+        color: selectedColor,
+      });
+      toastify("success", res?.data?.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(product);
+
   const getStore = async () => {
     try {
       const response = await axios.get(
@@ -87,7 +106,7 @@ const ProductDetail = ({ product }) => {
           <div className="mt-4">
             <h3 className="text-lg">Size</h3>
             <div className="flex space-x-2">
-              {["S", "M", "L", "XL"].map((size) => (
+              {product?.product_size.map(({ size }) => (
                 <button
                   key={size}
                   className={`w-16 border p-2 ${
@@ -103,16 +122,16 @@ const ProductDetail = ({ product }) => {
           <div className="mt-4">
             <h3 className="text-lg">Color</h3>
             <div className="flex space-x-2">
-              {/* {product.colors.map((color) => (
+              {product.product_color.map(({ color }) => (
                 <button
                   key={color}
-                  className={`w-8 h-8 rounded-full ${
-                    selectedColor === color ? "ring-2 ring-red-500" : ""
+                  className={`w-8 h-8 rounded-full border border-gray-700 ${
+                    selectedColor === color ? "ring-2 ring-green-500" : ""
                   }`}
                   style={{ backgroundColor: color }}
                   onClick={() => handleColorSelection(color)}
                 ></button>
-              ))} */}
+              ))}
             </div>
           </div>
           <div className="mt-4">
@@ -137,7 +156,10 @@ const ProductDetail = ({ product }) => {
             <button className="text-black py-2 px-4 mr-2 rounded-full border-2 border-black w-40">
               Chat
             </button>
-            <button className="text-black py-2 px-4 mr-2 rounded-full border-2 border-black w-40">
+            <button
+              className="text-black py-2 px-4 mr-2 rounded-full border-2 border-black w-40"
+              onClick={addToCart}
+            >
               Add to Bag
             </button>
             <button className="bg-red-500 text-white py-2 px-4 mr-2 rounded-full w-80">

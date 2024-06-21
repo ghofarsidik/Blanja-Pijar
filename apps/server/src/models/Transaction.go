@@ -8,15 +8,24 @@ import (
 
 type Transaction struct {
 	gorm.Model
-	Quantity        uint64  `json:"quantity" validate:"min=1"`
-	TotalAmount     float64 `json:"total_amount"`
-	ShippingAddress string  `json:"shipping_address" `
-	Status          string  `json:"status"`
-	ProductID       uint64  `json:"product_id"`
-	PaymentMethod   string  `json:"payment_method"`
-	UserID          uint64  `json:"user_id"`
-	Product         Product `gorm:"foreignKey:ProductID"`
-	User            User    `gorm:"foreignKey:UserID"`
+	TransactionNumber string              `json:"transaction_number"`
+	Quantity          uint64              `json:"quantity" validate:"min=1"`
+	TotalAmount       float64             `json:"total_amount"`
+	ShippingAddress   string              `json:"shipping_address"`
+	Status            string              `json:"status"`
+	PaymentMethod     string              `json:"payment_method"`
+	UserID            uint64              `json:"user_id"`
+	User              User                `gorm:"foreignKey:UserID"`
+	Details           []TransactionDetail `gorm:"foreignKey:TransactionID"`
+}
+
+type TransactionDetail struct {
+	gorm.Model
+	TransactionID   uint64      `json:"transaction_id"`
+	ProductID       uint64      `json:"product_id"`
+	ProductQuantity uint64      `json:"product_quantity"`
+	Product         Product     `gorm:"foreignKey:ProductID"`
+	Transaction     Transaction `gorm:"foreignKey:TransactionID"`
 }
 
 func GetAllTransaction() []*Transaction {

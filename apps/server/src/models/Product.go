@@ -10,18 +10,20 @@ import (
 
 type Product struct {
 	gorm.Model
-	Name         string            `json:"name"`
-	Description  string            `json:"description"`
-	Price        float64           `json:"price"`
-	Size         string            `json:"size"`
-	Condition    string            `json:"condition" validate:"required"`
-	Stock        uint              `json:"stock"`
-	StoreID      uint              `json:"store_id"`
-	CategoryID   uint              `json:"category_id"`
-	Store        Store             `gorm:"foreignKey:StoreID"`
-	Category     Category          `gorm:"foreignKey:CategoryID"`
-	ProductImage []APIProductImage `json:"product_image"`
-	ProductColor []APIProductColor `json:"product_color"`
+	Name         string         `json:"name"`
+	Description  string         `json:"description"`
+	Price        float64        `json:"price"`
+	Size         string         `json:"size"`
+	Condition    string         `json:"condition" validate:"required"`
+	Stock        uint           `json:"stock"`
+	StoreID      uint           `json:"store_id"`
+	CategoryID   uint           `json:"category_id"`
+	Store        Store          `gorm:"foreignKey:StoreID"`
+	Category     Category       `gorm:"foreignKey:CategoryID"`
+	ProductImage []ProductImage `json:"product_image"`
+	ProductColor []ProductColor `json:"product_color"`
+	ProductSize  []ProductSize  `json:"product_size"`
+	CartDetail   []CartDetail   `json:"cart_detail"`
 }
 
 type APIProductImage struct {
@@ -50,16 +52,12 @@ func (u *Product) BeforeCreate(tx *gorm.DB) (err error) {
 func GetAllProducts(sort, name string, limit, offset int) []*Product {
 	var items []*Product
 	name = "%" + name + "%"
-	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProductImage
-		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).Preload("Store").Order(sort).Limit(limit).Offset(offset).Where("name ILIKE ?", name).Find(&items)
+	configs.DB.Preload("Category").Preload("ProductImage").Preload("ProductColor").Preload("ProductSize").Preload("Store").Order(sort).Limit(limit).Offset(offset).Where("name ILIKE ?", name).Find(&items)
 	return items
 }
 
 func FilterProducts(filter string, limit, offset int) []*Product {
 	var items []*Product
-	// filter = "%" + filter + "%"
 	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
 		var items []*APIProductImage
 		return configs.DB.Model(&ProductImage{}).Find(&items)
@@ -69,10 +67,7 @@ func FilterProducts(filter string, limit, offset int) []*Product {
 
 func GetDetailProduct(id int) *Product {
 	var item Product
-	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProductImage
-		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).First(&item, "id = ?", id)
+	configs.DB.Preload("Category").Preload("ProductImage").Preload("ProductColor").Preload("ProductSize").First(&item, "id = ?", id)
 	return &item
 }
 

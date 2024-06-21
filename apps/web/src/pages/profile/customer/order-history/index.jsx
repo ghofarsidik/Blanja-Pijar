@@ -7,6 +7,7 @@ import {
   TabPanel,
 } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
+import { formatCurrency } from "../../../../utils/formatCurrency";
 
 export function OrderHistory() {
   const { activeUser } = useSelector((state) => state.user);
@@ -104,7 +105,7 @@ export function OrderHistory() {
               </div>
               {desc?.map((item) => (
                 <div key={item?.ID}>
-                  <div className="flex gap-x-36 items-center">
+                  <div className="flex gap-x-32 items-center">
                     <div>
                       <p className="font-semibold">{item?.Product.name}</p>
                       <div className="flex gap-1 items-center">
@@ -112,12 +113,12 @@ export function OrderHistory() {
                           {item?.quantity} X
                         </p>
                         <p className="text-gray-500 text-sm">
-                          ${item?.Product.price}
+                          {formatCurrency(item?.Product.price)}
                         </p>
                       </div>
                     </div>
                     <p className="text-main-red font-bold">
-                      ${item?.total_amount}
+                      {formatCurrency(item?.total_amount)}
                     </p>
                     <p className="-ml-4 inline-block min-w-[160px]">
                       {item?.payment_method}

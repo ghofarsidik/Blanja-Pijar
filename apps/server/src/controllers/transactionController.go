@@ -40,25 +40,43 @@ func CreateTransaction(c *fiber.Ctx) error {
 		})
 	}
 
-	productDetail := models.GetDetailProduct(int(newTransaction.ProductID))
-	if productDetail == nil {
-		tx.Rollback()
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Product not found",
+	var totalAmount float64
+	var items []midtrans.ItemDetail
+	var totalQuantity uint64
+	for _, detail := range newTransaction.Details {
+		productDetail := models.GetDetailProduct(int(detail.ProductID))
+		if productDetail == nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"message": "Product not found",
+			})
+		}
+
+		productPrice := productDetail.Price
+		detailAmount := productPrice * float64(detail.ProductQuantity)
+		totalAmount += detailAmount
+		totalQuantity += detail.ProductQuantity
+
+		detail.TransactionID = uint64(newTransaction.ID)
+		detail.Product = *productDetail
+
+		items = append(items, midtrans.ItemDetail{
+			Price: int64(productPrice),
+			Qty:   int32(detail.ProductQuantity),
+			Name:  productDetail.Name,
 		})
 	}
-	productPrice := productDetail.Price
-
-	totalAmount := productPrice * float64(newTransaction.Quantity)
-
+	transactionNumber := helpers.GenerateTransactionNumber()
 	createTransaction := models.Transaction{
-		UserID:          uint64(id),
-		Quantity:        newTransaction.Quantity,
-		TotalAmount:     totalAmount,
-		ShippingAddress: newTransaction.ShippingAddress,
-		Status:          "waiting payment",
-		ProductID:       newTransaction.ProductID,
-		PaymentMethod:   newTransaction.PaymentMethod,
+
+		UserID:            uint64(id),
+		TransactionNumber: transactionNumber,
+		Quantity:          totalQuantity,
+		TotalAmount:       totalAmount,
+		ShippingAddress:   newTransaction.ShippingAddress,
+		Status:            "waiting payment",
+		PaymentMethod:     newTransaction.PaymentMethod,
+		Details:           newTransaction.Details,
 	}
 
 	if err := tx.Create(&createTransaction).Error; err != nil {
@@ -80,16 +98,6 @@ func CreateTransaction(c *fiber.Ctx) error {
 		Client: services.MidtransClient,
 	}
 
-	priceInIDRInt := int64(totalAmount)
-	items := []midtrans.ItemDetail{
-		{
-			ID:    fmt.Sprintf("%d", productDetail.ID),
-			Price: priceInIDRInt,
-			Qty:   int32(newTransaction.Quantity),
-			Name:  productDetail.Name,
-		},
-	}
-
 	var totalItemPrice int64
 	for _, item := range items {
 		totalItemPrice += item.Price * int64(item.Qty)
@@ -97,7 +105,7 @@ func CreateTransaction(c *fiber.Ctx) error {
 
 	req := &midtrans.SnapReq{
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  fmt.Sprintf("%d", createTransaction.ID),
+			OrderID:  transactionNumber,
 			GrossAmt: totalItemPrice,
 		},
 		CustomerDetail: &midtrans.CustDetail{
@@ -113,6 +121,36 @@ func CreateTransaction(c *fiber.Ctx) error {
 			"message": "Failed to create transaction with Midtrans",
 			"error":   err.Error(),
 		})
+	}
+	res, _ := models.GetActiveCartDetail(uint(id))
+	var cartId []uint
+	for _, detail := range res {
+		cartId = append(cartId, detail.ID)
+	}
+	configs.DB.Where("id IN ?", cartId).Delete(&models.CartDetail{})
+	// var productId []uint
+	// var newStock []uint
+	// for _, product := range newTransaction.Details {
+	// 	productId = append(productId, uint(product.ID))
+	// 	newStock = append(newStock, product.Product.Stock-uint(product.ProductQuantity))
+	// }
+	// configs.DB.Model(&models.Product{}).
+	// 	Where("id IN ?", productId).
+	// 	Update("stock", gorm.Expr("ARRAY[?]::integer[]", newStock))
+
+	cart, _ := models.GetActiveCartByUserId(uint(id))
+	if cart != nil {
+		cart, _ := models.GetActiveCartByUserId(uint(id))
+		var total_amount float64
+		if len(cart.CartDetail) > 1 {
+			for _, item := range cart.CartDetail {
+				if item.IsChecked {
+					total_amount += item.TotalPrice
+				}
+			}
+		} else {
+			total_amount = float64(0)
+		}
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -146,7 +184,7 @@ func PaymentCallback(c *fiber.Ctx) error {
 		ExpiryTime  string `json:"expiry_time"`
 		Currency    string `json:"currency"`
 	}
-
+	fmt.Println("callback", callbackData)
 	if err := c.BodyParser(&callbackData); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request body",
@@ -171,7 +209,7 @@ func PaymentCallback(c *fiber.Ctx) error {
 		"payment_method": paymentMethod,
 	}
 	if callbackData.TransactionStatus == "pending" {
-		if err := tx.Model(&models.Transaction{}).Where("id = ?", callbackData.OrderID).Updates(&updateFieldsPending).Error; err != nil {
+		if err := tx.Model(&models.Transaction{}).Where("transaction_number = ?", callbackData.OrderID).Updates(&updateFieldsPending).Error; err != nil {
 			tx.Rollback()
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"message": "Failed to update transaction status",
@@ -184,7 +222,7 @@ func PaymentCallback(c *fiber.Ctx) error {
 		"payment_method": paymentMethod,
 	}
 	if callbackData.TransactionStatus == "settlement" {
-		if err := tx.Model(&models.Transaction{}).Where("id = ?", callbackData.OrderID).Updates(updateFields).Error; err != nil {
+		if err := tx.Model(&models.Transaction{}).Where("transaction_number = ?", callbackData.OrderID).Updates(updateFields).Error; err != nil {
 			tx.Rollback()
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"message": "Failed to update transaction status",
@@ -196,7 +234,7 @@ func PaymentCallback(c *fiber.Ctx) error {
 		"payment_method": paymentMethod,
 	}
 	if callbackData.TransactionStatus == "expire" {
-		if err := tx.Model(&models.Transaction{}).Where("id = ?", callbackData.OrderID).Updates(updateFieldsError).Error; err != nil {
+		if err := tx.Model(&models.Transaction{}).Where("transaction_number = ?", callbackData.OrderID).Updates(updateFieldsError).Error; err != nil {
 			tx.Rollback()
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"message": "Failed to update transaction status",
