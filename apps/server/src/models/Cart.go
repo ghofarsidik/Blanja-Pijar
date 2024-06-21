@@ -12,7 +12,7 @@ type Cart struct {
 	TotalAmout float64      `json:"total_amout"`
 	UserID     uint         `json:"user_id"`
 	User       User         `gorm:"foreignKey:UserID"`
-	CartDetail []CartDetail `json:"cart_detail"`
+	CartDetail []CartDetail `json:"cart_detail" gorm:"foreignKey:CartID"`
 }
 type CartDetail struct {
 	gorm.Model
@@ -33,6 +33,10 @@ type AddToCartRequest struct {
 	Size      string `json:"size"`
 	Color     string `json:"color"`
 	Quantity  uint   `json:"quantity"`
+}
+
+type DeleteCartRequest struct {
+	ProductIDs []uint `json:"product_ids"`
 }
 
 func GetAllCarts() []*Cart {

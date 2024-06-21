@@ -73,7 +73,6 @@ const Cart = () => {
   return (
     <div>
       <Navbar />
-
       <div>
         <p className="text-[34px] font-bold font-blanja_metropolis mx-[10%] mt-[50px]">
           My Bag
@@ -178,7 +177,7 @@ const Cart = () => {
           >
             {" "}
             Buy{" "}
-          </button>
+          </button> 
         </div>
       </div>
     </div>

@@ -46,7 +46,7 @@ const Navbar = ({ onSearch }) => {
       <div className="flex items-center flex-grow mx-5">
         <div className="flex-grow flex rounded-full bg-white border border-abu overflow-hidden">
           <input
-            className="flex-grow h-[40px] text-base focus:outline-none focus:ring-0 placeholder:text-abu px-4"
+            className="rounded-l-full flex-grow h-[40px] text-base border focus:outline-none focus:ring-0 placeholder:text-abu px-4"
             type="text"
             value={searchQuery}
             onChange={handleInputChange}
@@ -87,6 +87,7 @@ const Navbar = ({ onSearch }) => {
                 src={activeUser?.image || noPhoto}
                 alt={activeUser?.name}
               />
+
             </button>
           </>
         ) : (

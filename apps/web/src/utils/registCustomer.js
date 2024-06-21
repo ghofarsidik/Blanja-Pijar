@@ -17,9 +17,7 @@ export const registCustomer = Yup.object().shape({
     .max(13, "Phone number max in 13 characters")
     .required("Phone number is required"),
   name: Yup.string().required("Name is required"),
-  gender: Yup.string()
-    .oneOf(["male", "female"], "Gender is required")
-    .required("Gender is required"),
+
 });
 
 export default registCustomer

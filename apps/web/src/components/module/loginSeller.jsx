@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser, getUser } from '../../configs/redux/action/authSlice';
 import loginRegist from '../../utils/login';
 import { toastify } from '../base/toastify';
+import axios from 'axios';
 
 const LoginSeller = () => {
   const dispatch = useDispatch();
@@ -33,16 +34,22 @@ const LoginSeller = () => {
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const action = await dispatch(loginUser(values)).unwrap();
-        toastify('success', 'Login successful');
+        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/login', values, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = response.data;
+
+        dispatch(loginUser(data.user));
+        localStorage.setItem('token', data.token);
+        toastify('success', data.message || 'Login successful');
         navigate('/');
       } catch (error) {
         setSubmitting(false);
-        if (error.message) {
-          toastify('error', "ada yang salah");
-        } else {
-          toastify('error', error);
-        }
+        const errorMessage = error.response?.data?.message || 'Something went wrong';
+        toastify('error', errorMessage);
       }
     },
   });
@@ -71,7 +78,7 @@ const LoginSeller = () => {
             <div className="relative">
               <input
                 className="border border-gray-500 rounded py-2 px-2 w-full"
-                type={formik.values.showPassword ? "text" : "password"}
+                type={formik.values.showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="Masukkan password"
                 value={formik.values.password}
@@ -82,13 +89,10 @@ const LoginSeller = () => {
                 type="button"
                 className="absolute right-2 top-2 text-sm"
                 onClick={() =>
-                  formik.setFieldValue(
-                    "showPassword",
-                    !formik.values.showPassword
-                  )
+                  formik.setFieldValue('showPassword', !formik.values.showPassword)
                 }
               >
-                {formik.values.showPassword ? "Hide" : "Show"}
+                {formik.values.showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
@@ -116,9 +120,9 @@ const LoginSeller = () => {
       </form>
       <div className="flex justify-center">
         <p>
-          Don't have an account?{" "}
+          Don't have an account?{' '}
           <span
-            onClick={() => navigate("/register")}
+            onClick={() => navigate('/register')}
             className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
           >
             Register

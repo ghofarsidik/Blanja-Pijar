@@ -7,7 +7,6 @@ import (
 	"server/src/helpers"
 	"server/src/services"
 
-	// "server/src/helpers"
 	"server/src/routes"
 
 	"github.com/gofiber/fiber/v2"
