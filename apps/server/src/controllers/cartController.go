@@ -61,3 +61,29 @@ func AddToCart(c *fiber.Ctx) error {
 		"statusCode": fiber.StatusCreated,
 	})
 }
+
+func DeleteCartItems(c *fiber.Ctx) error {
+	claims := middlewares.GetUserClaims(c)
+	userID := uint(claims["ID"].(float64))
+
+	var request models.DeleteCartRequest
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message":    "Failed to parse request body",
+			"statusCode": fiber.StatusBadRequest,
+		})
+	}
+
+	err := models.DeleteCartItems(userID, request.ProductIDs)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message":    fmt.Sprintf("Failed to delete cart items, %v", err.Error()),
+			"statusCode": fiber.StatusInternalServerError,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Deleted items successfully",
+		"statusCode": fiber.StatusOK,
+	})
+}

@@ -7,41 +7,7 @@ import API from "../../configs/api";
 
 const Cart = () => {
   const [selectAll, setSelectAll] = useState(false);
-  const [items, setItems] = useState([
-    // {
-    //   isChecked: false,
-    //   name: "Men's formal suit - Black",
-    //   brand: "Zalora Cloth",
-    //   image: DummyProduct,
-    //   quantity: 1,
-    //   price: 100,
-    // },
-    // {
-    //   isChecked: false,
-    //   name: "Men's formal suit - Black",
-    //   brand: "Zalora Cloth",
-    //   image: DummyProduct,
-    //   quantity: 2,
-    //   price: 100,
-    // },
-    // {
-    //   isChecked: false,
-    //   name: "Men's formal suit - Black",
-    //   brand: "Zalora Cloth",
-    //   image: DummyProduct,
-    //   quantity: 3,
-    //   price: 100,
-    // },
-    // {
-    //   isChecked: false,
-    //   name: "Men's formal suit - Black",
-    //   brand: "Zalora Cloth",
-    //   image: DummyProduct,
-    //   quantity: 4,
-    //   price: 100,
-    // },
-  ]);
-
+  const [items, setItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedCount, setSelectedCount] = useState(0);
 
@@ -52,20 +18,21 @@ const Cart = () => {
         console.log("cart data: ", response);
         const data = response.data.data
         console.log("data tampil :", data);
-        console.log("data lagi:", data[0]);
-        // const cartFormatItems = data.map(cart =>
-        //   cart.cart_detail.map(item => ({
-        //     isChecked: false,
-        //     name: item.Product.name || "no data",
-        //     brand: item.product.Store.name || "no data",
-        //     image: detail.Product.image || noImage,
-        //     quantity: item.quantity,
-        //     price: item.Product.price,
-        //   }))
-        // ).flat();
-        // setItems(cartFormatItems)
+        console.log("data lagi:", data[0].cart_detail);
+        
+        const cartFormatItems = data[0].cart_detail.map((item) => ({
+          ...item,
+          isChecked: false,
+          quantity: item.quantity,
+          price: item.Product.price,
+          name: item.Product.name || "no data",
+          brand: item.Product.Store.name || "no data",
+          image: item.Product.product_image || noImage,
+        }));
 
-        setItems(data)
+        setItems(cartFormatItems);
+
+        // setItems(data[0].cart_detail)
       } catch (error) {
         console.log("Error get cart data: ", error);
       }
@@ -92,6 +59,7 @@ const Cart = () => {
     setSelectAll(false); // Reset the select all checkbox
   };
 
+
   const handleQuantityChange = (index, delta) => {
     const newItems = [...items];
     newItems[index].quantity += delta;
@@ -114,7 +82,6 @@ const Cart = () => {
   return (
     <div>
       <Navbar />
-
       <div>
         <p className="text-[34px] font-bold font-blanja_metropolis mx-[10%] mt-[50px]">
           My Bag
@@ -187,7 +154,7 @@ const Cart = () => {
                 </button>
               </div>
               <div className="ml-5 text-base font-semibold pr-[1%] w-28 text-left">
-                Price: ${item.price * item.quantity}
+                Price: {item.quantity * item.price}
               </div>
             </div>
           ))}
@@ -201,7 +168,7 @@ const Cart = () => {
           <button className="bg-main-red text-white w-full h-[36px] rounded-full">
             {" "}
             Buy{" "}
-          </button>
+          </button> 
         </div>
       </div>
     </div>
