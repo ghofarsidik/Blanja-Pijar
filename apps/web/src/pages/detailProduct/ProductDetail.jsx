@@ -9,13 +9,13 @@ import product3Image from "../../assets/images/detailProduuct/product-3.jpg";
 import product4Image from "../../assets/images/detailProduuct/product-4.jpg";
 import { Text, Heading, Button } from "../../components/DetailProductC";
 
-const defaultData = [
-  { thumbnailImage: product1Image },
-  { thumbnailImage: product2Image },
-  { thumbnailImage: product3Image },
-  { thumbnailImage: product4Image },
-  { thumbnailImage: product1Image },
-];
+// const defaultData = [
+//   { thumbnailImage: product1Image },
+//   { thumbnailImage: product2Image },
+//   { thumbnailImage: product3Image },
+//   { thumbnailImage: product4Image },
+//   { thumbnailImage: product1Image },
+// ];
 
 const defaultColors = [
   { color: "#ffff" },

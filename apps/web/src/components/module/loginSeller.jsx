@@ -43,6 +43,7 @@ const LoginSeller = () => {
         const data = response.data;
 
         dispatch(loginUser(data.user));
+        localStorage.setItem('token', data.token);
         toastify('success', data.message || 'Login successful');
         navigate('/');
       } catch (error) {
