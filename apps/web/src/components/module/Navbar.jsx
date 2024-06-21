@@ -87,6 +87,7 @@ const Navbar = ({ onSearch }) => {
                 src={activeUser?.image || noPhoto}
                 alt={activeUser?.name}
               />
+
             </button>
           </>
         ) : (

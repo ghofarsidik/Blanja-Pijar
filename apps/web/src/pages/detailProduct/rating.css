@@ -1,0 +1,24 @@
+.review-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .review-bar span {
+    display: inline-block;
+  }
+  
+  .review-bar .bar {
+    flex-grow: 1;
+    height: 0.5rem;
+    background-color: #eee;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  
+  .review-bar .bar-inner {
+    height: 100%;
+    background-color: #db3022;
+    border-radius: 0.25rem;
+  }
+  
