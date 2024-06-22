@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from "axios";
 
 // konfigurasi axios instance
 const api = axios.create({
-  baseURL: 'https://blanja-kelompok-1-production.up.railway.app/v1',
+  baseURL: import.meta.env.URL_BLANJA,
 });
 
 export default api;

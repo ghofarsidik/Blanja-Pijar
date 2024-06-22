@@ -100,7 +100,7 @@ func GetDetailUser(id interface{}) *User {
 		var items []*APIStore
 		return db.Model(&Store{}).Find(&items)
 	}).Preload("Transaction", func(db *gorm.DB) *gorm.DB {
-		return db.Preload("Product")
+		return db.Preload("Product").Preload("TransactionDetail")
 	}).First(&user, "id = ?", id)
 	return &user
 }

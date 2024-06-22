@@ -1,84 +1,76 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/module/Navbar";
 import { Checkbox } from "@material-tailwind/react";
-import DummyProduct from "../../assets/images/dummy/dummyproduct.png";
-import noImage from "../../../src/assets/images/logo/noimage.jpg";
+import { formatCurrency } from "../../utils/formatCurrency";
+import { toastify } from "../../components/base/toastify";
 import API from "../../configs/api";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [selectAll, setSelectAll] = useState(false);
-  const [items, setItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [items, setItems] = useState();
   const [selectedCount, setSelectedCount] = useState(0);
 
-  useEffect(() => {
-    const getCardData = async () => {
-      try {
-        const response = await API.get("/cart")
-        console.log("cart data: ", response);
-        const data = response.data.data
-        console.log("data tampil :", data);
-        console.log("data lagi:", data[0].cart_detail);
-        
-        const cartFormatItems = data[0].cart_detail.map((item) => ({
-          ...item,
-          isChecked: false,
-          quantity: item.quantity,
-          price: item.Product.price,
-          name: item.Product.name || "no data",
-          brand: item.Product.Store.name || "no data",
-          image: item.Product.product_image || noImage,
-        }));
-
-        setItems(cartFormatItems);
-
-        // setItems(data[0].cart_detail)
-      } catch (error) {
-        console.log("Error get cart data: ", error);
-      }
-    };
-    getCardData()
-  }, []);
-
+  const getCardData = async () => {
+    try {
+      const response = await API.get("/cart");
+      setItems(response?.data?.data[0]);
+      console.log(response);
+    } catch (error) {
+      console.log("Error get cart data: ", error);
+    }
+  };
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
     setItems(items.map((item) => ({ ...item, isChecked: newSelectAll })));
   };
 
-  const handleCheckboxChange = (index) => {
-    const newItems = [...items];
-    newItems[index].isChecked = !newItems[index].isChecked;
-    setItems(newItems);
-    setSelectAll(newItems.every((item) => item.isChecked));
-  };
+  const handleCheckboxChange = async (id, isCheked) => {
+    try {
+      if (isCheked === false) {
+        const res = await API.put(`/cart-detail/cheked/${id}`, {
+          isChecked: true,
+        });
+        toastify("success", res?.data?.message);
+      } else {
+        const res = await API.put(`/cart-detail/cheked/${id}`, {
+          isChecked: false,
+        });
+        toastify("success", res?.data?.message);
+      }
 
-  const handleDeleteSelected = () => {
-    const newItems = items.filter((item) => !item.isChecked);
-    setItems(newItems);
-    setSelectAll(false); // Reset the select all checkbox
-  };
-
-
-  const handleQuantityChange = (index, delta) => {
-    const newItems = [...items];
-    newItems[index].quantity += delta;
-    if (newItems[index].quantity < 1) {
-      newItems[index].quantity = 1; // Prevent quantity from being less than 1
+      getCardData();
+    } catch (error) {
+      console.log(error);
     }
-    setItems(newItems);
+  };
+
+  const handleIncrementQuantity = async (cartId, currentQuantity) => {
+    try {
+      let newQuantity = currentQuantity + 1;
+      const data = { quantity: newQuantity };
+      const res = await API.put(`/cart-detail/update/${cartId}`, data);
+      getCardData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDecrementQuantity = async (cartId, currentQuantity) => {
+    try {
+      let newQuantity = currentQuantity - 1;
+      const data = { quantity: newQuantity };
+      const res = await API.put(`/cart-detail/update/${cartId}`, data);
+      getCardData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    const total = items
-      .filter((item) => item.isChecked)
-      .reduce((sum, item) => sum + item.price * item.quantity, 0);
-    setTotalPrice(total);
-
-    const count = items.filter((item) => item.isChecked).length;
-    setSelectedCount(count);
-  }, [items]);
-
+    getCardData();
+  }, []);
   return (
     <div>
       <Navbar />
@@ -106,55 +98,70 @@ const Cart = () => {
                 ({selectedCount} barang dipilih)
               </div>
             </div>
-            <button
-              className="pr-[16px] text-main-red"
-              onClick={handleDeleteSelected}
-            >
-              Delete
-            </button>
+            <button className="pr-[16px] text-main-red">Delete</button>
           </div>
-          {items.map((item, index) => (
+          {items?.cart_detail?.map((item) => (
             <div
-              key={index}
+              key={item?.ID}
               className="mt-[10px] border border-main-abu rounded-md flex items-center p-2"
             >
               <Checkbox
-                checked={item.isChecked}
-                onChange={() => handleCheckboxChange(index)}
+                checked={item?.isChecked === true}
+                onChange={() => handleCheckboxChange(item?.ID, item?.isChecked)}
                 color="red"
               />
               <img
-                src={item.image}
-                alt={`Item ${index + 1}`}
+                src={item.Product?.product_image[0]?.image}
                 className="w-16 h-16 ml-2"
               />
               <div className="ml-4 flex-grow flex">
                 <div className="flex flex-col">
-                  <div className="text-xs font-semibold">{item.name}</div>
+                  <div className="text-xs font-semibold">
+                    {item?.Product?.name}
+                  </div>
                   <div className="text-xs font-semibold text-main-abu">
-                    {item.brand}
+                    {item?.Product?.Store?.name}
+                  </div>
+                  <div className="flex gap-x-2 items-center">
+                    <small className="text-gray-500 text-xs">
+                      {" "}
+                      Size: {item?.size},{" "}
+                    </small>
+                    <small className="text-gray-500 text-xs">Color: </small>
+                    <span
+                      className={`w-3 h-3 inline-block rounded-full`}
+                      style={{ backgroundColor: item?.color }}
+                    ></span>
                   </div>
                 </div>
               </div>
               <div className="ml-5 flex items-center">
                 <button
-                  className="bg-main-abu text-white w-6 h-6 rounded-full mr-2 text-[16px] font-bold"
-                  onClick={() => handleQuantityChange(index, -1)}
+                  onClick={() =>
+                    handleDecrementQuantity(item?.ID, item?.quantity)
+                  }
+                  className={`${
+                    item?.quantity <= 1 ? "bg-main-abu" : " bg-main-red"
+                  }  text-white w-6 h-6 rounded-full mr-2 text-[16px] font-bold`}
                 >
                   {" "}
                   &minus;{" "}
                 </button>
                 <div className="w-3 text-center">{item.quantity}</div>
                 <button
-                  className="bg-main-abu text-white w-6 h-6 rounded-full ml-2 text-[16px] font-bold"
-                  onClick={() => handleQuantityChange(index, +1)}
+                  onClick={() =>
+                    handleIncrementQuantity(item?.ID, item?.quantity)
+                  }
+                  className={
+                    "bg-main-red text-white w-6 h-6 rounded-full ml-2 text-[16px] font-bold"
+                  }
                 >
                   {" "}
                   +{" "}
                 </button>
               </div>
               <div className="ml-5 text-base font-semibold pr-[1%] w-28 text-left">
-                Price: {item.quantity * item.price}
+                {formatCurrency(item?.total_price)}
               </div>
             </div>
           ))}
@@ -163,12 +170,19 @@ const Cart = () => {
           <p className="text-base font-semibold"> Rangkuman belanja</p>
           <div className="flex-grow flex pt-8">
             <p className="flex-grow">Total price</p>
-            <div>{totalPrice}</div>
+            <div>
+              {items?.total_amout
+                ? formatCurrency(items?.total_amout)
+                : formatCurrency(0)}
+            </div>
           </div>
-          <button className="bg-main-red text-white w-full h-[36px] rounded-full">
+          <button
+            className="bg-main-red text-white w-full h-[36px] rounded-full"
+            onClick={() => navigate("/checkout")}
+          >
             {" "}
             Buy{" "}
-          </button> 
+          </button>
         </div>
       </div>
     </div>

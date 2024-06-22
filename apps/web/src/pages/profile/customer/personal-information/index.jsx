@@ -32,7 +32,6 @@ export default function PersonalInformation({ activeUser }) {
     phone_number: "",
     gender: "",
     birthday: today,
-    password: "",
   });
   const handleChangeImage = (e) => {
     const file = e?.target?.files[0];
@@ -83,7 +82,7 @@ export default function PersonalInformation({ activeUser }) {
       phone_number: activeUser?.phone_number,
       gender: activeUser?.gender,
       email: activeUser?.email,
-      password: activeUser?.password,
+      birthday: activeUser?.birthday || today,
     });
   }, []);
   return (

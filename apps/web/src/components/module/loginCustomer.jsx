@@ -5,7 +5,8 @@ import { loginUser } from "../../configs/redux/action/authSlice";
 import { useNavigate } from "react-router-dom";
 import loginRegist from "../../utils/login";
 import { toastify } from "../base/toastify";
-import axios from 'axios';
+import axios from "axios";
+import API from "../../configs/api";
 
 const LoginCustomer = () => {
   const dispatch = useDispatch();
@@ -36,22 +37,19 @@ const LoginCustomer = () => {
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/login', values, {
+        const response = await API.post("/auth/login", values, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
-
-        const data = response.data;
-
-        dispatch(loginUser(data.user));
-        localStorage.setItem('token', data.token);
-        toastify("success", data.message || "Login successful");
-        navigate('/');
+        localStorage.setItem("token", response.data.data.Token);
+        toastify("success", response.data.message);
+        navigate("/");
       } catch (error) {
         setSubmitting(false);
-        const errorMessage = error.response?.data?.message || 'Something went wrong';
-        toastify('error', errorMessage);
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toastify("error", errorMessage);
       }
     },
   });

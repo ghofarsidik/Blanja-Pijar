@@ -1,56 +1,53 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import API from "../../configs/api";
+import { toastify } from "../../components/base/toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../../components/base/card/card";
-import NoImage from "../../assets/images/logo/noimage.jpg";
-import product1Image from "../../assets/images/detailProduuct/product-1.jpg";
-import product2Image from "../../assets/images/detailProduuct/product-2.jpg";
-import product3Image from "../../assets/images/detailProduuct/product-3.jpg";
-import product4Image from "../../assets/images/detailProduuct/product-4.jpg";
-import { Text, Heading, Button } from "../../components/DetailProductC";
-
-// const defaultData = [
-//   { thumbnailImage: product1Image },
-//   { thumbnailImage: product2Image },
-//   { thumbnailImage: product3Image },
-//   { thumbnailImage: product4Image },
-//   { thumbnailImage: product1Image },
-// ];
-
-const defaultColors = [
-  { color: "#ffff" },
-  { color: "#d74141" },
-  { color: "#418fd7" },
-  { color: "#41d76b" },
-];
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const ProductDetail = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [myStore, setMyStore] = useState();
   const [selectedColor, setSelectedColor] = useState(null);
   const [purchaseAmount, setPurchaseAmount] = useState(1);
-  const [mainImage, setMainImage] = useState(product?.product_image?.[0]?.image || defaultData[0].thumbnailImage);
+  const [mainImage, setMainImage] = useState(
+    product?.product_image?.[0]?.image || defaultData[0].thumbnailImage
+  );
   const navigate = useNavigate();
 
-  const getStore = async () => {
+  console.log("Product detail:", myStore);
+
+  const addToCart = async () => {
     try {
-      const response = await axios.get(
-        `https://blanja-kelompok-1-production.up.railway.app/v1/store/${product?.store_id}`
+      const res = await API.post(
+        "/cart",
+        {
+          product_id: product.ID,
+          quantity: purchaseAmount,
+          size: selectedSize,
+          color: selectedColor,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
-      setMyStore(response?.data);
+      toastify("success", res?.data?.message);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const formattedPrice = product?.price
-    ? new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-    }).format(product.price)
-    : "RP 0";
+  console.log(product);
 
-  const condition = product?.condition?.toUpperCase() || "";
+  const getStore = async () => {
+    try {
+      const response = await API.get(`/store/${product?.store_id}`);
+      setMyStore(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSizeSelection = (size) => {
     setSelectedSize(size);
@@ -83,11 +80,9 @@ const ProductDetail = ({ product }) => {
   }, []);
 
   const handleClick = () => {
-    navigate('/');
+    navigate("/");
   };
-
-  const productImages = product?.product_image?.length > 0 ? product.product_image : defaultData.map(item => ({ image: item.thumbnailImage }));
-  const productColors = product?.colors?.length > 0 ? product.colors : defaultColors.map(item => item.color);
+  console.log(product);
 
   return (
     <div className="w-full bg-[#ffffff]">
@@ -96,10 +91,12 @@ const ProductDetail = ({ product }) => {
           <div className="flex flex-col items-start">
             <div className="p-5 mx-[10%]">
               <Link onClick={handleClick}>
-                <Text size="s" as="p">
-                  <span className="text-[#9b9b9b]">Home &gt; category &gt; &nbsp;</span>
+                <p size="s" as="p">
+                  <span className="text-[#9b9b9b]">
+                    Home &gt; category &gt; &nbsp;
+                  </span>
                   <span className="font-semibold text-[#9b9b9b] ">T-Shirt</span>
-                </Text>
+                </p>
               </Link>
               <div className="flex flex-col lg:flex-row mt-[54px] w-[96%] items-start gap-10">
                 {/* Image Section */}
@@ -110,7 +107,7 @@ const ProductDetail = ({ product }) => {
                     className="h-[500px] rounded-lg object-cover"
                   />
                   <div className="flex gap-2.5 md:flex-row lg:flex-row">
-                    {productImages.map((image, index) => (
+                    {product?.Product?.product_image?.map((image, index) => (
                       <div key={index}>
                         <img
                           src={image.image}
@@ -126,31 +123,36 @@ const ProductDetail = ({ product }) => {
                 {/* Details Section */}
                 <div className="w-full lg:w-1/2 md:w-full mt-8 lg:mt-0">
                   <div className="flex flex-col items-start">
-                    <Heading as="h1">{product?.name}</Heading>
-                    <Text className="text-gray-500 py-2">{myStore?.name}</Text>
+                    <h1 as="h1">{product?.name}</h1>
+                    <p className="text-gray-500 py-2">{myStore?.name}</p>
                     <div className="flex items-center mt-2">
                       {Array.from({ length: 5 }, (_, index) => (
-                        <span key={index} className="text-yellow-500 text-3xl">★</span>
+                        <span key={index} className="text-yellow-500 text-3xl">
+                          ★
+                        </span>
                       ))}
-                      <Text size="xs" as="p" className="self-end !font-normal">
+                      <p size="xs" as="p" className="self-end !font-normal">
                         (10)
-                      </Text>
+                      </p>
                     </div>
-                    <Text as="p" className="mt-[29px]">
+                    <p as="p" className="mt-[29px]">
                       Harga:
-                    </Text>
-                    <p className="text-red-500 text-3xl">{formattedPrice}</p>
+                    </p>
+                    <p className="text-red-500 text-3xl">
+                      {formatCurrency(product?.price)}
+                    </p>
 
                     <div className="mt-4">
-                      <Heading size="xs" as="h4">
-                        Size
-                      </Heading>
+                      <h3 className="text-lg">Size</h3>
                       <div className="flex space-x-2">
-                        {["S", "M", "L", "XL"].map((size) => (
+                        {product?.product_size.map(({ size }) => (
                           <button
                             key={size}
-                            className={`w-16 border p-2 ${selectedSize === size ? "bg-red-500 text-white" : ""
-                              }`}
+                            className={`w-16 border p-2 ${
+                              selectedSize === size
+                                ? "bg-red-500 text-white"
+                                : ""
+                            }`}
                             onClick={() => handleSizeSelection(size)}
                           >
                             {size}
@@ -159,15 +161,16 @@ const ProductDetail = ({ product }) => {
                       </div>
                     </div>
                     <div className="mt-4">
-                      <Heading size="xs" as="h3" className="ml-[5px] mt-[41px] md:ml-0">
-                        Color
-                      </Heading>
+                      <h3 className="text-lg">Color</h3>
                       <div className="flex space-x-2">
-                        {productColors.map((color, index) => (
+                        {product.product_color.map(({ color }) => (
                           <button
-                            key={index}
-                            className={`w-8 h-8 rounded-full ${selectedColor === color ? "ring-2 ring-[red]" : ""
-                              }`}
+                            key={color}
+                            className={`w-8 h-8 rounded-full border border-gray-700 ${
+                              selectedColor === color
+                                ? "ring-2 ring-green-500"
+                                : ""
+                            }`}
                             style={{ backgroundColor: color }}
                             onClick={() => handleColorSelection(color)}
                           ></button>
@@ -192,38 +195,57 @@ const ProductDetail = ({ product }) => {
                         </button>
                       </div>
                     </div>
-                    <div className="mt-[47px] flex gap-2.5 flex-wrap self-stretch ">
-                      <Button className="flex h-[48px] min-w-[80px] flex-row items-center justify-center rounded-[24px] border border-solid border-[#222222] px-[35px] text-center text-sm font-medium text-[#222222]  sm:px-5">
+                    <div className="mt-4">
+                      <button className="text-black py-2 px-4 mr-2 rounded-full border-2 border-black w-40">
                         Chat
-                      </Button>
-                      <Button className="flex h-[48px] min-w-[80px] flex-row items-center justify-center rounded-[24px] border border-solid border-[#222222] px-[35px] text-center text-sm font-medium text-[#222222] sm:px-5">
-                        Add bag
-                      </Button>
-                      <Button className="flex h-[48px] flex-grow flex-row items-center justify-center rounded-[24px] bg-[#db3022] px-[35px] text-center text-sm font-medium text-[#ffffff] sm:px-5">
+                      </button>
+                      <button
+                        className="text-black py-2 px-4 mr-2 rounded-full border-2 border-black w-40"
+                        onClick={addToCart}
+                      >
+                        Add to Bag
+                      </button>
+                      <button className="bg-red-500 text-white py-2 px-4 mr-2 rounded-full w-80">
                         Buy Now
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="mt-8">
-                <Heading as="h6" className="mt-[35px]">Informasi Produk</Heading>
-                <Heading size="s" as="h5" className="mt-10">Condition</Heading>
-                <p className="text-red-500">{condition}</p>
-                <Heading size="s" as="h5" className="mt-10">Description</Heading>
+                <h1 as="h6" className="mt-[35px]">
+                  Informasi Produk
+                </h1>
+                <h1 size="s" as="h5" className="mt-10">
+                  Condition
+                </h1>
+                {/* <p className="text-red-500">{condition}</p> */}
+                <h1 size="s" as="h5" className="mt-10">
+                  Description
+                </h1>
                 <p>{product?.description}</p>
               </div>
               <div className="mt-8">
-                <Heading as="h3">Product review</Heading>
+                <h1 as="h3">Product review</h1>
                 <div className="flex items-center">
                   <div className="mr-4">
                     <div className="flex flex-wrap items-center">
-                      <Text size="xl" as="p" className="!text-[#222222]">5</Text>
-                      <Text size="lg" as="p" className="mb-1.5 self-end !font-normal">/5</Text>
+                      <p size="xl" as="p" className="!text-[#222222]">
+                        5
+                      </p>
+                      <p
+                        size="lg"
+                        as="p"
+                        className="mb-1.5 self-end !font-normal"
+                      >
+                        /5
+                      </p>
                     </div>
                     <div className="flex mt-2">
                       {Array.from(new Array(5), (_, index) => (
-                        <span key={index} className="text-yellow-500 text-3xl">★</span>
+                        <span key={index} className="text-yellow-500 text-3xl">
+                          ★
+                        </span>
                       ))}
                     </div>
                   </div>
