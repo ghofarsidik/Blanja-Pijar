@@ -66,7 +66,7 @@ func AddToCart(c *fiber.Ctx) error {
 		})
 	}
 
-	if cart != nil {
+	if cart != nil  {
 		for _, item := range cart.CartDetail {
 			if item.ProductID == request.ProductID && item.Size == request.Size && item.Color == request.Color {
 				products := models.GetDetailProduct(int(item.ProductID))

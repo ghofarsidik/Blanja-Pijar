@@ -1,55 +1,59 @@
-import React, { useEffect } from 'react';
-import { useFormik } from 'formik';
-import { Button } from '@material-tailwind/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { loginUser, getUser } from '../../configs/redux/action/authSlice';
-import loginRegist from '../../utils/login';
-import { toastify } from '../base/toastify';
-import axios from 'axios';
+import React, { useEffect } from "react";
+import { useFormik } from "formik";
+import { Button } from "@material-tailwind/react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginUser, getUser } from "../../configs/redux/action/authSlice";
+import loginRegist from "../../utils/login";
+import { toastify } from "../base/toastify";
+import axios from "axios";
+import API from "../../configs/api";
 
 const LoginSeller = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, loading, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    if (user && user.role === 'seller') {
-      navigate('/');
+    if (user && user.role === "seller") {
+      navigate("/");
     }
   }, [user, navigate]);
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       showPassword: false,
     },
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/login', values, {
+        const response = await API.post("/auth/login", values, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         const data = response.data;
 
         dispatch(loginUser(data.user));
-        localStorage.setItem('token', data.token);
-        toastify('success', data.message || 'Login successful');
-        navigate('/');
+        localStorage.setItem("token", data.token);
+        toastify("success", data.message || "Login successful");
+        navigate("/");
       } catch (error) {
         setSubmitting(false);
-        const errorMessage = error.response?.data?.message || 'Something went wrong';
-        toastify('error', errorMessage);
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toastify("error", errorMessage);
       }
     },
   });
@@ -78,7 +82,7 @@ const LoginSeller = () => {
             <div className="relative">
               <input
                 className="border border-gray-500 rounded py-2 px-2 w-full"
-                type={formik.values.showPassword ? 'text' : 'password'}
+                type={formik.values.showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Masukkan password"
                 value={formik.values.password}
@@ -89,10 +93,13 @@ const LoginSeller = () => {
                 type="button"
                 className="absolute right-2 top-2 text-sm"
                 onClick={() =>
-                  formik.setFieldValue('showPassword', !formik.values.showPassword)
+                  formik.setFieldValue(
+                    "showPassword",
+                    !formik.values.showPassword
+                  )
                 }
               >
-                {formik.values.showPassword ? 'Hide' : 'Show'}
+                {formik.values.showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {formik.touched.password && formik.errors.password && (
@@ -112,17 +119,21 @@ const LoginSeller = () => {
               className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
               disabled={formik.isSubmitting || loading}
             >
-              {loading ? 'Loading...' : 'Login'}
+              {loading ? "Loading..." : "Login"}
             </button>
           </div>
-          {error && <div className="text-red-500 text-center">{error.message || 'An error occurred'}</div>}
+          {error && (
+            <div className="text-red-500 text-center">
+              {error.message || "An error occurred"}
+            </div>
+          )}
         </div>
       </form>
       <div className="flex justify-center">
         <p>
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <span
-            onClick={() => navigate('/register')}
+            onClick={() => navigate("/register")}
             className="text-red-maroon hover:font-semibold hover:text-red-500 cursor-pointer"
           >
             Register

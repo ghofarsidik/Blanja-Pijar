@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../configs/api";
 import { toastify } from "../../components/base/toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Card from "../../components/base/card/card";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const ProductDetail = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -18,12 +20,18 @@ const ProductDetail = ({ product }) => {
 
   const addToCart = async () => {
     try {
-      const res = await API.post("/cart", {
-        product_id: product.ID,
-        quantity: purchaseAmount,
-        size: selectedSize,
-        color: selectedColor,
-      });
+      const res = await API.post(
+        "/cart",
+        {
+          product_id: product.ID,
+          quantity: purchaseAmount,
+          size: selectedSize,
+          color: selectedColor,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       toastify("success", res?.data?.message);
     } catch (error) {
       console.log(error);
@@ -34,23 +42,12 @@ const ProductDetail = ({ product }) => {
 
   const getStore = async () => {
     try {
-      const response = await axios.get(
-        `https://blanja-kelompok-1-production.up.railway.app/v1/store/${product?.store_id}`
-      );
+      const response = await API.get(`/store/${product?.store_id}`);
       setMyStore(response?.data);
     } catch (error) {
       console.log(error);
     }
   };
-
-  const formattedPrice = product?.price
-    ? new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-      }).format(product.price)
-    : "RP 0";
-
-  const condition = product?.condition?.toUpperCase() || "";
 
   const handleSizeSelection = (size) => {
     setSelectedSize(size);
@@ -85,15 +82,7 @@ const ProductDetail = ({ product }) => {
   const handleClick = () => {
     navigate("/");
   };
-
-  const productImages =
-    product?.product_image?.length > 0
-      ? product.product_image
-      : defaultData.map((item) => ({ image: item.thumbnailImage }));
-  const productColors =
-    product?.colors?.length > 0
-      ? product.colors
-      : defaultColors.map((item) => item.color);
+  console.log(product);
 
   return (
     <div className="w-full bg-[#ffffff]">
@@ -102,12 +91,12 @@ const ProductDetail = ({ product }) => {
           <div className="flex flex-col items-start">
             <div className="p-5 mx-[10%]">
               <Link onClick={handleClick}>
-                <Text size="s" as="p">
+                <p size="s" as="p">
                   <span className="text-[#9b9b9b]">
                     Home &gt; category &gt; &nbsp;
                   </span>
                   <span className="font-semibold text-[#9b9b9b] ">T-Shirt</span>
-                </Text>
+                </p>
               </Link>
               <div className="flex flex-col lg:flex-row mt-[54px] w-[96%] items-start gap-10">
                 {/* Image Section */}
@@ -118,7 +107,7 @@ const ProductDetail = ({ product }) => {
                     className="h-[500px] rounded-lg object-cover"
                   />
                   <div className="flex gap-2.5 md:flex-row lg:flex-row">
-                    {productImages.map((image, index) => (
+                    {product?.Product?.product_image?.map((image, index) => (
                       <div key={index}>
                         <img
                           src={image.image}
@@ -134,22 +123,24 @@ const ProductDetail = ({ product }) => {
                 {/* Details Section */}
                 <div className="w-full lg:w-1/2 md:w-full mt-8 lg:mt-0">
                   <div className="flex flex-col items-start">
-                    <Heading as="h1">{product?.name}</Heading>
-                    <Text className="text-gray-500 py-2">{myStore?.name}</Text>
+                    <h1 as="h1">{product?.name}</h1>
+                    <p className="text-gray-500 py-2">{myStore?.name}</p>
                     <div className="flex items-center mt-2">
                       {Array.from({ length: 5 }, (_, index) => (
                         <span key={index} className="text-yellow-500 text-3xl">
                           ★
                         </span>
                       ))}
-                      <Text size="xs" as="p" className="self-end !font-normal">
+                      <p size="xs" as="p" className="self-end !font-normal">
                         (10)
-                      </Text>
+                      </p>
                     </div>
-                    <Text as="p" className="mt-[29px]">
+                    <p as="p" className="mt-[29px]">
                       Harga:
-                    </Text>
-                    <p className="text-red-500 text-3xl">{formattedPrice}</p>
+                    </p>
+                    <p className="text-red-500 text-3xl">
+                      {formatCurrency(product?.price)}
+                    </p>
 
                     <div className="mt-4">
                       <h3 className="text-lg">Size</h3>
@@ -222,33 +213,33 @@ const ProductDetail = ({ product }) => {
                 </div>
               </div>
               <div className="mt-8">
-                <Heading as="h6" className="mt-[35px]">
+                <h1 as="h6" className="mt-[35px]">
                   Informasi Produk
-                </Heading>
-                <Heading size="s" as="h5" className="mt-10">
+                </h1>
+                <h1 size="s" as="h5" className="mt-10">
                   Condition
-                </Heading>
-                <p className="text-red-500">{condition}</p>
-                <Heading size="s" as="h5" className="mt-10">
+                </h1>
+                {/* <p className="text-red-500">{condition}</p> */}
+                <h1 size="s" as="h5" className="mt-10">
                   Description
-                </Heading>
+                </h1>
                 <p>{product?.description}</p>
               </div>
               <div className="mt-8">
-                <Heading as="h3">Product review</Heading>
+                <h1 as="h3">Product review</h1>
                 <div className="flex items-center">
                   <div className="mr-4">
                     <div className="flex flex-wrap items-center">
-                      <Text size="xl" as="p" className="!text-[#222222]">
+                      <p size="xl" as="p" className="!text-[#222222]">
                         5
-                      </Text>
-                      <Text
+                      </p>
+                      <p
                         size="lg"
                         as="p"
                         className="mb-1.5 self-end !font-normal"
                       >
                         /5
-                      </Text>
+                      </p>
                     </div>
                     <div className="flex mt-2">
                       {Array.from(new Array(5), (_, index) => (

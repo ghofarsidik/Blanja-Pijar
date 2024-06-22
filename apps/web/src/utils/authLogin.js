@@ -1,11 +1,8 @@
-import axios from "axios";
+import API from "../configs/api";
 
 export const authLogin = async (data) => {
   try {
-    const response = await axios.post(
-      "https://blanja-kelompok-1-production.up.railway.app/v1/auth/login",
-      data
-    );
+    const response = await API.post("/auth/login", data);
     return response;
   } catch (error) {
     return error;

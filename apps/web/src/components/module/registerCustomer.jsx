@@ -8,6 +8,7 @@ import { toastify } from "../base/toastify";
 import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
 import axios from 'axios';
 import './Register.css';
+import API from "../../configs/api";
 
 const RegisterCustomer = () => {
   const dispatch = useDispatch();
@@ -30,11 +31,11 @@ const RegisterCustomer = () => {
       setLoading(true);
       dispatch(registerStart());
       try {
-        const response = await axios.post('https://blanja-kelompok-1-production.up.railway.app/v1/auth/register', values, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+       const response = await API.post("/auth/register", values, {
+         headers: {
+           "Content-Type": "application/json",
+         },
+       });
 
         const data = response.data;
         localStorage.setItem('token', data.token);

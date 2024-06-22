@@ -8,11 +8,24 @@ import {
 } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import { formatCurrency } from "../../../../utils/formatCurrency";
+import API from "../../../../configs/api";
 
 export function OrderHistory() {
   const { activeUser } = useSelector((state) => state.user);
+  console.log(activeUser);
   const payment = useSelector((state) => state.payment);
   const [transaction, setTransaction] = useState([]);
+
+  const getTransactionUser = async (params) => {
+    try {
+      const res = await API.get(`/transaction/user`, {
+        params: params,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [activeTab, setActiveTab] = useState("all");
   const handleClick = (value) => {
@@ -44,7 +57,7 @@ export function OrderHistory() {
     },
     {
       label: "Not yet paid",
-      value: "pending",
+      value: "waiting payment",
       desc: transaction,
     },
     {
@@ -58,9 +71,9 @@ export function OrderHistory() {
       desc: transaction,
     },
   ];
-  console.log(transaction);
   useEffect(() => {
     setTransaction(activeUser?.transaction);
+    getTransactionUser();
   }, []);
   return (
     <>
@@ -79,7 +92,12 @@ export function OrderHistory() {
             <Tab
               key={value}
               value={value}
-              onClick={() => handleClick(value)}
+              onClick={() => {
+                handleClick(value);
+                getTransactionUser({
+                  status: value,
+                });
+              }}
               className={
                 activeTab === value
                   ? "text-main-red font-semibold"

@@ -2,11 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"math"
 	"server/src/configs"
 	"server/src/helpers"
 	"server/src/middlewares"
 	"server/src/models"
 	"server/src/services"
+	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/veritrans/go-midtrans"
@@ -19,6 +22,48 @@ func GetAllTransaction(c *fiber.Ctx) error {
 		"message": "Successfully retrieved all transactions",
 		"data":    res,
 		"count":   count,
+	})
+}
+
+func GetUserTransaction(c *fiber.Ctx) error {
+	claims := middlewares.GetUserClaims(c)
+	id := claims["ID"].(float64)
+	status := c.Query("status")
+	pageOld := c.Query("page")
+	limitOld := c.Query("limit")
+	page, _ := strconv.Atoi(pageOld)
+	limit, _ := strconv.Atoi(limitOld)
+	sort := c.Query("sort")
+	sortBy := c.Query("orderBy")
+	if status == "" {
+		status = "waiting payment"
+	}
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 5
+	}
+	offset := (page - 1) * limit
+	if sort == "" {
+		sort = "DESC"
+	}
+	if sortBy == "" {
+		sortBy = "status"
+	}
+	sort = sortBy + " " + strings.ToLower(sort)
+	res := models.GetTransactionUser(uint(id), status, sort, limit, offset)
+	var count int64
+	configs.DB.Table("transactions").Where("deleted_at IS NULL AND user_id = ?", id).Count(&count)
+	totalPage := math.Ceil(float64(count) / float64(limit))
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "OK",
+		"statusCode": fiber.StatusOK,
+		"data":       res,
+		"totalData":  count,
+		"totalPage":  totalPage,
+		"limit":      limit,
+		"page":       page,
 	})
 }
 
@@ -128,28 +173,23 @@ func CreateTransaction(c *fiber.Ctx) error {
 		cartId = append(cartId, detail.ID)
 	}
 	configs.DB.Where("id IN ?", cartId).Delete(&models.CartDetail{})
-	// var productId []uint
-	// var newStock []uint
-	// for _, product := range newTransaction.Details {
-	// 	productId = append(productId, uint(product.ID))
-	// 	newStock = append(newStock, product.Product.Stock-uint(product.ProductQuantity))
-	// }
-	// configs.DB.Model(&models.Product{}).
-	// 	Where("id IN ?", productId).
-	// 	Update("stock", gorm.Expr("ARRAY[?]::integer[]", newStock))
-
 	cart, _ := models.GetActiveCartByUserId(uint(id))
 	if cart != nil {
-		cart, _ := models.GetActiveCartByUserId(uint(id))
 		var total_amount float64
-		if len(cart.CartDetail) > 1 {
+		if len(cart.CartDetail) >= 1 {
 			for _, item := range cart.CartDetail {
 				if item.IsChecked {
 					total_amount += item.TotalPrice
+				} else {
+					total_amount = float64(0)
 				}
 			}
 		} else {
-			total_amount = float64(0)
+			if err := models.DeleteCart(cart.ID); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
 		}
 	}
 

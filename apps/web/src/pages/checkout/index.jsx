@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import useSnap from "../../hooks/useSnap";
 import Modal from "react-modal";
 import DummyImage from "../../assets/images/dummy/dummy.png";
-import GopayImage from "../../assets/images/payment/gopay.png";  // Assume you have this image
-import PosIndonesiaImage from "../../assets/images/payment/posindonesia.png";  // Assume you have this image
-import MastercardImage from "../../assets/images/payment/mastercard.png";  // Assume you have this image
+import GopayImage from "../../assets/images/payment/gopay.png"; // Assume you have this image
+import PosIndonesiaImage from "../../assets/images/payment/posindonesia.png"; // Assume you have this image
+import MastercardImage from "../../assets/images/payment/mastercard.png"; // Assume you have this image
 import "./modal.css";
 import API from "../../configs/api";
 import { useDispatch } from "react-redux";
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
                 <button
                   disabled={loading}
                   className="bg-main-red rounded-full w-full text-white py-1 mt-7"
-                  onClick={openPaymentModal}
+                  onClick={pay}
                 >
                   {loading ? <Loader /> : "Select payment"}
                 </button>
@@ -168,7 +168,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-
+      {/* 
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
             Buy
           </button>
         </div>
-      </Modal>
+      </Modal> */}
     </main>
   );
 }

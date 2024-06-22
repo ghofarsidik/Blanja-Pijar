@@ -8,6 +8,7 @@ import ProductDetail from "../detailProduct/ProductDetail";
 import Navbar from "../../components/module/Navbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import API from "../../configs/api";
 
 const products = [
   {
@@ -46,9 +47,7 @@ const ProductDetailPage = () => {
   console.log(product);
   const getDetailProduct = async () => {
     try {
-      const response = await axios.get(
-        `https://blanja-kelompok-1-production.up.railway.app/v1/product/${id}`
-      );
+      const response = await API.get(`/product/${id}`);
       setProduct(response?.data);
     } catch (error) {
       console.log(error);

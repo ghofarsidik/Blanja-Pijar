@@ -33,7 +33,22 @@ func GetAllTransaction() []*Transaction {
 	configs.DB.Preload("User").Preload("Product").Find(&results)
 	return results
 }
-
+func GetTransactionUser(id uint, status, sort string, limit, offset int) []*Transaction {
+	var results []*Transaction
+	status = "%" + status + "%"
+	configs.DB.Preload("User").
+		Order(sort).
+		Limit(limit).
+		Offset(offset).
+		Preload("Details").
+		Preload("Details.Product").
+		Preload("Details.Product.ProductImage").
+		Preload("Details.Product.ProductSize").
+		Preload("Details.Product.ProductColor").
+		Where("user_id = ? AND status ILIKE ?", id, status).
+		Find(&results)
+	return results
+}
 func CreateTransaction(data map[string]interface{}) error {
 	results := configs.DB.Model(&Transaction{}).Create(&data)
 	return results.Error

@@ -65,6 +65,7 @@ func Router(app *fiber.App) {
 	auth.Post("/login", controllers.LoginUser)
 
 	api.Get("/transactions", controllers.GetAllTransaction)
+	api.Get("/transaction/user", middlewares.JwtMiddleware(), controllers.GetUserTransaction)
 	api.Post("/transaction", middlewares.JwtMiddleware(), controllers.CreateTransaction)
 	api.Post("/payment/callback", controllers.PaymentCallback)
 }

@@ -16,6 +16,7 @@ const Cart = () => {
     try {
       const response = await API.get("/cart");
       setItems(response?.data?.data[0]);
+      console.log(response);
     } catch (error) {
       console.log("Error get cart data: ", error);
     }
@@ -169,7 +170,11 @@ const Cart = () => {
           <p className="text-base font-semibold"> Rangkuman belanja</p>
           <div className="flex-grow flex pt-8">
             <p className="flex-grow">Total price</p>
-            <div>{formatCurrency(items?.total_amout)}</div>
+            <div>
+              {items?.total_amout
+                ? formatCurrency(items?.total_amout)
+                : formatCurrency(0)}
+            </div>
           </div>
           <button
             className="bg-main-red text-white w-full h-[36px] rounded-full"
@@ -177,7 +182,7 @@ const Cart = () => {
           >
             {" "}
             Buy{" "}
-          </button> 
+          </button>
         </div>
       </div>
     </div>
