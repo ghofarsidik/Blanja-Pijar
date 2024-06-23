@@ -8,12 +8,12 @@ import (
 
 type Store struct {
 	gorm.Model
-	Name        string       `json:"name" validate:"required,min=3"`
-	Description string       `json:"description" validate:"required,min=3"`
-	Address     string       `json:"address" validate:"required,min=3"`
-	UserID      uint         `json:"user_id" validate:"required,min=3"`
-	User        User         `gorm:"foreignKey:UserID"`
-	Product     []APIProduct `json:"product"`
+	Name        string    `json:"name" validate:"required,min=3"`
+	Description string    `json:"description" validate:"required,min=3"`
+	Address     string    `json:"address" validate:"required,min=3"`
+	UserID      uint      `json:"user_id" validate:"required,min=3"`
+	User        User      `gorm:"foreignKey:UserID"`
+	Product     []Product `json:"product"`
 }
 
 func GetAllStore() []*Store {
@@ -27,10 +27,7 @@ func GetAllStore() []*Store {
 
 func GetDetailStore(id int) *Store {
 	var results Store
-	configs.DB.Preload("User").Preload("Product", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProduct
-		return configs.DB.Model(&Product{}).Find(&items)
-	}).First(&results, "id = ?", id)
+	configs.DB.Preload("User").Preload("Product").Preload("Product.ProductImage").First(&results, "id = ?", id)
 	return &results
 }
 

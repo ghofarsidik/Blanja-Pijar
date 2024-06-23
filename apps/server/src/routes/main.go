@@ -59,10 +59,12 @@ func Router(app *fiber.App) {
 	api.Get("/cart-detail/active", middlewares.JwtMiddleware(), controllers.GetActiveCartDetail)
 	api.Put("/cart-detail/update/:id", middlewares.JwtMiddleware(), controllers.UpdateQuantityCartDetail)
 	api.Put("/cart-detail/cheked/:id", middlewares.JwtMiddleware(), controllers.UpdateIsChekedItem)
+	api.Put("/cart-detail/allcheked", middlewares.JwtMiddleware(), controllers.SelectAllChecked)
 	api.Delete("/cart-detail/:id", middlewares.JwtMiddleware(), controllers.DeleteCartDetailItem)
 
 	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.LoginUser)
+	auth.Get("/verify/:token", controllers.VerifyEmail)
 
 	api.Get("/transactions", controllers.GetAllTransaction)
 	api.Get("/transaction/user", middlewares.JwtMiddleware(), controllers.GetUserTransaction)

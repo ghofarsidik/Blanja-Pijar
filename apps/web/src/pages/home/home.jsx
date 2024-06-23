@@ -19,7 +19,6 @@ const Home = () => {
   const getNewData = async () => {
     try {
       const response = await API.get("/products/filter?limit=10&condition=new");
-      console.log("new data: :", response);
       setNewProducts(response.data.data);
     } catch (error) {
       console.log(error);
@@ -69,8 +68,8 @@ const Home = () => {
     setSelectedCategory(category);
     // console.log(category.name);
     const getCategoryData = async () => {
-      const response = await API.get(`/category/${category.id}`);
-      // console.log("category data: ", response);
+      const response = await API.get(`/category/${category.ID}`);
+      console.log("category data: ", response);
       setSearchResults(response.data.data.product);
     };
 

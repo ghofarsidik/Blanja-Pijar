@@ -35,9 +35,9 @@ export default function ProfileCustomerPage() {
     },
   ];
   return (
-    <>
+    <div className="flex flex-col lg:flex-row">
       <Sidebar>
-        <div className="w-64 pl-20 mx-auto">
+        <div className="lg:w-64 lg:pl-20 lg:mx-auto ml-64 w-52">
           {NAVIGATION?.map((item, i) => (
             <div key={i} className="flex gap-3 my-4 cursor-pointer">
               <div className={item?.style}>
@@ -62,6 +62,6 @@ export default function ProfileCustomerPage() {
           </div>
         ))}
       </Dashboard>
-    </>
+    </div>
   );
 }

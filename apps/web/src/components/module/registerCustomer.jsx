@@ -135,8 +135,8 @@ const RegisterCustomer = () => {
               </div>
             )}
           </div>
-          <h1>Gender:</h1>
-          <div className="flex space-x-4 items-center">
+          {/* <h1>Gender:</h1> */}
+          {/* <div className="flex space-x-4 items-center">
             <label className="flex items-center">
               <input
                 type="radio"
@@ -159,7 +159,7 @@ const RegisterCustomer = () => {
               />
               Female
             </label>
-          </div>
+          </div> */}
           {formik.touched.gender && formik.errors.gender && (
             <div className="text-red-500 text-[12px] font-poppins">
               {formik.errors.gender}

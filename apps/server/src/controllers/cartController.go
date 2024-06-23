@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"server/src/middlewares"
 	"server/src/models"
 	"strconv"
@@ -46,6 +45,67 @@ func GetActiveCartDetail(c *fiber.Ctx) error {
 		"data":       res,
 	})
 }
+func SelectAllChecked(c *fiber.Ctx) error {
+	var request struct {
+		ID      []uint64 `json:"id"`
+		Checked bool     `json:"checked"`
+	}
+	claims := middlewares.GetUserClaims(c)
+	userID := claims["ID"].(float64)
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message":    "Failed to parse request body",
+			"statusCode": fiber.StatusBadRequest,
+		})
+	}
+
+	if err := models.SelectAllChecked(request.ID, request.Checked); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message":    "Failed to update cart details",
+			"statusCode": fiber.StatusInternalServerError,
+		})
+	}
+	cart, notFound := models.GetActiveCartByUserId(uint(userID))
+	if notFound != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message":    "Failed to get cart",
+			"statusCode": fiber.StatusInternalServerError,
+		})
+	}
+	var total_amount float64
+	for _, item := range cart.CartDetail {
+		if !item.IsChecked {
+			total_amount = float64(0)
+			newCart := models.Cart{
+				Status:     cart.Status,
+				TotalAmout: &total_amount,
+				UserID:     cart.UserID,
+			}
+			if err := models.UpdateCart(cart.ID, &newCart); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+		} else {
+			total_amount += item.TotalPrice
+			newCart := models.Cart{
+				Status:     cart.Status,
+				TotalAmout: &total_amount,
+				UserID:     cart.UserID,
+			}
+			if err := models.UpdateCart(cart.ID, &newCart); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Successfully updated cart details",
+		"statusCode": fiber.StatusOK,
+	})
+}
 func AddToCart(c *fiber.Ctx) error {
 	var request models.AddToCartRequest
 	claims := middlewares.GetUserClaims(c)
@@ -66,9 +126,9 @@ func AddToCart(c *fiber.Ctx) error {
 		})
 	}
 
-	if cart != nil  {
+	if cart != nil {
 		for _, item := range cart.CartDetail {
-			if item.ProductID == request.ProductID && item.Size == request.Size && item.Color == request.Color {
+			if item.ProductID == request.ProductID && item.Size == request.Size && item.Color == request.Color && !item.DeletedAt.Valid {
 				products := models.GetDetailProduct(int(item.ProductID))
 				if products.Stock < request.Quantity {
 					return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
@@ -109,7 +169,7 @@ func AddToCart(c *fiber.Ctx) error {
 
 				newCart := models.Cart{
 					Status:     cart.Status,
-					TotalAmout: total_amount,
+					TotalAmout: &total_amount,
 					UserID:     cart.UserID,
 				}
 				if err := models.UpdateCart(cart.ID, &newCart); err != nil {
@@ -161,7 +221,7 @@ func AddToCart(c *fiber.Ctx) error {
 				}
 				newCart := models.Cart{
 					Status:     cart.Status,
-					TotalAmout: total_amount,
+					TotalAmout: &total_amount,
 					UserID:     cart.UserID,
 				}
 				if err := models.UpdateCart(cart.ID, &newCart); err != nil {
@@ -219,7 +279,7 @@ func AddToCart(c *fiber.Ctx) error {
 	}
 	newCart := models.Cart{
 		Status:     cart.Status,
-		TotalAmout: total_amount,
+		TotalAmout: &total_amount,
 		UserID:     cart.UserID,
 	}
 	if err := models.UpdateCart(cart.ID, &newCart); err != nil {
@@ -283,7 +343,7 @@ func UpdateQuantityCartDetail(c *fiber.Ctx) error {
 	}
 	newCart := models.Cart{
 		Status:     cart.Status,
-		TotalAmout: total_amount,
+		TotalAmout: &total_amount,
 		UserID:     cart.UserID,
 	}
 	if err := models.UpdateCart(cart.ID, &newCart); err != nil {
@@ -311,7 +371,28 @@ func DeleteAllCart(c *fiber.Ctx) error {
 
 func DeleteCartDetailItem(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
+	claims := middlewares.GetUserClaims(c)
+	userID := uint(claims["ID"].(float64))
 	if err := models.DeleteItemCartDetail(uint(id)); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	cart, _ := models.GetActiveCartByUserId(userID)
+	var total_amount float64
+	for _, item := range cart.CartDetail {
+		if item.IsChecked {
+			total_amount += item.TotalPrice
+		} else {
+			total_amount = float64(0)
+		}
+	}
+	newCart := models.Cart{
+		Status:     cart.Status,
+		TotalAmout: &total_amount,
+		UserID:     cart.UserID,
+	}
+	if err := models.UpdateCart(cart.ID, &newCart); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -339,7 +420,6 @@ func UpdateIsChekedItem(c *fiber.Ctx) error {
 			"message": "Cart detail not found",
 		})
 	}
-	fmt.Println("chek", request.IsChecked)
 	newCartDetail := models.CartDetail{
 		ProductID:  foundDetail.ProductID,
 		CartID:     foundDetail.CartID,
@@ -360,21 +440,27 @@ func UpdateIsChekedItem(c *fiber.Ctx) error {
 		})
 	}
 	var total_amount float64
+	anyChecked := false
 	for _, item := range cart.CartDetail {
 		if item.IsChecked {
 			total_amount += item.TotalPrice
+			anyChecked = true
+		}
+		if !anyChecked {
+			total_amount = 0
+		}
+		newCart := models.Cart{
+			Status:     cart.Status,
+			TotalAmout: &total_amount,
+			UserID:     cart.UserID,
+		}
+		if err := models.UpdateCart(cart.ID, &newCart); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": err.Error(),
+			})
 		}
 	}
-	newCart := models.Cart{
-		Status:     cart.Status,
-		TotalAmout: total_amount,
-		UserID:     cart.UserID,
-	}
-	if err := models.UpdateCart(cart.ID, &newCart); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Success updating item list",
 	})

@@ -5,15 +5,15 @@ import defaultFoto from '../../assets/images/logo/noPhoto.png'
 export const Sidebar = ({ children }) => {
   const { activeUser } = useSelector((state) => state.user);
   return (
-    <div className="bg-gray-100 w-[35%] h-screen">
-      <div className="flex justify-center items-center pl-20 py-10 gap-5">
+    <div className="container bg-gray-100 w-[600px] lg:w-[35%] lg:h-screen">
+      <div className="flex flex-col lg:flex-row justify-center items-center pl-20 lg:py-10 gap-5 py-5">
         <img
           src={activeUser?.image ? activeUser?.image : defaultFoto}
           alt=""
-          className="h-16 w-16 rounded-full"
+          className="lg:h-16 lg:w-16 w-40 h-40 rounded-full"
         />
-        <div className="flex flex-col ">
-          <p className="font-bold">{activeUser?.name}</p>
+        <div className="flex flex-col items-center lg:items-start">
+          <p className="font-bold text-3xl lg:text-md">{activeUser?.name}</p>
           <div className="flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"

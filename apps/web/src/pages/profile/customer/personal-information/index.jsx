@@ -91,7 +91,7 @@ export default function PersonalInformation({ activeUser }) {
         <h1 className="font-semibold text-2xl leading-relaxed">My Profile</h1>
         <p className="text-gray-500">Manage your profile information</p>
       </div>
-      <div className="flex justify-between py-10">
+      <div className="flex flex-col-reverse items-center lg:items-start lg:flex-row justify-between py-10">
         <div className="w-[520px] flex flex-col gap-y-5 text-end pr-18">
           <div className="flex gap-10 justify-end items-center">
             <label htmlFor="" className="text-gray-400 text-end">
@@ -188,7 +188,7 @@ export default function PersonalInformation({ activeUser }) {
             Save Profile
           </button>
         </div>
-        <div className="bg-gray-200 h-[150px] w-0.5"></div>
+        <div className="bg-gray-200 h-0 lg:h-[150px] w-0.5"></div>
         <div className="w-[200px] items-center flex flex-col pr-20">
           <img
             src={activeUser?.image ? activeUser?.image : defaultFoto}

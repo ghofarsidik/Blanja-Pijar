@@ -38,37 +38,18 @@ const categoriesImages = {
   WristWatch: WristWatch,
 };
 
-const CategoriesCard = ({ onCategoryClick, categories }) => {
-  // const [categories, setCategories] = useState([]);
+const CategoriesCard = ({ onCategoryClick }) => {
+  const [categories, setCategories] = useState([]);
   // const [currentIndex, setCurrentIndex] = useState(0);
   console.log(categories);
   useEffect(() => {
     API.get("/categories")
       .then((response) => {
         console.log(response);
-        // setCategories(response.data?.data);
+        setCategories(response.data?.data);
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
-        //data dummy
-        // setCategories([
-        //   { id: 1, name: "T-Shirt" },
-        //   { id: 2, name: "Shorts" },
-        //   { id: 3, name: "Pants" },
-        //   { id: 4, name: "Jacket" },
-        //   { id: 5, name: "Accessories" },
-        //   { id: 6, name: "Bagpack" },
-        //   { id: 7, name: "Cap" },
-        //   { id: 8, name: "Dress" },
-        //   { id: 9, name: "FormalSuits" },
-        //   { id: 10, name: "Glasses" },
-        //   { id: 11, name: "Handbag" },
-        //   { id: 12, name: "HighHeels" },
-        //   { id: 13, name: "Shoes" },
-        //   { id: 14, name: "Socks" },
-        //   { id: 15, name: "Tie" },
-        //   { id: 16, name: "WristWatch" },
-        // ]);
       });
   }, []);
 
@@ -107,7 +88,7 @@ const CategoriesCard = ({ onCategoryClick, categories }) => {
 
   const settings = {
     // dots: true,
-    infinite: true,
+    // infinite: true,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
@@ -122,9 +103,9 @@ const CategoriesCard = ({ onCategoryClick, categories }) => {
       {categories.map((category, index) => (
         <div key={index} onClick={() => onCategoryClick(category)}>
           <img
-            // key={index}
-            className="w-[180px] h-[220px]"
-            src={categoriesImages[category.name]}
+            key={category?.ID}
+            className="w-[180px] h-[220px] cursor-pointer"
+            src={category?.image}
             alt={category.name}
           />
         </div>

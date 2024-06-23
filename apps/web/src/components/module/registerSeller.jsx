@@ -137,7 +137,7 @@ const RegisterSeller = () => {
               </div>
             )}
           </div>
-          <h1>Gender:</h1>
+          {/* <h1>Gender:</h1>
           <div className="flex space-x-4 items-center">
             <label className="flex items-center">
               <input
@@ -161,7 +161,7 @@ const RegisterSeller = () => {
               />
               Female
             </label>
-          </div>
+          </div> */}
           {formik.touched.gender && formik.errors.gender && (
             <div className="text-red-500 text-[12px] font-poppins">
               {formik.errors.gender}

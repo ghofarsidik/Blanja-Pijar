@@ -45,6 +45,7 @@ const LoginCustomer = () => {
         localStorage.setItem("token", response.data.data.Token);
         toastify("success", response.data.message);
         navigate("/");
+        window.location.reload();
       } catch (error) {
         setSubmitting(false);
         const errorMessage =

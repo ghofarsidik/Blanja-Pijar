@@ -7,12 +7,14 @@ import ProductDetailPage from "../../pages/detailProduct/ProductDetailPage";
 import Customer from "../../pages/privatePage/Customer";
 import Profile from "../../pages/profile";
 import CheckoutPage from "../../pages/checkout";
+import VerifyEmail from "../../pages/verifyEmail";
 
 const MainRouter = () => {
   const router = createBrowserRouter([
     { path: "/", element: <Home /> },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
+    { path: "/verify/:token", element: <VerifyEmail /> },
     {
       element: <Customer />,
       children: [

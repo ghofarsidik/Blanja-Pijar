@@ -42,7 +42,7 @@ const Categories = ({onCategoryClick}) => {
     <div className="flex h-[360px] bg-[#F0F1F9] mx-[10%]">
       <div className="w-[259px] ml-[50px] container:ml-[150px]">
         <h1 className="text-4xl font-bold pt-[50px] font-blanja_metropolis">Category</h1>
-        <h2 className="text-xs text-abu pt-1">
+        <h2 className="text-xs text-gray-500 pt-1">
           What are you currently looking for
         </h2>
         <div className="flex space-x-6 pt-16">

@@ -11,9 +11,6 @@ import { formatCurrency } from "../../../../utils/formatCurrency";
 import API from "../../../../configs/api";
 
 export function OrderHistory() {
-  const { activeUser } = useSelector((state) => state.user);
-  console.log(activeUser);
-  const payment = useSelector((state) => state.payment);
   const [transaction, setTransaction] = useState([]);
 
   const getTransactionUser = async (params) => {
@@ -21,40 +18,15 @@ export function OrderHistory() {
       const res = await API.get(`/transaction/user`, {
         params: params,
       });
-      console.log(res);
+      setTransaction(res?.data?.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const [activeTab, setActiveTab] = useState("all");
-  const handleClick = (value) => {
-    if (value === "all") {
-      setTransaction(activeUser?.transaction);
-    } else if (value === "pending") {
-      const data = activeUser?.transaction?.filter(
-        (item) => item?.status === "waiting payment"
-      );
-      setTransaction(data);
-    } else if (value === "packed") {
-      const data = activeUser?.transaction?.filter(
-        (item) => item?.status === "packed"
-      );
-      setTransaction(data);
-    } else {
-      const data = activeUser?.transaction?.filter(
-        (item) => item?.status === "payment expired"
-      );
-      setTransaction(data);
-    }
-    setActiveTab(value);
-  };
+  const [activeTab, setActiveTab] = useState("waiting payment");
+
   const data = [
-    {
-      label: "All items",
-      value: "all",
-      desc: transaction,
-    },
     {
       label: "Not yet paid",
       value: "waiting payment",
@@ -67,14 +39,17 @@ export function OrderHistory() {
     },
     {
       label: "Order cancel",
-      value: "cancel",
+      value: "canceled",
       desc: transaction,
     },
   ];
   useEffect(() => {
-    setTransaction(activeUser?.transaction);
-    getTransactionUser();
+    getTransactionUser({
+      status: "waiting payment",
+      limit: 5,
+    });
   }, []);
+  console.log(transaction);
   return (
     <>
       <div className="py-3">
@@ -93,7 +68,7 @@ export function OrderHistory() {
               key={value}
               value={value}
               onClick={() => {
-                handleClick(value);
+                setActiveTab(value);
                 getTransactionUser({
                   status: value,
                 });
@@ -121,38 +96,51 @@ export function OrderHistory() {
                 <p>Payment method</p>
                 <p className="ml-20">Status</p>
               </div>
-              {desc?.map((item) => (
-                <div key={item?.ID}>
-                  <div className="flex gap-x-32 items-center">
-                    <div>
-                      <p className="font-semibold">{item?.Product.name}</p>
-                      <div className="flex gap-1 items-center">
-                        <p className="text-gray-500 text-sm">
-                          {item?.quantity} X
-                        </p>
-                        <p className="text-gray-500 text-sm">
-                          {formatCurrency(item?.Product.price)}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-main-red font-bold">
-                      {formatCurrency(item?.total_amount)}
-                    </p>
-                    <p className="-ml-4 inline-block min-w-[160px]">
-                      {item?.payment_method}
-                    </p>
-                    <p
-                      className={`${
-                        item?.status === "packed"
-                          ? "text-green-500"
-                          : item?.status === "payment expired"
-                          ? "text-main-red"
-                          : "text-yellow-900"
-                      } text-sm font-semibold`}
+              {desc?.map((items) => (
+                <div key={items?.ID}>
+                  {items?.Details?.map((item) => (
+                    <div
+                      className="flex gap-x-24 py-2 items-center"
+                      key={item?.ID}
                     >
-                      {item?.status}
-                    </p>
-                  </div>
+                      <div className="flex gap-x-3 items-center">
+                        <img
+                          src={item?.Product?.product_image[0]?.image}
+                          alt=""
+                          className="w-10 h-10 rounded shadow-lg"
+                        />
+                        <div>
+                          <p className="font-semibold">{item?.Product.name}</p>
+                          <div className="flex gap-1 items-center">
+                            <p className="text-gray-500 text-sm">
+                              {item?.product_quantity} X
+                            </p>
+                            <p className="text-gray-500 text-sm">
+                              {formatCurrency(item?.Product.price)}
+                            </p>
+                          </div>
+                          {/* <p>{console.log(item)}</p> */}
+                        </div>
+                      </div>
+                      <p className="text-main-red font-bold">
+                        {formatCurrency(items?.total_amount)}
+                      </p>
+                      <p className="-ml-4 inline-block min-w-[160px]">
+                        {items?.payment_method}
+                      </p>
+                      <p
+                        className={`${
+                          items?.status === "packed"
+                            ? "text-green-500"
+                            : item?.status === "payment expired"
+                            ? "text-main-red"
+                            : "text-yellow-900"
+                        } text-sm font-semibold`}
+                      >
+                        {items?.status}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               ))}
             </TabPanel>
