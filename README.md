@@ -9,9 +9,9 @@
     Blanja Implementation
     <br />
     <br />
-   <a href="" target="_blank">View Demo</a>
+   <a href="https://innovation-blanja.vercel.app/" target="_blank">View Demo</a>
     ·
-    <a href="https://github.com/dimassagngsptr/blanja-kelompok-1.git" target="_blank">View Back-End Repo</a>
+    <a href="https://github.com/dimassagngsptr/golang-server-blanja.git" target="_blank">View Back-End Repo</a>
   </p>
 </div>
 
@@ -57,7 +57,7 @@ git clone https://github.com/dimassagngsptr/blanja-kelompok-1.git
 Run this command to open the folder
 
 ```sh
-cd blanja-kelompok-1
+cd blanja-kelompok-1/apps/web
 ```
 
 Run this command to open your Visual Studio Code
@@ -112,8 +112,8 @@ pass  : @Costumer123
 ` role seller`
 
 ```sh
-email : teknologiinformasi@gmail.com
-pass  : @Teknologi123
+email : seller@gmail.com
+pass  : @Seller123
 ```
 
 ## Screenshots
@@ -225,4 +225,4 @@ The server for this project was created by [Dimas Ageng Saputro](https://github.
 ### Related Project
 
 :rocket: [`FrontEnd - Blanja`](https://github.com/dimassagngsptr/blanja-kelompok-1)
-:rocket: [`Backend - Blanja`](https://github.com/dimassagngsptr/react-client-blanja)
+:rocket: [`Backend - Blanja`](https://github.com/dimassagngsptr/golang-server-blanja.git)
