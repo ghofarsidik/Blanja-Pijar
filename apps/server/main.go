@@ -32,7 +32,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "https://blanja-kelompok-1.vercel.app",
+		AllowOrigins:     "https://blanja-kelompok-1.vercel.app/",
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Content-Type, Authorization",
 		ExposeHeaders:    "Content-Length",
