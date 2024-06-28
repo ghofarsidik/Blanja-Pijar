@@ -153,7 +153,7 @@ pass  : @Teknologi123
     <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/checkout.png" /></td>
   </tr>
   <tr>
-    <td>Profile customer</td>
+    <td>Profile Customer</td>
     <td>add shipping address</td>
   </tr>
   <tr>
@@ -162,20 +162,27 @@ pass  : @Teknologi123
   </tr>
   <tr>
     <td>My order</td>
-    <!-- <td>Edit Company Page</td> -->
   </tr>
   <tr>
     <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/my%20order.png" /></td>
-    <!-- <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td> -->
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr>
-  <!-- <tr>
-    <td>Hiring Page</td>
-    <td>Notification after hiring talent</td>
+  <tr>
+    <td>Profile Seller</td>
+    <td>Store Product</td>
   </tr>
   <tr>
     <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
     <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
-  </tr>  -->
+  </tr> 
+    <tr>
+    <td>Add Store Product</td>
+    <td>Store order</td>
+  </tr>
+  <tr>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+  </tr> 
 </table>
 
 ### Contributors:
@@ -214,4 +221,5 @@ The server for this project was created by [Dimas Ageng Saputro](https://github.
 
 ### Related Project
 
-<!-- :rocket: [`Peworld`](https://github.com/dimassagngsptr/Peworld) -->
+:rocket: [`FrontEnd - Blanja`](https://github.com/dimassagngsptr/blanja-kelompok-1)
+:rocket: [`Backend - Blanja`](https://github.com/dimassagngsptr/react-client-blanja)
