@@ -192,10 +192,42 @@ pass  : @Seller123
 
 Here are the contributors to the project and their respective roles:
 
-- **Dimas Ageng Saputro**: Project Manager, Fullstack Developer
-- **Abdul Ghaffar Sidik**: Fullstack Developer
-- **Burhanuddin Azhar**: Frontend Developer
+<table>
+<tr>
+<td>- ![Dimas Ageng Saputro](https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/dimas.jpg) </td>
+<td>
 
+**Dimas Ageng Saputro**: Project Manager, Fullstack Developer </br>
+Github   :  [github.com/dimassagngsptr](https://github.com/dimassagngsptr)
+Linkedin : [linkedin.com/in/dimasagengsaputro](https://www.linkedin.com/in/dimasagengsaputro/)
+
+</td>
+</tr>
+<tr>
+<td>- ![Abdul Ghaffar Sidik](https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/ghaffar.JPG) </td>
+<td>
+
+**Abdul Ghaffar Sidik**: Fullstack Developer </br>
+Github   :  [github.com/ghofarsidik](https://github.com/ghofarsidik)
+Linkedin : [linkedin.com/in/abdul-ghaffar-sidik](https://www.linkedin.com/in/abdul-ghaffar-sidik/)
+
+</td>
+</tr>
+<tr>
+<td>- ![Burhanuddin Azhar](https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/azhar.png) </td>
+<td>
+
+**Burhanuddin Azhar**: Frontend Developer </br>
+Github   :  [github.com/Azhar-54](https://github.com/Azhar-54)
+Linkedin : [linkedin.com/in/burhanudin-azhar](https://www.linkedin.com/in/burhanudin-azhar/)
+
+</td>
+</tr>
+
+
+
+
+</table>
 ### Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
