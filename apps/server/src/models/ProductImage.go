@@ -19,7 +19,7 @@ func GetAllProductImages() []*ProductImage {
 	return results
 }
 
-func UploadPhotoProduct(images map[string]interface{}) error {
+func UploadPhotosProduct(images []map[string]interface{}) error {
 	result := configs.DB.Model(&ProductImage{}).Create(&images)
 	return result.Error
 }

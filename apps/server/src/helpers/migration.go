@@ -8,6 +8,7 @@ import (
 func Migration() {
 	configs.DB.AutoMigrate(
 		&models.User{},
+		&models.UserVerification{},
 		&models.Address{},
 		&models.Store{},
 		&models.Cart{},

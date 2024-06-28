@@ -37,18 +37,11 @@ const LoginSeller = () => {
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const response = await API.post("/auth/login", values, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const data = response.data;
-
-        dispatch(loginUser(data.user));
-        localStorage.setItem("token", data.token);
-        toastify("success", data.message || "Login successful");
+        const response = await API.post("/auth/login", values);
+        localStorage.setItem("token", response.data.data.Token);
+        toastify("success", response.data.message);
         navigate("/");
+        window.location.reload();
       } catch (error) {
         setSubmitting(false);
         const errorMessage =
@@ -67,7 +60,7 @@ const LoginSeller = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="email"
               name="email"
-              placeholder="Masukkan email"
+              placeholder="Insert email"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -84,7 +77,7 @@ const LoginSeller = () => {
                 className="border border-gray-500 rounded py-2 px-2 w-full"
                 type={formik.values.showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Masukkan password"
+                placeholder="Insert password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

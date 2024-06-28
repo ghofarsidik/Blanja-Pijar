@@ -17,9 +17,17 @@ type User struct {
 	Birthday     string        `json:"birthday"`
 	Phone_number string        `json:"phone_number" validate:"min=10,max=13"`
 	Role         string        `json:"role" type:"string;null"`
+	IsVerified   bool          `json:"isVerified" gorm:"default:0"`
 	Address      []APIAddress  `json:"address"`
 	Store        []APIStore    `json:"store"`
 	Transaction  []Transaction `json:"transaction"`
+}
+
+type UserVerification struct {
+	gorm.Model
+	UserID uint64 `json:"user_id"`
+	Token  string `json:"token"`
+	User   User   `gorm:"foreignKey:UserID;references:ID;constraint:OnDelete:CASCADE"`
 }
 
 type APIAddress struct {
@@ -112,6 +120,25 @@ func GetUserByEmail(email string) (*User, error) {
 		return db.Model(&Address{}).Find(&items)
 	}).First(&user, "email = ?", email)
 	return &user, results.Error
+}
+
+func VerifyUser(verify *UserVerification) error {
+	results := configs.DB.Create(&verify)
+	return results.Error
+}
+func CheckUsersVerification(token string) (*UserVerification, error) {
+	var userVerification UserVerification
+	if err := configs.DB.Where("token = ?", token).First(&userVerification).Error; err != nil {
+		return nil, err
+	}
+	return &userVerification, nil
+}
+
+func UpdateAccountVerification(ID uint) error {
+	return configs.DB.Model(&User{}).Where("id = ?", ID).Update("is_verified", "true").Error
+}
+func DeleteUsersVerification(ID uint, token string) error {
+	return configs.DB.Where("id = ? AND token = ?", ID, token).Delete(&UserVerification{}).Error
 }
 
 func CreateUser(newUser *User) error {

@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"server/src/helpers"
 	"server/src/models"
+	"server/src/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mitchellh/mapstructure"
@@ -43,15 +45,58 @@ func RegisterUser(c *fiber.Ctx) error {
 	}
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	newUser.Password = string(hashPassword)
+	token, err := services.GenerateToken()
+	if err != nil {
+		log.Fatalf("Failed to generate token: %v", err)
+	}
+	err = services.SendVerificationEmail(newUser.Name, newUser.Email, token)
+	if err != nil {
+		log.Fatalf("Failed to send verification email: %v", err)
+	}
 	if err := models.CreateUser(&newUser); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message":    fmt.Sprintf("Failed to create new user, %v", err.Error()),
 			"statusCode": fiber.StatusInternalServerError,
 		})
 	}
+	verification := models.UserVerification{
+		UserID: uint64(newUser.ID),
+		Token:  token,
+	}
+	if err := models.VerifyUser(&verification); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to create user verification",
+		})
+	}
+
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message":    "Register successfully",
+		"message":    "Register successfully, please check your email for verification",
 		"statusCode": fiber.StatusCreated,
+	})
+}
+
+func VerifyEmail(c *fiber.Ctx) error {
+	token := c.Params("token")
+	isExist, err := models.CheckUsersVerification(token)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "You have already verified",
+		})
+	}
+	if err := models.UpdateAccountVerification(uint(isExist.UserID)); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to update account verification",
+			"error":   err.Error(),
+		})
+	}
+	if err := models.DeleteUsersVerification(isExist.ID, token); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to delete account verification",
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Account verification successfully",
 	})
 }
 
@@ -69,6 +114,12 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"statusCode": fiber.StatusNotFound,
 			"message":    "Email unregistered",
+		})
+	}
+	if !user.IsVerified {
+		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
+			"statusCode": fiber.StatusNotAcceptable,
+			"message":    "Your account is not verified",
 		})
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {

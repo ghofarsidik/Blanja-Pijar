@@ -7,141 +7,99 @@ import { Recommendation } from "../../components/module/recommendation";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../../configs/api";
+import { MobileNav } from "../../components/module/MobileNav";
 
 const Home = () => {
   const navigate = useNavigate();
   const [newProducts, setNewProducts] = useState([]);
   const [usedProducts, setUsedProducts] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [mobile, setMobile] = useState(false);
 
-  const getNewData = async () => {
-    try {
-      const response = await API.get("/products/filter?limit=10&condition=new");
-      console.log("new data: :", response);
-      setNewProducts(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleProductDetail = (productId) => {
+    navigate(`/product/${productId}`);
   };
-  useEffect(() => {
-    getNewData();
-  }, []);
 
+  const handleCategoryClick = async (category) => {
+    navigate(`/search?categories=${category?.name}`);
+  };
   useEffect(() => {
     const getUsedData = async () => {
       try {
         const response = await API.get(
           "/products/filter?limit=10&condition=used"
         );
-        // console.log("used data: ", response);
         setUsedProducts(response.data.data);
       } catch (error) {
         console.log("Error fetching used products:", error);
       }
     };
-
-    getUsedData();
-  }, []);
-
-  const handleProductDetail = (productId) => {
-    navigate(`/product/${productId}`);
-  };
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    setSelectedCategory(null);
-    if (query) {
-      const getSearchResult = async () => {
-        const response = await API.get(`/products?search=${query}`);
-        console.log("search data: ", response);
-        setSearchResults(response.data.data);
-      };
-
-      getSearchResult();
-    } else {
-      setSearchResults([]);
-    }
-  };
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-    // console.log(category.name);
-    const getCategoryData = async () => {
-      const response = await API.get(`/category/${category.id}`);
-      // console.log("category data: ", response);
-      setSearchResults(response.data.data.product);
+    const getNewData = async () => {
+      try {
+        const response = await API.get(
+          "/products/filter?limit=10&condition=new"
+        );
+        setNewProducts(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
-    getCategoryData();
-  };
+    getUsedData();
+    getNewData();
+  }, []);
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 800px)");
+    const handleResize = () => {
+      if (mobile.matches === true) {
+        setMobile(true);
+      } else {
+        setMobile(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="container mx-auto mb-10">
-      <Navbar onSearch={handleSearch} />
-      {searchQuery || selectedCategory ? (
-        <Recommendation
-          title={
-            searchQuery
-              ? `Search Results for "${searchQuery}"`
-              : selectedCategory
-              ? `Category Results for "${selectedCategory.name}"`
-              : "Category Results"
-          }
-        >
-          {searchResults.length > 0 ? (
-            searchResults.map((product, index) => (
-              <Card
-                key={index}
-                image={product?.product_image[0]?.image || NoImage}
-                product_name={product?.name || ""}
-                price={`${product?.price}` || ""}
-                store={product?.Store?.name || ""}
-                onClick={() => handleProductDetail(product.ID)}
-              />
-            ))
-          ) : (
-            <p>No products found.</p>
-          )}
-        </Recommendation>
-      ) : (
-        <>
-          <Jumbotron />
-          <Categories
-            onCategoryClick={handleCategoryClick}
-            categories={Categories}
+      {mobile ? <MobileNav /> : <Navbar />}
+      <Jumbotron />
+      <div className="ml-4">
+        <Categories
+          onCategoryClick={handleCategoryClick}
+          categories={Categories}
+        />
+      </div>
+      <Recommendation title="New" desc="You've never seen it before!">
+        {newProducts.map((product, index) => (
+          <Card
+            key={index}
+            image={product?.product_image[0]?.image || NoImage}
+            product_name={product?.name || ""}
+            price={`${product?.price}` || ""}
+            store={product?.Store?.name || ""}
+            onClick={() => handleProductDetail(product.ID)}
           />
-          <Recommendation title="New" desc="You've never seen it before!">
-            {newProducts.map((product, index) => (
-              <Card
-                key={index}
-                image={product?.product_image[0]?.image || NoImage}
-                product_name={product?.name || ""}
-                price={`${product?.price}` || ""}
-                store={product?.Store?.name || ""}
-                onClick={() => handleProductDetail(product.ID)}
-              />
-            ))}
-          </Recommendation>
-
-          <Recommendation
-            title="Used"
-            desc="Find clothes that are trending recently"
-          >
-            {usedProducts.map((product, index) => (
-              <Card
-                key={index}
-                image={product?.product_image[0]?.image || NoImage}
-                product_name={product?.name || ""}
-                price={`${product?.price}` || ""}
-                store={product?.Store?.name || ""}
-                onClick={() => handleProductDetail(product.ID)}
-              />
-            ))}
-          </Recommendation>
-        </>
-      )}
+        ))}
+      </Recommendation>
+      <Recommendation
+        title="Used"
+        desc="Find clothes that are trending recently"
+      >
+        {usedProducts.map((product, index) => (
+          <Card
+            key={index}
+            image={product?.product_image[0]?.image || NoImage}
+            product_name={product?.name || ""}
+            price={`${product?.price}` || ""}
+            store={product?.Store?.name || ""}
+            onClick={() => handleProductDetail(product.ID)}
+          />
+        ))}
+      </Recommendation>
     </div>
   );
 };

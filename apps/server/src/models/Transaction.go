@@ -33,13 +33,10 @@ func GetAllTransaction() []*Transaction {
 	configs.DB.Preload("User").Preload("Product").Find(&results)
 	return results
 }
-func GetTransactionUser(id uint, status, sort string, limit, offset int) []*Transaction {
+func GetTransactionUser(id uint, status string) []*Transaction {
 	var results []*Transaction
 	status = "%" + status + "%"
 	configs.DB.Preload("User").
-		Order(sort).
-		Limit(limit).
-		Offset(offset).
 		Preload("Details").
 		Preload("Details.Product").
 		Preload("Details.Product.ProductImage").

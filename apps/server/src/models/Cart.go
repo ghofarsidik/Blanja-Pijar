@@ -9,7 +9,7 @@ import (
 type Cart struct {
 	gorm.Model
 	Status     string       `json:"status"`
-	TotalAmout float64      `json:"total_amout"`
+	TotalAmout *float64     `json:"total_amout"`
 	UserID     uint         `json:"user_id"`
 	User       User         `gorm:"foreignKey:UserID"`
 	CartDetail []CartDetail `json:"cart_detail" gorm:"foreignKey:CartID"`
@@ -69,7 +69,7 @@ func GetAllCartDetails() []*CartDetail {
 
 func GetActiveCartByUserId(userID uint) (*Cart, error) {
 	var cart Cart
-	result := configs.DB.Preload("CartDetail").Where("user_id = ? AND status = ?", userID, "active").First(&cart)
+	result := configs.DB.Preload("CartDetail").Where("user_id = ? AND status = ? AND deleted_at IS NULL", userID, "active").First(&cart)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			return nil, nil
@@ -119,6 +119,14 @@ func UpdateChekedItem(id int, item *CartDetail) error {
 	})
 	return result.Error
 }
+
+func SelectAllChecked(ids []uint64, checked bool) error {
+	result := configs.DB.Model(&CartDetail{}).Where("id IN ?", ids).Updates(map[string]interface{}{
+		"is_checked": checked,
+	})
+	return result.Error
+}
+
 func DeleteCart(id uint) error {
 	result := configs.DB.Delete(&Cart{}, "id = ?", id)
 	return result.Error

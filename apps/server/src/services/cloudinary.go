@@ -14,33 +14,33 @@ import (
 
 func UploadCloudinary(c *fiber.Ctx, file *multipart.FileHeader) (*uploader.UploadResult, error){
 	cloudinaryURL := os.Getenv("CLOUDINARY_URL")
-    if cloudinaryURL == "" {
-        return nil, fiber.NewError(fiber.StatusInternalServerError, "Cloudinary URL not found")
-    }
+	if cloudinaryURL == "" {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, "Cloudinary URL not found")
+	}
 
-    cld, err := cloudinary.NewFromURL(cloudinaryURL)
-    if err != nil {
-        return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-    }
+	cld, err := cloudinary.NewFromURL(cloudinaryURL)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
 
-    src, err := file.Open()
-    if err != nil {
-        return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-    }
-    defer src.Close()
+	src, err := file.Open()
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	defer src.Close()
 
-    ext := filepath.Ext(file.Filename)
-    fileNameWithoutExt := file.Filename[:len(file.Filename)-len(ext)]
+	ext := filepath.Ext(file.Filename)
+	fileNameWithoutExt := file.Filename[:len(file.Filename)-len(ext)]
 
-    uploadParams := uploader.UploadParams{
-        PublicID:  fmt.Sprintf("%d_%s", time.Now().Unix(), fileNameWithoutExt),
-        Overwrite: true,
-    }
+	uploadParams := uploader.UploadParams{
+		PublicID:  fmt.Sprintf("%d_%s", time.Now().Unix(), fileNameWithoutExt),
+		Overwrite: true,
+	}
 
-    uploadResult, err := cld.Upload.Upload(c.Context(), src, uploadParams)
-    if err != nil {
-        return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
-    }
+	uploadResult, err := cld.Upload.Upload(c.Context(), src, uploadParams)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
 
-    return uploadResult, nil
+	return uploadResult, nil
 }

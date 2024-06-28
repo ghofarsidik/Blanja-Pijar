@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Button } from '@material-tailwind/react';
-import { useNavigate } from 'react-router-dom';
-import registSeller from '../../utils/registSeller.js';
-import { useDispatch } from 'react-redux';
-import { toastify } from '../base/toastify.js';
-import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
-import axios from 'axios';
-import './Register.css';
-import API from '../../configs/api.jsx';
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Button } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import registSeller from "../../utils/registSeller.js";
+import { useDispatch } from "react-redux";
+import { toastify } from "../base/toastify.js";
+import {
+  registerStart,
+  registerSuccess,
+  registerFailure,
+} from "../../configs/redux/action/authRegist";
+import axios from "axios";
+import "./Register.css";
+import API from "../../configs/api.jsx";
 
 const RegisterSeller = () => {
   const dispatch = useDispatch();
@@ -38,15 +42,17 @@ const RegisterSeller = () => {
           },
         });
 
-
         const data = response.data;
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
 
         dispatch(registerSuccess(data.user));
-        navigate('/login');
+        navigate("/login");
         toastify("success", data.message);
       } catch (error) {
-        const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Something went wrong";
         dispatch(registerFailure(errorMessage));
         toastify("error", errorMessage);
       } finally {
@@ -64,7 +70,7 @@ const RegisterSeller = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
               name="name"
-              placeholder="Masukkan nama"
+              placeholder="Insert nama"
               value={formik.values.name}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -80,7 +86,7 @@ const RegisterSeller = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="email"
               name="email"
-              placeholder="Masukkan email"
+              placeholder="Insert email"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -96,7 +102,7 @@ const RegisterSeller = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
               name="phone_number"
-              placeholder="Masukkan telepon"
+              placeholder="Insert telepon"
               value={formik.values.phone_number}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -113,7 +119,7 @@ const RegisterSeller = () => {
                 className="border border-gray-500 rounded py-2 px-2 w-full"
                 type={formik.values.showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Masukkan password"
+                placeholder="Insert password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -137,7 +143,7 @@ const RegisterSeller = () => {
               </div>
             )}
           </div>
-          <h1>Gender:</h1>
+          {/* <h1>Gender:</h1>
           <div className="flex space-x-4 items-center">
             <label className="flex items-center">
               <input
@@ -161,16 +167,20 @@ const RegisterSeller = () => {
               />
               Female
             </label>
-          </div>
+          </div> */}
           {formik.touched.gender && formik.errors.gender && (
             <div className="text-red-500 text-[12px] font-poppins">
               {formik.errors.gender}
             </div>
           )}
         </div>
-        <div className='flex justify-center py-2'>
-          <Button type="submit" className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`} disabled={formik.isSubmitting}>
-            {loading ? 'Loading...' : 'Daftar'}
+        <div className="flex justify-center py-2">
+          <Button
+            type="submit"
+            className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
+            disabled={formik.isSubmitting}
+          >
+            {loading ? "Loading..." : "Register"}
           </Button>
         </div>
       </form>

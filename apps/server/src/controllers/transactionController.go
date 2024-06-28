@@ -1,15 +1,11 @@
 package controllers
 
 import (
-	"fmt"
-	"math"
 	"server/src/configs"
 	"server/src/helpers"
 	"server/src/middlewares"
 	"server/src/models"
 	"server/src/services"
-	"strconv"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/veritrans/go-midtrans"
@@ -29,41 +25,11 @@ func GetUserTransaction(c *fiber.Ctx) error {
 	claims := middlewares.GetUserClaims(c)
 	id := claims["ID"].(float64)
 	status := c.Query("status")
-	pageOld := c.Query("page")
-	limitOld := c.Query("limit")
-	page, _ := strconv.Atoi(pageOld)
-	limit, _ := strconv.Atoi(limitOld)
-	sort := c.Query("sort")
-	sortBy := c.Query("orderBy")
-	if status == "" {
-		status = "waiting payment"
-	}
-	if page == 0 {
-		page = 1
-	}
-	if limit == 0 {
-		limit = 5
-	}
-	offset := (page - 1) * limit
-	if sort == "" {
-		sort = "DESC"
-	}
-	if sortBy == "" {
-		sortBy = "status"
-	}
-	sort = sortBy + " " + strings.ToLower(sort)
-	res := models.GetTransactionUser(uint(id), status, sort, limit, offset)
-	var count int64
-	configs.DB.Table("transactions").Where("deleted_at IS NULL AND user_id = ?", id).Count(&count)
-	totalPage := math.Ceil(float64(count) / float64(limit))
+	res := models.GetTransactionUser(uint(id), status)
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message":    "OK",
 		"statusCode": fiber.StatusOK,
 		"data":       res,
-		"totalData":  count,
-		"totalPage":  totalPage,
-		"limit":      limit,
-		"page":       page,
 	})
 }
 
@@ -88,6 +54,9 @@ func CreateTransaction(c *fiber.Ctx) error {
 	var totalAmount float64
 	var items []midtrans.ItemDetail
 	var totalQuantity uint64
+	var productId []uint64
+	var newStock []uint64
+	productQuantities := make(map[uint64]uint64)
 	for _, detail := range newTransaction.Details {
 		productDetail := models.GetDetailProduct(int(detail.ProductID))
 		if productDetail == nil {
@@ -96,6 +65,25 @@ func CreateTransaction(c *fiber.Ctx) error {
 				"message": "Product not found",
 			})
 		}
+
+		productQuantities[detail.ProductID] += uint64(detail.ProductQuantity)
+		for productID, totalQuantity := range productQuantities {
+			productDetail := models.GetDetailProduct(int(productID))
+			if productDetail == nil {
+				tx.Rollback()
+				return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+					"message": "Product not found",
+				})
+			}
+
+			newStockValue := uint64(productDetail.Stock) - totalQuantity
+			newStock = append(newStock, uint64(newStockValue))
+			productId = append(productId, productID)
+		}
+
+		newStockValue := productDetail.Stock - uint(detail.ProductQuantity)
+		newStock = append(newStock, uint64(newStockValue))
+		productId = append(productId, uint64(productDetail.ID))
 
 		productPrice := productDetail.Price
 		detailAmount := productPrice * float64(detail.ProductQuantity)
@@ -172,6 +160,15 @@ func CreateTransaction(c *fiber.Ctx) error {
 	for _, detail := range res {
 		cartId = append(cartId, detail.ID)
 	}
+
+	for i, id := range productId {
+		if err := configs.DB.Model(&models.Product{}).Where("id = ?", id).Update("stock", newStock[i]).Error; err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Failed to update stock",
+			})
+		}
+	}
 	configs.DB.Where("id IN ?", cartId).Delete(&models.CartDetail{})
 	cart, _ := models.GetActiveCartByUserId(uint(id))
 	if cart != nil {
@@ -224,7 +221,6 @@ func PaymentCallback(c *fiber.Ctx) error {
 		ExpiryTime  string `json:"expiry_time"`
 		Currency    string `json:"currency"`
 	}
-	fmt.Println("callback", callbackData)
 	if err := c.BodyParser(&callbackData); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request body",
@@ -268,9 +264,10 @@ func PaymentCallback(c *fiber.Ctx) error {
 				"message": "Failed to update transaction status",
 			})
 		}
+
 	}
 	updateFieldsError := map[string]interface{}{
-		"status":         "payment expired",
+		"status":         "canceled",
 		"payment_method": paymentMethod,
 	}
 	if callbackData.TransactionStatus == "expire" {
