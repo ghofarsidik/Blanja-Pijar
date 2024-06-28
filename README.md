@@ -84,6 +84,8 @@ yarn add
 
 ```sh
 VITE_API_URL=https://api-blanja.com
+VITE_CLIENT_KEY=midtrans client key
+VITE_MIDTRANS_API_URL=https://app.sandbox.midtrans.com
 ```
 
 5. Run this command to run the project
@@ -194,7 +196,7 @@ Here are the contributors to the project and their respective roles:
 
 <table>
 <tr>
-<td> <img width="410" height="410" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/dimas.jpg" /> </td>
+<td> <img width="360" height="360" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/dimas.jpg" /> </td>
 <td>
 
 **Dimas Ageng Saputro**: Project Manager, Fullstack Developer </br>
@@ -204,7 +206,7 @@ Linkedin : [linkedin.com/in/dimasagengsaputro](https://www.linkedin.com/in/dimas
 </td>
 </tr>
 <tr>
-<td> <img width="410" height="410" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/ghaffar.JPG" /> </td>
+<td> <img width="360" height="360" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/ghaffar.JPG" /> </td>
 <td>
 
 **Abdul Ghaffar Sidik**: Fullstack Developer </br>
@@ -214,7 +216,7 @@ Linkedin : [linkedin.com/in/abdul-ghaffar-sidik](https://www.linkedin.com/in/abd
 </td>
 </tr>
 <tr>
-<td> <img width="410" height="410" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/azhar.png" /> </td>
+<td> <img width="360" height="360" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/azhar.png" /> </td>
 <td>
 
 **Burhanuddin Azhar**: Frontend Developer </br>
@@ -228,9 +230,12 @@ Linkedin : [linkedin.com/in/burhanudin-azhar](https://www.linkedin.com/in/burhan
 
 
 </table>
+
 ### Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are
+
+**greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -256,5 +261,5 @@ The server for this project was created by [Dimas Ageng Saputro](https://github.
 
 ### Related Project
 
-:rocket: [`FrontEnd - Blanja`](https://github.com/dimassagngsptr/blanja-kelompok-1)
+:rocket: [`FrontEnd - Blanja`](https://github.com/dimassagngsptr/blanja-kelompok-1) </br>
 :rocket: [`Backend - Blanja`](https://github.com/dimassagngsptr/golang-server-blanja.git)
