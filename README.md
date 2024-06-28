@@ -162,17 +162,20 @@ pass  : @Teknologi123
   </tr>
   <tr>
     <td>My order</td>
+    <td> </td>
   </tr>
   <tr>
     <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/my%20order.png" /></td>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td>
+    <!-- <img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /> -->
+    </td>
   </tr>
   <tr>
-    <td>Profile Seller</td>
+    <td>Profile Store</td>
     <td>Store Product</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/37c5791bcb5666e82555bb027f8807cc46102eac/apps/web/src/assets/screenshot/Profile%20Store.png" /></td>
     <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr> 
     <tr>
@@ -180,7 +183,7 @@ pass  : @Teknologi123
     <td>Store order</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/37c5791bcb5666e82555bb027f8807cc46102eac/apps/web/src/assets/screenshot/add%20store%20product.png" /></td>
     <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr> 
 </table>
