@@ -8,9 +8,9 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name    string       `json:"name" validate:"required,min=3"`
-	Image   string       `json:"image"`
-	Product []APIProduct `json:"product"`
+	Name    string    `json:"name" validate:"required,min=3"`
+	Image   string    `json:"image"`
+	Product []Product `json:"product"`
 }
 
 type APIProduct struct {
@@ -40,11 +40,23 @@ func GetAllCategories() []*Category {
 func GetDetailCategory(id int) *Category {
 	var results Category
 	configs.DB.
-		Preload("Product", func(db *gorm.DB) *gorm.DB {
-			var items []*APIProduct
-			return configs.DB.Model(&Product{}).Find(&items)
-		}).
+		Preload("Product").
+		Preload("Product.ProductImage").
+		Preload("Product.ProductSize").
+		Preload("Product.ProductColor").
 		First(&results, "id = ?", id)
+	return &results
+}
+
+func GetNameCategory(name string) *Category {
+	var results Category
+	name = "%" + name + "%"
+	configs.DB.Preload("Product").
+		Preload("Product.ProductImage").
+		Preload("Product.ProductSize").
+		Preload("Product.ProductColor").
+		Where("name ILIKE ?", name).
+		First(&results)
 	return &results
 }
 

@@ -20,6 +20,7 @@ func Router(app *fiber.App) {
 
 	api.Get("/address", controllers.GetAllAddresses)
 	api.Get("/address/:id", controllers.GetDetailAddress)
+	api.Get("/address/primary", middlewares.JwtMiddleware(), controllers.GetPrimaryAddress)
 	api.Post("/address", middlewares.JwtMiddleware(), controllers.CreateAddress)
 	api.Put("/address/:id", middlewares.JwtMiddleware(), controllers.UpdateAddress)
 	api.Delete("/address/:id", controllers.DeleteAddress)
@@ -35,7 +36,11 @@ func Router(app *fiber.App) {
 	api.Get("/color", controllers.GetAllColors)
 	api.Post("/color", controllers.CreateProductColor)
 
+	api.Get("/sizes", controllers.GetAllSize)
+	api.Post("/size", controllers.CreateProductSize)
+
 	api.Get("/categories", controllers.GetAllCategories)
+	api.Get("/category", controllers.GetNameCategory)
 	api.Get("/category/:id", controllers.GetDetailCategory)
 	api.Post("/category", controllers.CreateCategory)
 	api.Put("/category/:id", controllers.UpdateCategory)
@@ -51,12 +56,21 @@ func Router(app *fiber.App) {
 	api.Get("/carts", controllers.GetAllCarts)
 	api.Get("/cart", middlewares.JwtMiddleware(), controllers.GetCartByUserId)
 	api.Post("/cart", middlewares.JwtMiddleware(), controllers.AddToCart)
-	api.Get("/carts/details", controllers.GetAllCartDetails)
+	api.Delete("/cart/:id", middlewares.JwtMiddleware(), controllers.DeleteAllCart)
+
+	api.Get("/cart-details", controllers.GetAllCartDetails)
+	api.Get("/cart-detail/active", middlewares.JwtMiddleware(), controllers.GetActiveCartDetail)
+	api.Put("/cart-detail/update/:id", middlewares.JwtMiddleware(), controllers.UpdateQuantityCartDetail)
+	api.Put("/cart-detail/cheked/:id", middlewares.JwtMiddleware(), controllers.UpdateIsChekedItem)
+	api.Put("/cart-detail/allcheked", middlewares.JwtMiddleware(), controllers.SelectAllChecked)
+	api.Delete("/cart-detail/:id", middlewares.JwtMiddleware(), controllers.DeleteCartDetailItem)
 
 	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.LoginUser)
+	auth.Get("/verify/:token", controllers.VerifyEmail)
 
 	api.Get("/transactions", controllers.GetAllTransaction)
+	api.Get("/transaction/user", middlewares.JwtMiddleware(), controllers.GetUserTransaction)
 	api.Post("/transaction", middlewares.JwtMiddleware(), controllers.CreateTransaction)
 	api.Post("/payment/callback", controllers.PaymentCallback)
 }

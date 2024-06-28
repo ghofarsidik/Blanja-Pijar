@@ -4,24 +4,26 @@ import (
 	"errors"
 	"fmt"
 	"server/src/configs"
+	"strings"
 
 	"gorm.io/gorm"
 )
 
 type Product struct {
 	gorm.Model
-	Name         string            `json:"name"`
-	Description  string            `json:"description"`
-	Price        float64           `json:"price"`
-	Size         string            `json:"size"`
-	Condition    string            `json:"condition" validate:"required"`
-	Stock        uint              `json:"stock"`
-	StoreID      uint              `json:"store_id"`
-	CategoryID   uint              `json:"category_id"`
-	Store        Store             `gorm:"foreignKey:StoreID"`
-	Category     Category          `gorm:"foreignKey:CategoryID"`
-	ProductImage []APIProductImage `json:"product_image"`
-	ProductColor []APIProductColor `json:"product_color"`
+	Name         string         `json:"name"`
+	Description  string         `json:"description"`
+	Price        float64        `json:"price"`
+	Condition    string         `json:"condition" validate:"required"`
+	Stock        uint           `json:"stock"`
+	StoreID      uint           `json:"store_id"`
+	CategoryID   uint           `json:"category_id"`
+	Store        Store          `gorm:"foreignKey:StoreID"`
+	Category     Category       `gorm:"foreignKey:CategoryID"`
+	ProductImage []ProductImage `json:"product_image"`
+	ProductColor []ProductColor `json:"product_color"`
+	ProductSize  []ProductSize  `json:"product_size"`
+	CartDetail   []CartDetail   `json:"cart_detail"`
 }
 
 type APIProductImage struct {
@@ -50,35 +52,65 @@ func (u *Product) BeforeCreate(tx *gorm.DB) (err error) {
 func GetAllProducts(sort, name string, limit, offset int) []*Product {
 	var items []*Product
 	name = "%" + name + "%"
-	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProductImage
-		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).Preload("Store").Order(sort).Limit(limit).Offset(offset).Where("name ILIKE ?", name).Find(&items)
+	configs.DB.Preload("Category").Preload("ProductImage").Preload("ProductColor").Preload("ProductSize").Preload("Store").Order(sort).Limit(limit).Offset(offset).Where("name ILIKE ?", name).Find(&items)
 	return items
 }
 
-func FilterProducts(filter string, limit, offset int) []*Product {
+func FilterProducts(color, size, store, category, condition string, limit, offset int) []*Product {
 	var items []*Product
-	// filter = "%" + filter + "%"
-	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProductImage
-		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).Preload("Store").Limit(limit).Offset(offset).Where("condition = ?", filter).Find(&items)
+	db := configs.DB.Preload("Category").
+		Preload("ProductImage").
+		Preload("Store").
+		Preload("ProductSize").
+		Preload("ProductColor").
+		Model(&Product{})
+
+	if condition != "" {
+		db = db.Where("condition = ?", condition)
+	}
+	if color != "" {
+		colorList := strings.Split(strings.ToLower(strings.TrimSpace(color)), ",")
+		db = db.Joins("JOIN product_colors ON product_colors.product_id = products.id").
+			Where("LOWER(product_colors.color) IN (?)", colorList)
+	}
+	if size != "" {
+		sizeList := strings.Split(strings.ToLower(strings.TrimSpace(size)), ",")
+		db = db.Joins("JOIN product_sizes ON product_sizes.product_id = products.id").
+			Where("LOWER(product_sizes.size) IN (?)", sizeList)
+	}
+	if store != "" {
+		store = strings.ToLower(strings.TrimSpace(store))
+		db = db.Joins("JOIN stores ON stores.id = products.store_id").
+			Where("LOWER(stores.name) ILIKE ?", "%"+store+"%")
+	}
+	if category != "" {
+		category = strings.ToLower(strings.TrimSpace(category))
+		db = db.Joins("JOIN categories ON categories.id = products.category_id").
+			Where("LOWER(categories.name) ILIKE ?", "%"+category+"%")
+	}
+
+	// Debugging: Print the SQL query
+	fmt.Println(db.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Limit(limit).Offset(offset).Find(&items)
+	}))
+
+	db.Limit(limit).Offset(offset).Find(&items)
 	return items
 }
 
 func GetDetailProduct(id int) *Product {
 	var item Product
-	configs.DB.Preload("Category").Preload("ProductImage", func(db *gorm.DB) *gorm.DB {
-		var items []*APIProductImage
-		return configs.DB.Model(&ProductImage{}).Find(&items)
-	}).First(&item, "id = ?", id)
+	configs.DB.Preload("Category").Preload("ProductImage").Preload("ProductColor").Preload("ProductSize").First(&item, "id = ?", id)
 	return &item
 }
 
-func CreateProduct(newProduct *Product) error {
+func CreateProduct(newProduct *Product) (*Product, error) {
 	result := configs.DB.Create(&newProduct)
-	return result.Error
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return newProduct, nil
 }
 
 func UpdateProduct(id int, item *Product) error {

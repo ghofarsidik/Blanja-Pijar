@@ -1,48 +1,52 @@
-import React, { useEffect } from 'react';
-import { useFormik } from 'formik';
-import { Button } from '@material-tailwind/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { loginUser, getUser } from '../../configs/redux/action/authSlice';
-import loginRegist from '../../utils/login';
-import { toastify } from '../base/toastify';
+import React, { useEffect } from "react";
+import { useFormik } from "formik";
+import { Button } from "@material-tailwind/react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginUser, getUser } from "../../configs/redux/action/authSlice";
+import loginRegist from "../../utils/login";
+import { toastify } from "../base/toastify";
+import axios from "axios";
+import API from "../../configs/api";
 
 const LoginSeller = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, error, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, loading, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    if (user && user.role === 'seller') {
-      navigate('/');
+    if (user && user.role === "seller") {
+      navigate("/");
     }
   }, [user, navigate]);
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       showPassword: false,
     },
     validationSchema: loginRegist,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const action = await dispatch(loginUser(values)).unwrap();
-        toastify('success', 'Login successful');
-        navigate('/');
+        const response = await API.post("/auth/login", values);
+        localStorage.setItem("token", response.data.data.Token);
+        toastify("success", response.data.message);
+        navigate("/");
+        window.location.reload();
       } catch (error) {
         setSubmitting(false);
-        if (error.message) {
-          toastify('error', "ada yang salah");
-        } else {
-          toastify('error', error);
-        }
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toastify("error", errorMessage);
       }
     },
   });
@@ -56,7 +60,7 @@ const LoginSeller = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="email"
               name="email"
-              placeholder="Masukkan email"
+              placeholder="Insert email"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -73,7 +77,7 @@ const LoginSeller = () => {
                 className="border border-gray-500 rounded py-2 px-2 w-full"
                 type={formik.values.showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Masukkan password"
+                placeholder="Insert password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -108,10 +112,14 @@ const LoginSeller = () => {
               className={`bg-red-500 flex justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
               disabled={formik.isSubmitting || loading}
             >
-              {loading ? 'Loading...' : 'Login'}
+              {loading ? "Loading..." : "Login"}
             </button>
           </div>
-          {error && <div className="text-red-500 text-center">{error.message || 'An error occurred'}</div>}
+          {error && (
+            <div className="text-red-500 text-center">
+              {error.message || "An error occurred"}
+            </div>
+          )}
         </div>
       </form>
       <div className="flex justify-center">

@@ -9,24 +9,24 @@ const jumbotronImage = {
 const Jumbotron = () => {
     const [images, setImages] = useState([]);
 
-    useEffect(() => {
-        const fetchImages = async () => {
-            try {
-                const response = await axios.get('https://fakestoreapi.com/products/categories');
-                const fetchedImages = response.data;
-                if (fetchedImages && fetchedImages.length > 0) {
-                    setImages(fetchedImages);
-                } else {
-                    setImages([{ url: 'promotionCard', name: 'Dummy' }]);
-                }
-            } catch (error) {
-                console.error('Error fetching images:', error);
-                setImages([{ url: 'promotionCard', name: 'Dummy' }]);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchImages = async () => {
+    //         try {
+    //             const response = await axios.get('https://fakestoreapi.com/products/categories');
+    //             const fetchedImages = response.data;
+    //             if (fetchedImages && fetchedImages.length > 0) {
+    //                 setImages(fetchedImages);
+    //             } else {
+    //                 setImages([{ url: 'promotionCard', name: 'Dummy' }]);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching images:', error);
+    //             setImages([{ url: 'promotionCard', name: 'Dummy' }]);
+    //         }
+    //     };
 
-        fetchImages();
-    }, []);
+    //     fetchImages();
+    // }, []);
 
     return (
         <div className="h-[310px] flex items-center space-x-4 overflow-x-scroll mx-[10%]">

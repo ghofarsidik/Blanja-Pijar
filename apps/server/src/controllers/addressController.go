@@ -31,6 +31,21 @@ func GetDetailAddress(c *fiber.Ctx) error {
 	return c.JSON(foundAddress)
 }
 
+func GetPrimaryAddress(c *fiber.Ctx) error {
+	claims := middlewares.GetUserClaims(c)
+	id := claims["ID"].(float64)
+	address, err := models.GetPrimaryAddress(uint(id))
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "Address not found",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully get primary address",
+		"data":    address,
+	})
+}
+
 func CreateAddress(c *fiber.Ctx) error {
 	claims := middlewares.GetUserClaims(c)
 	id := claims["ID"].(float64)
@@ -42,17 +57,31 @@ func CreateAddress(c *fiber.Ctx) error {
 		})
 		return err
 	}
-	createAddress := map[string]interface{}{
-		"user_id":         id,
-		"label":           newAddress.Label,
-		"address":         newAddress.Address,
-		"received_name":   newAddress.ReceivedName,
-		"contact_number":  newAddress.ContactNumber,
-		"postal_code":     newAddress.PostalCode,
-		"city":            newAddress.City,
-		"primary_address": newAddress.PrimaryAddress,
-		"latitude":        newAddress.Latitude,
-		"longitude":       newAddress.Longitude,
+	fmt.Println("primary", newAddress.PrimaryAddress)
+	if newAddress.PrimaryAddress {
+		isPrimary, err := models.GetPrimaryAddress(uint(id))
+		if err == nil {
+			deletePrimary := models.Address{
+				PrimaryAddress: false,
+			}
+			if err := models.UpdatePrimaryAddress(int(isPrimary.ID), &deletePrimary); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+		}
+	}
+	createAddress := models.Address{
+		UserID:         uint(id),
+		Label:          newAddress.Label,
+		Address:        newAddress.Address,
+		ReceivedName:   newAddress.ReceivedName,
+		ContactNumber:  newAddress.ContactNumber,
+		PostalCode:     newAddress.PostalCode,
+		City:           newAddress.City,
+		PrimaryAddress: newAddress.PrimaryAddress,
+		Latitude:       newAddress.Latitude,
+		Longitude:      newAddress.Longitude,
 	}
 	addressExist := models.GetAddressByNameAndAddress(newAddress.ReceivedName, newAddress.Address, uint(newAddress.UserID))
 	if addressExist.ID != 0 {
@@ -60,23 +89,37 @@ func CreateAddress(c *fiber.Ctx) error {
 			"message": "Address already exists",
 		})
 	}
-	models.CreateAddress(createAddress)
+	models.CreateAddress(&createAddress)
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "success created new address",
-		"data":    newAddress,
+		// "data":    newAddress,
 	})
 }
 
 func UpdateAddress(c *fiber.Ctx) error {
 	var newAddress models.Address
 	id, _ := strconv.Atoi(c.Params("id"))
+	claims := middlewares.GetUserClaims(c)
+	userId := claims["ID"].(float64)
 	if err := c.BodyParser(&newAddress); err != nil {
 		c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request body",
 		})
 		return err
 	}
-
+	if newAddress.PrimaryAddress {
+		isPrimary, err := models.GetPrimaryAddress(uint(userId))
+		if err == nil {
+			deletePrimary := models.Address{
+				PrimaryAddress: false,
+			}
+			if err := models.UpdatePrimaryAddress(int(isPrimary.ID), &deletePrimary); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+		}
+	}
 	err := models.UpdateAddress(id, &newAddress)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

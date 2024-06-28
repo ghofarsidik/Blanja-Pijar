@@ -46,8 +46,14 @@ func GetAllProducts(c *fiber.Ctx) error {
 		"page":      page,
 	})
 }
+
+// Controller function
 func FilterProducts(c *fiber.Ctx) error {
-	filter := c.Query("condition")
+	color := c.Query("color")
+	size := c.Query("size")
+	store := c.Query("store")
+	category := c.Query("category")
+	condition := c.Query("condition")
 	pageOld := c.Query("page")
 	limitOld := c.Query("limit")
 	page, _ := strconv.Atoi(pageOld)
@@ -59,8 +65,7 @@ func FilterProducts(c *fiber.Ctx) error {
 		limit = 5
 	}
 	offset := (page - 1) * limit
-	products := models.FilterProducts(filter, limit, offset)
-	// fmt.Println("product", products)
+	products := models.FilterProducts(color, size, store, category, condition, limit, offset)
 	count := helpers.CountData("products")
 	totalPage := math.Ceil(float64(count) / float64(limit))
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -92,15 +97,17 @@ func CreateProduct(c *fiber.Ctx) error {
 			"statusCode": fiber.StatusBadRequest,
 		})
 	}
-	if err := models.CreateProduct(&newProduct); err != nil {
-		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
-			"message":    err.Error(),
-			"statusCode": fiber.StatusNotAcceptable,
+	results, err := models.CreateProduct(&newProduct)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
 		})
 	}
+
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message":     "Product created successfully",
 		"statusCoded": fiber.StatusOK,
+		"data":        results,
 	})
 }
 
@@ -140,59 +147,75 @@ func DeleteProduct(c *fiber.Ctx) error {
 	})
 }
 func UploadImageProductServer(c *fiber.Ctx) error {
-	file, err := c.FormFile("file")
 	id, _ := strconv.Atoi(c.Params("id"))
+	form, err := c.MultipartForm()
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": fmt.Sprintf("Gagal mengunggah file %v", err.Error()),
 		})
 	}
+	files := form.File["file"]
+
+	if len(files) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Tidak ada file yang diunggah",
+		})
+	}
+
 	maxSizeFile := int64(2 << 20)
 	validate := helpers.ValidateFile()
 	sizeValidate := validate["SizeUploadValidation"].(func(int64, int64) error)
-	if err := sizeValidate(file.Size, maxSizeFile); err != nil {
-		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
-			"statusCode": fiber.StatusNotAcceptable,
-			"message":    "Ukuran file melebihi 2MB",
-		})
-	}
-	fileHeader, err := file.Open()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Gagal membuka file: " + err.Error())
-	}
-	defer fileHeader.Close()
-	buffer := make([]byte, 512)
-	if _, err := fileHeader.Read(buffer); err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Gagal membaca file: " + err.Error())
-	}
 	typeValidate := validate["TypeUploadValidation"].(func([]byte, []string) error)
 	validFileTypes := []string{"image/png", "image/jpeg", "image/jpg", "application/pdf", "image/webp"}
-	if err := typeValidate(buffer, validFileTypes); err != nil {
-		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
-			"statusCode": fiber.StatusNotAcceptable,
-			"message":    "Format file harus png, jpeg, jpg, pdf dan webp",
-		})
+
+	var uploadResults []map[string]interface{}
+	for _, file := range files {
+		if err := sizeValidate(file.Size, maxSizeFile); err != nil {
+			return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
+				"statusCode": fiber.StatusNotAcceptable,
+				"message":    "Ukuran file melebihi 2MB",
+			})
+		}
+		fileHeader, err := file.Open()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Gagal membuka file: " + err.Error())
+		}
+		defer fileHeader.Close()
+
+		buffer := make([]byte, 512)
+		if _, err := fileHeader.Read(buffer); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Gagal membaca file: " + err.Error())
+		}
+
+		if err := typeValidate(buffer, validFileTypes); err != nil {
+			return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{
+				"statusCode": fiber.StatusNotAcceptable,
+				"message":    "Format file harus png, jpeg, jpg, pdf dan webp",
+			})
+		}
+
+		uploadResult, err := services.UploadCloudinary(c, file)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": err.Error(),
+			})
+		}
+
+		uploadPhoto := map[string]interface{}{
+			"image":      uploadResult.URL,
+			"product_id": id,
+		}
+		uploadResults = append(uploadResults, uploadPhoto)
 	}
 
-	uploadResult, err := services.UploadCloudinary(c, file)
-	uploadPhoto := map[string]interface{}{
-		"image":      uploadResult.URL,
-		"product_id": id,
-	}
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
-
-	if err := models.UploadPhotoProduct(uploadPhoto); err != nil {
+	if err := models.UploadPhotosProduct(uploadResults); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Gagal mengunggah file" + err.Error(),
-			"image":   uploadPhoto,
 		})
 	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message":    fmt.Sprintf("Sukses mengunggah photo product dengan ID %d", id),
+		"message":    fmt.Sprintf("Sukses mengunggah %d photo product dengan ID %d", len(uploadResults), id),
 		"statusCode": fiber.StatusOK,
 	})
 }

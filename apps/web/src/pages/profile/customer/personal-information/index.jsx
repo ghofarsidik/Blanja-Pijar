@@ -17,7 +17,11 @@ import { toastify } from "../../../../components/base/toastify";
 import { useDispatch } from "react-redux";
 import { getActiveUser } from "../../../../configs/redux/features/userSlice";
 
-export default function PersonalInformation({ activeUser }) {
+export default function PersonalInformation({
+  activeUser,
+  handleOpenMenu,
+  openMenu,
+}) {
   const today = new Date();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -32,7 +36,6 @@ export default function PersonalInformation({ activeUser }) {
     phone_number: "",
     gender: "",
     birthday: today,
-    password: "",
   });
   const handleChangeImage = (e) => {
     const file = e?.target?.files[0];
@@ -83,22 +86,57 @@ export default function PersonalInformation({ activeUser }) {
       phone_number: activeUser?.phone_number,
       gender: activeUser?.gender,
       email: activeUser?.email,
-      password: activeUser?.password,
+      birthday: activeUser?.birthday || today,
     });
   }, []);
   return (
     <>
-      <div className="border-b border-gray-300 py-3">
-        <h1 className="font-semibold text-2xl leading-relaxed">My Profile</h1>
-        <p className="text-gray-500">Manage your profile information</p>
+      <div className="border-b flex justify-between items-center border-gray-300 py-3 lg:w-full">
+        <div>
+          <h1 className="font-semibold text-2xl leading-relaxed">My Profile</h1>
+          <p className="text-gray-500">Manage your profile information</p>
+        </div>
+        {openMenu ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6 lg:hidden"
+            onClick={handleOpenMenu}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m4.5 15.75 7.5-7.5 7.5 7.5"
+            />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6 lg:hidden"
+            onClick={handleOpenMenu}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m19.5 8.25-7.5 7.5-7.5-7.5"
+            />
+          </svg>
+        )}
       </div>
-      <div className="flex justify-between py-10">
-        <div className="w-[520px] flex flex-col gap-y-5 text-end pr-18">
-          <div className="flex gap-10 justify-end items-center">
-            <label htmlFor="" className="text-gray-400 text-end">
+      <div className="flex flex-col-reverse items-center lg:items-start lg:flex-row justify-between py-10">
+        <div className="w-full lg:w-[520px] flex flex-col gap-y-5 text-end pr-18">
+          <div className="flex lg:flex-row flex-col lg:gap-10 gap-3 items-start justify-start lg:justify-end lg:items-center">
+            <label htmlFor="" className="text-gray-400 lg:text-end">
               Name
             </label>
-            <div className="w-2/3">
+            <div className="w-full lg:w-2/3">
               <Input
                 onChange={(e) => handleChange(e)}
                 label="Name"
@@ -107,11 +145,11 @@ export default function PersonalInformation({ activeUser }) {
               />
             </div>
           </div>
-          <div className="flex gap-10 justify-end items-center ">
+          <div className="flex lg:flex-row flex-col lg:gap-10 gap-3 items-start justify-start lg:justify-end lg:items-center">
             <label htmlFor="" className="text-gray-400 text-end">
               Email
             </label>
-            <div className="w-2/3">
+            <div className="w-full lg:w-2/3">
               <Input
                 onChange={(e) => handleChange(e)}
                 label="Email"
@@ -120,11 +158,11 @@ export default function PersonalInformation({ activeUser }) {
               />
             </div>
           </div>
-          <div className="flex gap-10 justify-end items-center ">
+          <div className="flex lg:flex-row flex-col lg:gap-10 gap-3 items-start justify-start lg:justify-end lg:items-center">
             <label htmlFor="" className="text-gray-400 text-end">
               Phone Number
             </label>
-            <div className="w-2/3">
+            <div className="w-full lg:w-2/3">
               <Input
                 onChange={(e) => handleChange(e)}
                 label="Phone Number"
@@ -133,11 +171,11 @@ export default function PersonalInformation({ activeUser }) {
               />
             </div>
           </div>
-          <div className="flex gap-10 justify-end items-center ">
+          <div className="flex lg:flex-row flex-col lg:gap-10 gap-1 items-start justify-start lg:justify-end lg:items-center">
             <label htmlFor="" className="text-gray-400 text-end">
               Gender
             </label>
-            <div className="flex gap-10 w-2/3">
+            <div className="flex gap-10 w-full lg:w-2/3">
               <Radio
                 name="type"
                 label="Male"
@@ -166,7 +204,7 @@ export default function PersonalInformation({ activeUser }) {
               />
             </div>
           </div>
-          <div className="flex justify-end items-center gap-8">
+          <div className="flex lg:flex-row flex-col lg:gap-10 gap-3 items-start justify-start lg:justify-end lg:items-center">
             <label htmlFor="" className="text-gray-400 text-end">
               Date of birth
             </label>
@@ -184,13 +222,13 @@ export default function PersonalInformation({ activeUser }) {
           </div>
           <button
             onClick={handleEditUser}
-            className="bg-main-red text-white w-1/3 mx-auto py-2 rounded-md mt-6"
+            className="bg-main-red text-white w-1/3 lg:w-1/3 lg:mx-auto py-2 rounded-md mt-6"
           >
             Save Profile
           </button>
         </div>
-        <div className="bg-gray-200 h-[150px] w-0.5"></div>
-        <div className="w-[200px] items-center flex flex-col pr-20">
+        <div className="hidden lg:block bg-gray-200 h-0 lg:h-[150px] w-0.5"></div>
+        <div className="lg:w-[200px] items-center flex flex-col lg:pr-20">
           <img
             src={activeUser?.image ? activeUser?.image : defaultFoto}
             alt=""

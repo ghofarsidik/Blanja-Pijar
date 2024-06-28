@@ -1,11 +1,8 @@
-import axios from "axios";
+import API from "../configs/api";
 
 export const authLogin = async (data) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/v1/auth/login",
-      data
-    );
+    const response = await API.post("/auth/login", data);
     return response;
   } catch (error) {
     return error;

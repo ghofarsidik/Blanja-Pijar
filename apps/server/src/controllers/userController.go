@@ -10,7 +10,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mitchellh/mapstructure"
-	// "golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUser(c *fiber.Ctx) error {
