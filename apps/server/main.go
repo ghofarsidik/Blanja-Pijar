@@ -10,7 +10,7 @@ import (
 	"server/src/routes"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	// "github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -31,13 +31,13 @@ func main() {
 	// PORT := 3000
 	app := fiber.New()
 
-	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "https://blanja-kelompok-1.vercel.app/",
-		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
-		AllowHeaders:     "Content-Type, Authorization",
-		ExposeHeaders:    "Content-Length",
-		AllowCredentials: true,
-	}))
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins:     "https://blanja-kelompok-1.vercel.app",
+	// 	AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+	// 	AllowHeaders:     "Content-Type, Authorization",
+	// 	ExposeHeaders:    "Content-Length",
+	// 	AllowCredentials: true,
+	// }))
 
 	configs.InitDB()
 	services.InitMidtrans()
