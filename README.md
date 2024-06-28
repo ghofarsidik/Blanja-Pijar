@@ -124,56 +124,58 @@ pass  : @Teknologi123
     <td>Register Page</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png"/></td>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png"/></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/login.png"/></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/register.png"/></td>
   </tr>
   <tr>
-    <td>Landing Page</td>
-    <td>List Talent Page</td>
+    <td>Home page before login</td>
+    <td>Home page after</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png"
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/home%20page%20before%20login.png"
  /></td>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/home%20page%20after%20login.png" /></td>
   </tr>
   <tr>
-    <td>Search Bar</td>
+    <td>Search</td>
+    <td>Product Detail</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/searc.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/detail%20product.png" /></td>
   </tr>
   <tr>
-    <td>Portofolio Worker</td>
-    <td>Experience Worker</td>
+    <td>Cart</td>
+    <td>Checkout</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/cart.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/checkout.png" /></td>
   </tr>
   <tr>
-    <td>Edit Profile Worker</td>
-    <td>Edit Photo Worker</td>
+    <td>Profile customer</td>
+    <td>add shipping address</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/profile%20costumer.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/add%20shipping%20address.png" /></td>
   </tr>
   <tr>
-    <td>Profile Company Page</td>
-    <td>Edit Company Page</td>
+    <td>My order</td>
+    <!-- <td>Edit Company Page</td> -->
   </tr>
   <tr>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
-    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/my%20order.png" /></td>
+    <!-- <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td> -->
   </tr>
-  <tr>
+  <!-- <tr>
     <td>Hiring Page</td>
     <td>Notification after hiring talent</td>
   </tr>
   <tr>
     <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
     <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
-  </tr> 
+  </tr>  -->
 </table>
 
 ### Contributors:
