@@ -124,55 +124,55 @@ pass  : @Teknologi123
     <td>Register Page</td>
   </tr>
   <tr>
-    <td><img src="./apps/web/src/"/></td>
-    <td><img src="./public/screenshoot/register-page.png"/></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png"/></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png"/></td>
   </tr>
   <tr>
     <td>Landing Page</td>
     <td>List Talent Page</td>
   </tr>
   <tr>
-    <td><img src="./public/screenshoot/landing-page.png"
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png"
  /></td>
-    <td><img src="./public/screenshoot/home-page.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr>
   <tr>
     <td>Search Bar</td>
   </tr>
   <tr>
-    <td><img src="./public/screenshoot/search-page.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr>
   <tr>
     <td>Portofolio Worker</td>
     <td>Experience Worker</td>
   </tr>
   <tr>
-    <td><img src="./public/screenshoot/profile-worker.png" /></td>
-    <td><img src="./public/screenshoot/worker-experience.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr>
   <tr>
     <td>Edit Profile Worker</td>
     <td>Edit Photo Worker</td>
   </tr>
   <tr>
-    <td><img src="./public/screenshoot/edit-profile-worker.png" /></td>
-    <td><img src="./public/screenshoot/update-photo-worker.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr>
   <tr>
     <td>Profile Company Page</td>
     <td>Edit Company Page</td>
   </tr>
   <tr>
-    <td><img src="./public/screenshoot/profile-recruiter.png" /></td>
-    <td><img src="./public/screenshoot/update-profile-recruiter.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr>
   <tr>
     <td>Hiring Page</td>
     <td>Notification after hiring talent</td>
   </tr>
   <tr>
-    <td><img src="./public/screenshoot/hire-page.png" /></td>
-    <td><img src="./public/screenshoot/notification.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
+    <td><img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /></td>
   </tr> 
 </table>
 
@@ -202,9 +202,9 @@ Contributions are what make the open source community such an amazing place to l
 
 If you have any questions or inquiries regarding this project, feel free to contact me at
 
-Email : [Email](dimasageng58@gmail.com)
+Email : [dimasageng58@gmail.com](dimasageng58@gmail.com)
 
-Linkedin : [Linkedin](https://www.linkedin.com/in/dimasagengsaputro/)
+Linkedin : [linkedin.com/in/dimasagengsaputro](https://www.linkedin.com/in/dimasagengsaputro/)
 
 ### Documentation
 
