@@ -194,31 +194,31 @@ Here are the contributors to the project and their respective roles:
 
 <table>
 <tr>
-<td> <img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/dimas.jpg" /> </td>
+<td> <img width="410" height="410" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/dimas.jpg" /> </td>
 <td>
 
 **Dimas Ageng Saputro**: Project Manager, Fullstack Developer </br>
-Github   :  [github.com/dimassagngsptr](https://github.com/dimassagngsptr)
+Github   :  [github.com/dimassagngsptr](https://github.com/dimassagngsptr)</br>
 Linkedin : [linkedin.com/in/dimasagengsaputro](https://www.linkedin.com/in/dimasagengsaputro/)
 
 </td>
 </tr>
 <tr>
-<td> <img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/ghaffar.JPG" /> </td>
+<td> <img width="410" height="410" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/ghaffar.JPG" /> </td>
 <td>
 
 **Abdul Ghaffar Sidik**: Fullstack Developer </br>
-Github   :  [github.com/ghofarsidik](https://github.com/ghofarsidik)
+Github   :  [github.com/ghofarsidik](https://github.com/ghofarsidik)</br>
 Linkedin : [linkedin.com/in/abdul-ghaffar-sidik](https://www.linkedin.com/in/abdul-ghaffar-sidik/)
 
 </td>
 </tr>
 <tr>
-<td> <img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/azhar.png" /> </td>
+<td> <img width="410" height="410" src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/58b4f42682a91658138b4fb75bf68669028b1348/apps/web/src/assets/screenshot/azhar.png" /> </td>
 <td>
 
 **Burhanuddin Azhar**: Frontend Developer </br>
-Github   :  [github.com/Azhar-54](https://github.com/Azhar-54)
+Github   :  [github.com/Azhar-54](https://github.com/Azhar-54) </br>
 Linkedin : [linkedin.com/in/burhanudin-azhar](https://www.linkedin.com/in/burhanudin-azhar/)
 
 </td>
