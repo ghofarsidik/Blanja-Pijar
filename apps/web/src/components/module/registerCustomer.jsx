@@ -5,9 +5,13 @@ import { Button } from "@material-tailwind/react";
 import registCustomer from "../../utils/registCustomer";
 import { useDispatch } from "react-redux";
 import { toastify } from "../base/toastify";
-import { registerStart, registerSuccess, registerFailure } from "../../configs/redux/action/authRegist";
-import axios from 'axios';
-import './Register.css';
+import {
+  registerStart,
+  registerSuccess,
+  registerFailure,
+} from "../../configs/redux/action/authRegist";
+import axios from "axios";
+import "./Register.css";
 import API from "../../configs/api";
 
 const RegisterCustomer = () => {
@@ -31,20 +35,21 @@ const RegisterCustomer = () => {
       setLoading(true);
       dispatch(registerStart());
       try {
-       const response = await API.post("/auth/register", values, {
-         headers: {
-           "Content-Type": "application/json",
-         },
-       });
+        const response = await API.post("/auth/register", values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         const data = response.data;
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
 
         dispatch(registerSuccess(data.user));
         toastify("success", data.message || "Registration successful");
-        navigate('/login');
+        navigate("/login");
       } catch (error) {
-        const errorMessage = error.response?.data?.message || 'Something went wrong';
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
         dispatch(registerFailure(errorMessage));
         toastify("error", errorMessage);
       } finally {
@@ -62,7 +67,7 @@ const RegisterCustomer = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
               name="name"
-              placeholder="Masukkan nama"
+              placeholder="Insert nama"
               value={formik.values.name}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -78,7 +83,7 @@ const RegisterCustomer = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="email"
               name="email"
-              placeholder="Masukkan email"
+              placeholder="Insert email"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -94,7 +99,7 @@ const RegisterCustomer = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="text"
               name="phone_number"
-              placeholder="Masukkan telepon"
+              placeholder="Insert telepon"
               value={formik.values.phone_number}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -111,7 +116,7 @@ const RegisterCustomer = () => {
                 className="border border-gray-500 rounded py-2 px-2 w-full"
                 type={formik.values.showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Masukkan password"
+                placeholder="Insert password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -172,7 +177,7 @@ const RegisterCustomer = () => {
             className={`bg-red-500 justify-center w-full h-12 py-2 text-white text-lg font-semibold border rounded-full cursor-pointer hover:bg-[#DB3022]`}
             disabled={formik.isSubmitting || loading}
           >
-            {loading ? "Loading..." : "Daftar"}
+            {loading ? "Loading..." : "Register"}
           </Button>
         </div>
       </form>

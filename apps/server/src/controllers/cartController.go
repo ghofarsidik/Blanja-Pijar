@@ -140,6 +140,8 @@ func AddToCart(c *fiber.Ctx) error {
 				newCartDetail := models.CartDetail{
 					ProductID:  item.ProductID,
 					CartID:     item.CartID,
+					Size:       item.Size,
+					Color:      item.Color,
 					IsChecked:  true,
 					Quantity:   newQuantity,
 					TotalPrice: float64(newTotalPrice),
@@ -252,6 +254,8 @@ func AddToCart(c *fiber.Ctx) error {
 					ProductID:  products.ID,
 					Quantity:   request.Quantity,
 					IsChecked:  true,
+					Size:       request.Size,
+					Color:      request.Color,
 					TotalPrice: totalPrice,
 				},
 			},

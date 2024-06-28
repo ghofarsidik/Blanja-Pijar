@@ -10,16 +10,21 @@ import { setCheckout } from "../../configs/redux/features/chekoutSlice";
 
 const ProductDetail = ({ product }) => {
   const { id } = useParams();
+  const token = localStorage.getItem("token");
   const [selectedSize, setSelectedSize] = useState(null);
   const [myStore, setMyStore] = useState();
   const [selectedColor, setSelectedColor] = useState(null);
   const [purchaseAmount, setPurchaseAmount] = useState(1);
-  console.log(product);
   const dispatch = useDispatch();
   const [mainImage, setMainImage] = useState();
   const navigate = useNavigate();
 
   const addToCart = async () => {
+    if (!token) {
+      toastify("error", "You must be logged in first");
+      navigate("/login");
+      return;
+    }
     try {
       const res = await API.post(
         "/cart",
@@ -123,7 +128,9 @@ const ProductDetail = ({ product }) => {
                 <span className="text-[#9b9b9b]">
                   Home &gt; category &gt; &nbsp;
                 </span>
-                <span className="font-semibold text-[#9b9b9b] ">{product?.Category?.name}</span>
+                <span className="font-semibold text-[#9b9b9b] ">
+                  {product?.Category?.name}
+                </span>
               </p>
             </Link>
             <div className="flex flex-col lg:flex-row mt-[54px] w-[96%] items-start gap-10">
@@ -170,24 +177,6 @@ const ProductDetail = ({ product }) => {
                     {formatCurrency(product?.price)}
                   </p>
                   <p className="text-gray-500">Stock: {product?.stock} pcs</p>
-                  {/* <div className="mt-4">
-                      <h3 className="text-lg">Size</h3>
-                      <div className="flex space-x-2">
-                        {product?.product_size.map(({ size }) => (
-                          <button
-                            key={size}
-                            className={`w-16 border p-2 ${
-                              selectedSize === size
-                                ? "bg-red-500 text-white"
-                                : ""
-                            }`}
-                            onClick={() => handleSizeSelection(size)}
-                          >
-                            {size}
-                          </button>
-                        ))}
-                      </div>
-                    </div> */}
                   <div className="mt-4">
                     <h3 className="text-lg">Color</h3>
                     <div className="flex space-x-2">

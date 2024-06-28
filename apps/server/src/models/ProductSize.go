@@ -13,7 +13,13 @@ type ProductSize struct {
 	Product   Product `gorm:"foreignKey:ProductID"`
 }
 
-func CreateSizeProduct(item *ProductSize) error {
+func GetAllSize() *[]ProductSize {
+	var items []ProductSize
+	configs.DB.Preload("Product").Find(&items)
+	return &items
+}	
+
+func CreateSizeProduct(item []ProductSize) error {
 	result := configs.DB.Create(&item)
 	return result.Error
 }

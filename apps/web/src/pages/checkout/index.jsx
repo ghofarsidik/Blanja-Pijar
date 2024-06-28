@@ -15,16 +15,16 @@ import { setValue } from "../../configs/redux/features/paymentSlice";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { Loader } from "../../components/base/button/loader";
 import { setCheckout } from "../../configs/redux/features/chekoutSlice";
+import { useResponsive } from "../../hooks/useResponsive";
+import { MobileNav } from "../../components/module/MobileNav";
 
 Modal.setAppElement("#root");
 
 export default function CheckoutPage() {
   const checkout = useSelector((state) => state.checkout.value);
-  console.log(checkout);
-  const dispatch = useDispatch();
+  const isMobile = useResponsive();
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
-  const [itemCheckout, setItemCheckout] = useState();
   const [data, setData] = useState({
     shipping_address: "Jalan kemana saja",
     status: "waiting payment",
@@ -86,46 +86,47 @@ export default function CheckoutPage() {
   }, []);
   return (
     <main>
-      <Navbar />
-      <div className="pl-8 lg:px-[10%] py-8">
+      {isMobile ? <MobileNav /> : <Navbar />}
+      <div className="px-3 lg:px-[10%] py-8">
         <h1 className="font-bold text-3xl">Checkout</h1>
         <p className="mt-5 text-gray-700">Shipping Address</p>
         <div className="flex flex-col lg:flex-row justify-between w-full">
-          <div className="flex flex-col gap-2 w-[550px] pr-3 lg:pr-0 lg:w-2/3">
+          <div className="flex flex-col gap-2 w-full pr-3 lg:pr-0 lg:w-2/3">
             <div className="shadow-lg border border-gray-200 w-full h-[200px] rounded-md"></div>
-            {checkout?.length > 0 && checkout[0]?.map((item) => (
-              <div key={item?.ID}>
-                <div className="shadow-lg border border-gray-200 w-full h-[150px] px-10 py-5 rounded-md ">
-                  <div className="flex justify-between items-center h-full">
-                    <div className="flex gap-x-3 items-center">
-                      <img
-                        src={item?.Product?.product_image[0]?.image}
-                        alt=""
-                        className="w-20 h-20 rounded-lg"
-                      />
-                      <div>
-                        <h1 className="text-lg font-semibold">
-                          {item?.Product?.name}
-                        </h1>
-                        <p className="text-gray-500 text-sm">
-                          {item?.Product?.Store?.name}
-                        </p>
-                        <p className="text-gray-500 text-xs">
-                          {item?.quantity} x{" "}
-                          {formatCurrency(item?.Product?.price)}
-                        </p>
+            {checkout?.length > 0 &&
+              checkout[0]?.map((item) => (
+                <div key={item?.ID}>
+                  <div className="shadow-lg border border-gray-200 w-full h-[150px] px-10 py-5 rounded-md ">
+                    <div className="flex justify-between items-center h-full">
+                      <div className="flex gap-x-3 items-center">
+                        <img
+                          src={item?.Product?.product_image[0]?.image}
+                          alt=""
+                          className="w-20 h-20 rounded-lg"
+                        />
+                        <div>
+                          <h1 className="text-lg font-semibold">
+                            {item?.Product?.name}
+                          </h1>
+                          <p className="text-gray-500 text-sm">
+                            {item?.Product?.Store?.name}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {item?.quantity} x{" "}
+                            {formatCurrency(item?.Product?.price)}
+                          </p>
+                        </div>
                       </div>
+                      <h1 className="font-bold text-lg">
+                        {formatCurrency(item?.total_price)}
+                      </h1>
                     </div>
-                    <h1 className="font-bold text-lg">
-                      {formatCurrency(item?.total_price)}
-                    </h1>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
-          <div className="flex flex-col gap-2 w-[550px] lg:w-1/4 lg:static fixed bottom-10 lg:pr-0 pr-3">
-            <div className="border border-gray-200 rounded-md shadow-lg w-full h-[250px] py-2 px-3">
+          <div className="sticky bottom-2 lg:bottom-8 flex flex-col gap-2 w-full lg:w-1/4 lg:static lg:pr-0 pr-3">
+            <div className="border mt-5 lg:mt-0 border-gray-200 rounded-md shadow-lg w-full h-[250px] py-2 px-3 bg-white">
               <h1 className="font-semibold mb-5">Shopping summary</h1>
               <div className="flex justify-between">
                 <div>

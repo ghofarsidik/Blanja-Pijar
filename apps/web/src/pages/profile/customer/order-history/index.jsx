@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { formatCurrency } from "../../../../utils/formatCurrency";
 import API from "../../../../configs/api";
 
-export function OrderHistory() {
+export function OrderHistory({handleOpenMenu, openMenu}) {
   const [transaction, setTransaction] = useState([]);
 
   const getTransactionUser = async (params) => {
@@ -49,11 +49,46 @@ export function OrderHistory() {
       limit: 5,
     });
   }, []);
-  console.log(transaction);
   return (
     <>
-      <div className="py-3">
-        <h1 className="font-semibold text-2xl leading-relaxed">My order</h1>
+      <div className="border-b flex justify-between border-gray-300 py-3">
+        <div>
+          <h1 className="font-semibold text-2xl leading-relaxed">My Order</h1>
+          <p className="text-gray-500">History all your transaction</p>
+        </div>
+        {openMenu ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6 lg:hidden"
+            onClick={handleOpenMenu}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m4.5 15.75 7.5-7.5 7.5 7.5"
+            />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6 lg:hidden"
+            onClick={handleOpenMenu}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m19.5 8.25-7.5 7.5-7.5-7.5"
+            />
+          </svg>
+        )}
       </div>
       <Tabs value={activeTab}>
         <TabsHeader
@@ -73,11 +108,11 @@ export function OrderHistory() {
                   status: value,
                 });
               }}
-              className={
+              className={`${
                 activeTab === value
                   ? "text-main-red font-semibold"
                   : "text-gray-500"
-              }
+              }`}
             >
               {label}
             </Tab>
@@ -90,20 +125,20 @@ export function OrderHistory() {
               value={value}
               className="overflow-y-scroll h-[450px]"
             >
-              <div className="flex gap-24 font-semibold text-gray-500 -ml-1 pb-3">
-                <p>Detail Product</p>
-                <p>Total payment</p>
-                <p>Payment method</p>
-                <p className="ml-20">Status</p>
+              <div className="hidden lg:flex flex-wrap gap-24 font-semibold text-gray-500 -ml-1 pb-3">
+                <p className="w-full sm:w-auto">Detail Product</p>
+                <p className="w-full sm:w-auto">Total payment</p>
+                <p className="w-full sm:w-auto">Payment method</p>
+                <p className="w-full sm:w-auto ml-20">Status</p>
               </div>
               {desc?.map((items) => (
                 <div key={items?.ID}>
                   {items?.Details?.map((item) => (
                     <div
-                      className="flex gap-x-24 py-2 items-center"
+                      className="flex flex-wrap gap-x-24 py-2 items-center"
                       key={item?.ID}
                     >
-                      <div className="flex gap-x-3 items-center">
+                      <div className="flex flex-wrap gap-x-3 items-center w-full sm:w-auto">
                         <img
                           src={item?.Product?.product_image[0]?.image}
                           alt=""
@@ -119,17 +154,16 @@ export function OrderHistory() {
                               {formatCurrency(item?.Product.price)}
                             </p>
                           </div>
-                          {/* <p>{console.log(item)}</p> */}
                         </div>
                       </div>
-                      <p className="text-main-red font-bold">
+                      <p className="text-main-red font-bold w-full sm:w-auto">
                         {formatCurrency(items?.total_amount)}
                       </p>
-                      <p className="-ml-4 inline-block min-w-[160px]">
+                      <p className="w-full sm:w-auto -ml-4 inline-block min-w-[160px]">
                         {items?.payment_method}
                       </p>
                       <p
-                        className={`${
+                        className={`w-full sm:w-auto ${
                           items?.status === "packed"
                             ? "text-green-500"
                             : item?.status === "payment expired"

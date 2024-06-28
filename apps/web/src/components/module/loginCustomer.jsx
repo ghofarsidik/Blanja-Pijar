@@ -64,7 +64,7 @@ const LoginCustomer = () => {
               className="border border-gray-500 rounded py-2 px-2"
               type="email"
               name="email"
-              placeholder="Masukkan email"
+              placeholder="Insert email"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -81,7 +81,7 @@ const LoginCustomer = () => {
                 className="border border-gray-500 rounded py-2 px-2 w-full"
                 type={formik.values.showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Masukkan password"
+                placeholder="Insert password"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

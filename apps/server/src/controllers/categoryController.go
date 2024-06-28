@@ -36,6 +36,15 @@ func GetDetailCategory(c *fiber.Ctx) error {
 
 }
 
+func GetNameCategory(c *fiber.Ctx) error {
+	name := c.Query("name")
+	category := models.GetNameCategory(name)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully retrieved Category",
+		"data":    category,
+	})
+}
+
 func CreateCategory(c *fiber.Ctx) error {
 	var newCategory models.Category
 	if err := c.BodyParser(&newCategory); err != nil {

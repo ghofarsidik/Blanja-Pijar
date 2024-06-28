@@ -1,51 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
-import Tshirt from "../../assets/images/categories/t-shirt.png";
-import Shorts from "../../assets/images/categories/shorts.png";
-import Pants from "../../assets/images/categories/pants.png";
-import Jacket from "../../assets/images/categories/jacket.png";
-import Accessories from "../../assets/images/categories/accessories.png";
-import Bagpack from "../../assets/images/categories/bagpack.png";
-import Cap from "../../assets/images/categories/cap.png";
-import Dress from "../../assets/images/categories/dress.png";
-import FormalSuit from "../../assets/images/categories/formalsuit.png";
-import Glasses from "../../assets/images/categories/glasses.png";
-import Handbag from "../../assets/images/categories/handbag.png";
-import HighHeels from "../../assets/images/categories/highheels.png";
-import Shoes from "../../assets/images/categories/shoes.png";
-import Socks from "../../assets/images/categories/socks.png";
-import Tie from "../../assets/images/categories/tie.png";
-import WristWatch from "../../assets/images/categories/wristwatch.png";
-import axios from "axios";
 import API from "../../configs/api";
-
-const categoriesImages = {
-  "T-Shirt": Tshirt,
-  Shorts: Shorts,
-  Pants: Pants,
-  Jacket: Jacket,
-  Accessories: Accessories,
-  Bagpack: Bagpack,
-  Cap: Cap,
-  Dress: Dress,
-  FormalSuits: FormalSuit,
-  Glasses: Glasses,
-  Handbag: Handbag,
-  HighHeels: HighHeels,
-  Shoes: Shoes,
-  Socks: Socks,
-  Tie: Tie,
-  WristWatch: WristWatch,
-};
+import { useMediaQuery } from "react-responsive";
 
 const CategoriesCard = ({ onCategoryClick }) => {
   const [categories, setCategories] = useState([]);
   // const [currentIndex, setCurrentIndex] = useState(0);
-  console.log(categories);
   useEffect(() => {
     API.get("/categories")
       .then((response) => {
-        console.log(response);
         setCategories(response.data?.data);
       })
       .catch((error) => {
@@ -58,9 +21,9 @@ const CategoriesCard = ({ onCategoryClick }) => {
       <div
         className={`${
           next
-            ? "rotate-180 -left-[110px] -top-[120px]"
-            : "rotate-0 -left-[241px] top-[102px]"
-        } relative h-6 w-6`}
+            ? "rotate-180 left-[300px] -top-[110px] lg:-left-[110px] lg:-top-[120px]"
+            : "rotate-0 -left-[10px] top-[120px] lg:-left-[241px] lg:top-[102px]"
+        } relative h-6 w-6 z-10 lg:z-0`}
       >
         <button
           onClick={onClick}
@@ -86,25 +49,49 @@ const CategoriesCard = ({ onCategoryClick }) => {
     );
   }
 
+  const [show, setShow] = useState(1);
+  const [padding, setPading] = useState("10px");
   const settings = {
     // dots: true,
-    // infinite: true,
+    infinite: true,
+    autoplay: true,
     speed: 500,
-    slidesToShow: 4,
+    autoplaySpeed: 2000,
+    slidesToShow: show,
     slidesToScroll: 1,
     centerMode: true,
-    centerPadding: "10px",
+    centerPadding: padding,
     prevArrow: <ButtonPrev next={false} />,
     nextArrow: <ButtonPrev next={true} />,
   };
-
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1200px)");
+    const tablet = window.matchMedia("(min-width: 800px)");
+    const handleResize = () => {
+      if (desktop.matches === true) {
+        setShow(4);
+        setPading("0px");
+      } else if (tablet.matches === true) {
+        setShow(3);
+        setPading("5px");
+      } else {
+        setShow(1);
+        setPading("0px");
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [show]);
   return (
     <Slider {...settings}>
       {categories.map((category, index) => (
         <div key={index} onClick={() => onCategoryClick(category)}>
           <img
             key={category?.ID}
-            className="w-[180px] h-[220px] cursor-pointer"
+            className="w-[250px] h-[220px] lg:w-[180px] lg:h-[220px] cursor-pointer ml-7 lg:ml-0"
             src={category?.image}
             alt={category.name}
           />

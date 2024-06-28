@@ -20,6 +20,7 @@ func Router(app *fiber.App) {
 
 	api.Get("/address", controllers.GetAllAddresses)
 	api.Get("/address/:id", controllers.GetDetailAddress)
+	api.Get("/address/primary", middlewares.JwtMiddleware(), controllers.GetPrimaryAddress)
 	api.Post("/address", middlewares.JwtMiddleware(), controllers.CreateAddress)
 	api.Put("/address/:id", middlewares.JwtMiddleware(), controllers.UpdateAddress)
 	api.Delete("/address/:id", controllers.DeleteAddress)
@@ -35,9 +36,11 @@ func Router(app *fiber.App) {
 	api.Get("/color", controllers.GetAllColors)
 	api.Post("/color", controllers.CreateProductColor)
 
+	api.Get("/sizes", controllers.GetAllSize)
 	api.Post("/size", controllers.CreateProductSize)
 
 	api.Get("/categories", controllers.GetAllCategories)
+	api.Get("/category", controllers.GetNameCategory)
 	api.Get("/category/:id", controllers.GetDetailCategory)
 	api.Post("/category", controllers.CreateCategory)
 	api.Put("/category/:id", controllers.UpdateCategory)

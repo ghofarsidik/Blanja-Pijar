@@ -48,6 +48,18 @@ func GetDetailCategory(id int) *Category {
 	return &results
 }
 
+func GetNameCategory(name string) *Category {
+	var results Category
+	name = "%" + name + "%"
+	configs.DB.Preload("Product").
+		Preload("Product.ProductImage").
+		Preload("Product.ProductSize").
+		Preload("Product.ProductColor").
+		Where("name ILIKE ?", name).
+		First(&results)
+	return &results
+}
+
 func CreateCategory(newCategory *Category) error {
 	results := configs.DB.Create(&newCategory)
 	return results.Error
