@@ -249,7 +249,7 @@ Contributions are what make the open source community such an amazing place to l
 
 ### Contact
 
-If you have any questions or inquiries regarding this project, feel free to contact me at
+If you have any questions or inquiries regarding this project, feel free to contact us
 
 Email : [dimasageng58@gmail.com](dimasageng58@gmail.com)
 
