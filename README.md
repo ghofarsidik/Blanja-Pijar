@@ -166,12 +166,12 @@ pass  : @Seller123
   </tr>
   <tr>
     <td>My order</td>
-    <td> </td>
+    <td>Filter Product</td>
   </tr>
   <tr>
     <td><img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/df3f76ec9cd4de47e30c78fabc5b9f54fcf01a98/apps/web/src/assets/screenshot/my%20order.png" /></td>
     <td>
-    <!-- <img src="./apps/web/src/assets/screenshot/landing-page-before-login.png" /> -->
+    <img src="./apps/web/src/assets/screenshot/filter-products.png" />
     </td>
   </tr>
   <tr>
