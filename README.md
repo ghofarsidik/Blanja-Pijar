@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/dimassagngsptr/blanja-kelompok-1.git">
+  <a href="https://github.com/ghofarsidik/FE-Blanja.git">
       <img src="https://github.com/dimassagngsptr/blanja-kelompok-1/blob/d707d097d6e6d2f61dbaffc03ba6896fc05fffd9/apps/web/src/assets/images/logo/blanja.png" width="350"/>
   </a>
 
@@ -11,7 +11,7 @@
     <br />
    <a href="https://innovation-blanja.vercel.app/" target="_blank">View Demo</a>
     ·
-    <a href="https://github.com/dimassagngsptr/golang-server-blanja.git" target="_blank">View Back-End Repo</a>
+    <a href="https://github.com/ghofarsidik/BE-blanja.git" target="_blank">View Back-End Repo</a>
   </p>
 </div>
 
@@ -247,7 +247,7 @@ Contributions are what make the open source community such an amazing place to l
 
 ### License
 
-<!-- Distributed under the MIT License. See [`LICENSE`](https://github.com/dimassagngsptr/Peworld/edit/development/LICENSE) for more information. -->
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 
 ### Contact
 
@@ -259,9 +259,9 @@ Linkedin : [linkedin.com/in/abdul-ghaffar-sidik](https://www.linkedin.com/in/abd
 
 ### Documentation
 
-The server for this project was created by [Dimas Ageng Saputro](https://github.com/dimassagngsptr) using [Go](https://go.dev/). If you want to see more about this back-end project, please visit [back-end Blanja](https://github.com/dimassagngsptr/golang-server-blanja.git)
+The server for this project was created by [Dimas Ageng Saputro](https://github.com/dimassagngsptr) using [Go](https://go.dev/). If you want to see more about this back-end project, please visit [back-end Blanja](https://github.com/ghofarsidik/BE-blanja.git)
 
 ### Related Project
 
-:rocket: [`FrontEnd - Blanja`](https://github.com/dimassagngsptr/blanja-kelompok-1) </br>
-:rocket: [`Backend - Blanja`](https://github.com/dimassagngsptr/golang-server-blanja.git)
+:rocket: [`FrontEnd - Blanja`](https://github.com/ghofarsidik/FE-Blanja) </br>
+:rocket: [`Backend - Blanja`](https://github.com/ghofarsidik/BE-blanja.git)
