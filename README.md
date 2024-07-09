@@ -253,9 +253,9 @@ Contributions are what make the open source community such an amazing place to l
 
 If you have any questions or inquiries regarding this project, feel free to contact us
 
-Email : [dimasageng58@gmail.com](dimasageng58@gmail.com)
+Email : [ghofarassidik@gmail.com](ghofarassidik@gmail.com)
 
-Linkedin : [linkedin.com/in/dimasagengsaputro](https://www.linkedin.com/in/dimasagengsaputro/)
+Linkedin : [linkedin.com/in/abdul-ghaffar-sidik](https://www.linkedin.com/in/abdul-ghaffar-sidik/)
 
 ### Documentation
 
